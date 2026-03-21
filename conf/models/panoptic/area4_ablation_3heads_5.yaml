@@ -74,6 +74,8 @@ PointGroup-PAPER:
   cal_iou_based_on_mask: False
   cal_iou_based_on_mask_start_epoch: 50
 
+  block_merge_th: 0.01
+
   loss_weights:
     semantic: 1
     offset_norm_loss: 0.1
