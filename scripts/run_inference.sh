@@ -64,8 +64,9 @@ python3 -m sat.pipeline.config_update "$DEST_DIR/eval.yaml" "$DEST_DIR/utm2local
 python3 -m sat.pipeline.cache --eval_yaml "$DEST_DIR/eval.yaml"
 
 # Step 5: Run model inference
+# Hydra needs --config-path (directory) and --config-name (filename without .yaml)
 cd "$SAT_ROOT"
-python3 eval.py --config-name "$DEST_DIR/eval.yaml"
+python3 eval.py --config-path "$DEST_DIR" --config-name eval
 echo "Inference complete."
 
 # Step 6: Rename output files

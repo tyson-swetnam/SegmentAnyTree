@@ -126,8 +126,13 @@ RUN python3 -m pip install --no-cache-dir \
     addict \
     python-louvain
 
-# torchnet pulls visdom which has broken setuptools; install without deps then add what's needed
-RUN python3 -m pip install --no-cache-dir --no-deps torchnet
+# torchnet needs visdom for its logger module, but visdom fails to build.
+# Install torchnet without deps, then patch its logger init to not crash on missing visdom.
+RUN python3 -m pip install --no-cache-dir --no-deps torchnet && \
+    echo 'try:' > /usr/local/lib/python3.10/dist-packages/torchnet/logger/__init__.py && \
+    echo '    from .visdomlogger import *' >> /usr/local/lib/python3.10/dist-packages/torchnet/logger/__init__.py && \
+    echo 'except ImportError:' >> /usr/local/lib/python3.10/dist-packages/torchnet/logger/__init__.py && \
+    echo '    pass' >> /usr/local/lib/python3.10/dist-packages/torchnet/logger/__init__.py
 
 # ---- hdbscan ----
 RUN python3 -m pip install --no-cache-dir hdbscan
