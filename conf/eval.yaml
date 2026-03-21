@@ -2,6 +2,8 @@ defaults:
   - visualization: eval
   - data: panoptic/treeins_rad8
   - models: panoptic/area4_ablation_3heads_5
+  - training: treeins
+  - lr_scheduler: exponential
 
 num_workers: 0
 batch_size: 1
@@ -39,15 +41,8 @@ debugging:
 update_lr_scheduler_on: "on_epoch"
 job_name: "eval"
 
+# Override training defaults for eval mode
 training:
-  enable_cudnn: True
-  checkpoint_dir: ""
-  cuda: 0
-  num_workers: 0
-  batch_size: 1
-  shuffle: False
-  weight_name: "latest"
-  epochs: 1
   wandb:
     log: False
     public: False
