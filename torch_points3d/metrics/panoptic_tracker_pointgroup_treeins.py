@@ -298,6 +298,8 @@ class PanopticTracker(SegmentationTracker):
             self.spheres_count = 0  # tells us which cylinder or sphere block we are currently tracking WITHIN the data file represented by self.cloud_count
 
     def _dump_visuals_fortest(self, outputs, originids, valid_c_idx):
+        if outputs.clusters is None:
+            return
         if not os.path.exists("viz_for_test_all_proposals"):
             os.mkdir("viz_for_test_all_proposals")
         if not os.path.exists("viz_for_test_valid_proposals"):
