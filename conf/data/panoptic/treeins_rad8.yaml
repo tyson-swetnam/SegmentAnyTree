@@ -5,7 +5,7 @@ defaults:
 task: panoptic
 class: treeins.TreeinsFusedDataset
 # dataroot: data #TO ADAPT: specify the folder name in which the data set is saved, e.g. data OR data_outpointsrm etc.
-dataroot: /home/datascience/data #TO ADAPT: specify the folder name in which the data set is saved, e.g. data OR data_outpointsrm etc.
+dataroot: data  # Relative to working directory, or override via CLI: data=/absolute/path
 
 forest_regions: []
 fold: []

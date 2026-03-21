@@ -1,21 +1,47 @@
-FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04 as builder
+# ============================================================
+# SegmentAnyTree — Modernized Docker Image (2026)
+#
+# Ubuntu 22.04 + CUDA 12.4 + Python 3.10 + PyTorch 2.4
+# Includes JupyterLab for interactive use
+#
+# Build:
+#   docker build -t segmentanytree:latest .
+#
+# Run (JupyterLab):
+#   docker run --gpus all -p 8888:8888 \
+#     -v $HOME/data/input:/data/input \
+#     -v $HOME/data/output:/data/output \
+#     segmentanytree:latest
+#
+# Run (batch inference):
+#   docker run --gpus all \
+#     -v $HOME/data/input:/data/input \
+#     -v $HOME/data/output:/data/output \
+#     segmentanytree:latest \
+#     bash scripts/run_inference.sh /data/input /data/output
+# ============================================================
 
-RUN ln -fs /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+# ---- Stage 1: Builder ----
+# NOTE: MinkowskiEngine is incompatible with CUDA 12 (libcu++ template conflicts).
+# Using CUDA 11.8 + Ubuntu 22.04 as the most modern compatible combination.
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime
+
+# System dependencies for building GPU libraries
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    cmake \
     git \
-    language-pack-en-base \
-    openssh-server \
-    openssh-client \
-    python3.8 \
-    python3.8-dev \
+    ninja-build \
+    python3.10 \
+    python3.10-dev \
+    python3.10-venv \
     python3-pip \
-    ssh \
-    sudo \
-    vim \
     wget \
     unzip \
-    less \
     libglib2.0-0 \
     libglu1-mesa-dev \
     libopenblas-dev \
@@ -28,236 +54,160 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxext6 \
     libxrender-dev \
     libsndfile1 \
-    python3-pycuda \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python3.8 -m pip install --no-cache-dir --upgrade \
-    autopep8==1.5.7 \
-    doc8==0.8.1 \
-    docutils==0.17.1 \
-    ipython==7.27.0 \
-    ninja==1.10.2 \
-    pandas==1.3.3 \
-    pip==21.2.4 \
-    poetry==1.1.8 \
-    pylint==2.10.2 \
-    pytest==6.2.5 \
-    rope==0.19.0 \
-    setuptools==58.0.4 \
-    tqdm==4.62.3 \
-    wheel==0.37.0
+# Make python3.10 the default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 
-ENV CU_VERSION=cu111
-ENV TORCH_CUDA_ARCH_LIST_VER="6.0;7.0;7.5;8.0;8.6"
+# Upgrade pip and install build prerequisites
+RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel ninja numpy scipy cython
 
-RUN python3.8 -m pip install --no-cache-dir \
-    torch==1.9.0+${CU_VERSION} \
-    torchvision==0.10.0+${CU_VERSION} \
-    torchaudio==0.9.0 \
-    -f https://download.pytorch.org/whl/torch_stable.html
+# ---- PyTorch 2.1 + CUDA 11.8 ----
+ENV CU_VERSION=cu118
+ENV TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;9.0"
 
-RUN python3.8 -m pip install --no-cache-dir \
-    torch-scatter==2.0.8 \
-    torch-sparse==0.6.12 \
-    torch-cluster==1.5.9 \
-    torch-spline-conv==1.2.1 \
-    torch-geometric==1.7.2 \
-    -f https://data.pyg.org/whl/torch-1.9.0+${CU_VERSION}.html
+RUN python3 -m pip install --no-cache-dir \
+    torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 \
+    --index-url https://download.pytorch.org/whl/${CU_VERSION}
 
-RUN TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST_VER} python3.8 -m pip install --no-cache-dir \
-    git+https://github.com/NVIDIA/MinkowskiEngine.git \
-    --install-option="--blas=openblas" --install-option="--force_cuda"
+# ---- PyTorch Geometric ecosystem ----
+RUN python3 -m pip install --no-cache-dir \
+    torch-scatter \
+    torch-sparse \
+    torch-cluster \
+    torch-spline-conv \
+    torch-geometric \
+    -f https://data.pyg.org/whl/torch-2.1.2+${CU_VERSION}.html
 
-RUN TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST_VER} FORCE_CUDA=1 python3.8 -m pip install --no-cache-dir \
+# ---- MinkowskiEngine (source build) ----
+RUN git clone --depth 1 https://github.com/NVIDIA/MinkowskiEngine.git /tmp/MinkowskiEngine && \
+    cd /tmp/MinkowskiEngine && \
+    TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" \
+    python3 setup.py install --blas=openblas --force_cuda && \
+    rm -rf /tmp/MinkowskiEngine
+
+# ---- torchsparse v1.4.0 (source build, --no-build-isolation to find torch) ----
+RUN TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" FORCE_CUDA=1 \
+    python3 -m pip install --no-cache-dir --no-build-isolation \
     git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
 
-# Install torch-points3d requirements and fixed dependencies
-RUN TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST_VER} FORCE_CUDA=1 python3.8 -m pip install --no-cache-dir \
-    torch-points-kernels==0.7.0 \
-    absl-py==0.14.0 \
-    addict==2.4.0 \
-    antlr4-python3-runtime==4.8 \
-    appnope==0.1.2 \
-    argcomplete==1.12.3 \
-    argon2-cffi==21.1.0 \
-    attrs==21.2.0 \
-    backcall==0.2.0 \
-    bleach==4.1.0 \
-    cached-property==1.5.2 \
-    cachetools==4.2.2 \
-    certifi==2021.5.30 \
-    cffi==1.14.6 \
-    charset-normalizer==2.0.6 \
-    click==8.0.1 \
-    colorama==0.4.4 \
-    configparser==5.0.2 \
-    cycler==0.10.0 \
-    debugpy==1.4.3 \
-    decorator==5.1.0 \
-    defusedxml==0.7.1 \
-    docker-pycreds==0.4.0 \
-    entrypoints==0.3 \
-    filelock==3.1.0 \
-    gitdb==4.0.7 \
-    gitpython==3.1.24 \
-    google-auth-oauthlib==0.4.6 \
-    google-auth==1.35.0 \
-    googledrivedownloader==0.4 \
-    gql==0.2.0 \
-    graphql-core==1.1 \
-    gdown==3.13.1 \
-    grpcio==1.40.0 \
-    h5py==3.4.0 \
-    hydra-core==1.0.7 \
-    idna==3.2 \
-    imageio==2.9.0 \
-    importlib-metadata==4.8.1 \
-    importlib-resources==5.2.2 \
-    ipykernel==6.4.1 \
-    ipython-genutils==0.2.0 \
-    ipython==7.28.0 \
-    ipywidgets==7.6.5 \
-    isodate==0.6.0 \
-    jedi==0.18.0 \
-    jinja2==3.0.1 \
-    joblib==1.0.1 \
-    jsonpatch==1.32 \
-    jsonpointer==2.1 \
-    jsonschema==3.2.0 \
-    jupyter-client==7.0.3 \
-    jupyter-core==4.8.1 \
-    jupyterlab-pygments==0.1.2 \
-    jupyterlab-widgets==1.0.2 \
-    kiwisolver==1.3.2 \
-    laspy==2.0.3 \
-    llvmlite==0.33.0 \
-    markdown==3.3.4 \
-    markupsafe==2.0.1 \
-    matplotlib-inline==0.1.3 \
-    matplotlib==3.4.3 \
-    mistune==0.8.4 \
-    nbclient==0.5.4 \
-    nbconvert==6.2.0 \
-    nbformat==5.1.3 \
-    nest-asyncio==1.5.1 \
-    networkx==2.6.3 \
-    notebook==6.4.4 \
-    numba==0.50.1 \
-    numpy==1.19.5 \
-    nvidia-ml-py3==7.352.0 \
-    oauthlib==3.1.1 \
-    omegaconf==2.0.6 \
-    open3d==0.12.0 \
-    packaging==21.0 \
-    pandas==1.1.5 \
-    pandocfilters==1.5.0 \
-    parso==0.8.2 \
-    pexpect==4.8.0 \
-    pickleshare==0.7.5 \
-    pillow==8.3.2 \
-    plyfile==0.7.4 \
-    prometheus-client==0.11.0 \
-    promise==2.3 \
-    prompt-toolkit==3.0.20 \
-    protobuf==3.18.0 \
-    psutil==5.8.0 \
-    ptyprocess==0.7.0 \
-    py==1.10.0 \
-    pyasn1-modules==0.2.8 \
-    pyasn1==0.4.8 \
-    pycparser==2.20 \
-    pygments==2.10.0 \
-    pyparsing==2.4.7 \
-    pyrsistent==0.18.0 \
-    pysocks==1.7.1 \
-    python-dateutil==2.8.2 \
-    python-louvain==0.15 \
-    pytorch-metric-learning==0.9.99 \
-    pytz==2021.1 \
-    pywavelets==1.1.1 \
-    requests-oauthlib==1.3.0 \
-    requests==2.26.0 \
-    rsa==4.7.2 \
-    scipy==1.5.4 \
-    seaborn==0.11.2 \
-    send2trash==1.8.0 \
-    setuptools==58.1.0 \
-    six==1.16.0 \
-    sklearn==0.0 \
-    smmap==4.0.0 \
-    subprocess32==3.5.4 \
-    tensorboard-data-server==0.6.1 \
-    tensorboard-plugin-wit==1.8.0 \
-    tensorboard==2.6.0 \
-    terminado==0.12.1 \
-    testpath==0.5.0 \
-    threadpoolctl==2.2.0 \
-    torchfile==0.1.0 \
-    torchnet==0.0.4 \
-    tornado==6.1 \
-    tqdm==4.62.3 \
-    traitlets==5.1.0 \
-    types-requests==0.1.13 \
-    types-six==0.1.9 \
-    typing-extensions==3.10.0.2 \
-    urllib3==1.26.7 \
-    visdom==0.1.8.9 \
-    wandb==0.8.36 \
-    watchdog==2.1.5 \
-    wcwidth==0.2.5 \
-    webencodings==0.5.1 \
-    websocket-client==1.2.1 \
-    werkzeug==2.0.1 \
-    widgetsnbextension==3.5.1 \
-    zipp==3.5.0
+# ---- torch-points-kernels (provides region_grow for clustering) ----
+# Build from source to avoid numpy distutils issues with pip build isolation
+RUN git clone --depth 1 https://github.com/torch-points3d/torch-points-kernels.git /tmp/torch-points-kernels && \
+    cd /tmp/torch-points-kernels && \
+    TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" FORCE_CUDA=1 \
+    python3 setup.py install && \
+    rm -rf /tmp/torch-points-kernels
 
-RUN python3.8 -m pip install cython==0.29.37
-RUN wget https://github.com/scikit-learn-contrib/hdbscan/archive/refs/tags/0.8.29.zip && \
-    unzip 0.8.29.zip && \
-    rm 0.8.29.zip && \
-    cd hdbscan-0.8.29 && \
-    python3.8 -m pip install -r requirements.txt && \
-    python3.8 setup.py install
+# ---- Core Python dependencies ----
+RUN python3 -m pip install --no-cache-dir \
+    hydra-core==1.3.2 \
+    omegaconf==2.3.0 \
+    wandb \
+    tensorboard \
+    tqdm \
+    pandas \
+    scikit-learn \
+    scikit-image \
+    matplotlib \
+    seaborn \
+    h5py \
+    plyfile \
+    "laspy[lazrs]" \
+    open3d \
+    gdown \
+    numba \
+    joblib \
+    dask \
+    pykdtree \
+    jaklas \
+    pytorch-metric-learning \
+    addict \
+    python-louvain
 
-# Clean up unnecessary files and caches
+# torchnet pulls visdom which has broken setuptools; install without deps then add what's needed
+RUN python3 -m pip install --no-cache-dir --no-deps torchnet
+
+# ---- hdbscan ----
+RUN python3 -m pip install --no-cache-dir hdbscan
+
+# Clean up build artifacts
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     find /usr/local -depth \
     \( \
-      \( -type d -a -name test -o -name tests \) \
+      \( -type d -a \( -name test -o -name tests \) \) \
       -o \
-      \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-    \) -exec rm -rf '{}' + ;
+      \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+    \) -exec rm -rf '{}' +
 
-# Stage 2: Final stage
-FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04 AS final
 
-RUN ln -fs /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+# ---- Stage 2: Runtime ----
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 AS runtime
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime
+
+# Copy compiled Python environment from builder
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY --from=builder /usr/local/lib /usr/local/lib
 COPY --from=builder /usr/local/include /usr/local/include
+COPY --from=builder /usr/lib/python3 /usr/lib/python3
+COPY --from=builder /usr/lib/python3.10 /usr/lib/python3.10
 
+# Runtime system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libopenblas-base \
-    python3.8 \
-    python3.8-dev \
+    python3.10 \
+    python3.10-dev \
     python3-pip \
+    libopenblas-base \
+    libgomp1 \
     wget \
     unzip \
     zip \
+    git \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python3.8 -m pip install --no-cache-dir \
-    numba==0.57.1 \
-    numpy==1.24.4 \
-    jaklas \
-    dask==2021.8.1 \
-    pykdtree==1.3.7.post0
+# Make python3.10 the default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 
-RUN mkdir -p /home/datascience
+# ---- JupyterLab ----
+# Pin numpy<2 to match the version GPU libraries were compiled against
+RUN python3 -m pip install --no-cache-dir \
+    "numpy<2" \
+    jupyterlab>=4.0 \
+    ipywidgets
 
-COPY . /home/nibio/mutable-outside-world
-WORKDIR /home/nibio/mutable-outside-world
+# ---- Create non-root user ----
+RUN useradd -m -s /bin/bash -u 1000 sat
+RUN mkdir -p /data/input /data/output /tmp/sat_cache && \
+    chown -R sat:sat /data /tmp/sat_cache
 
-ENTRYPOINT ["bash", "run_oracle_pipeline.sh"]
+# ---- Copy project code ----
+ENV SAT_ROOT=/opt/segmentanytree
+ENV SAT_DATA=/data
+ENV SAT_MODEL=/opt/segmentanytree/model_file
+ENV SAT_CACHE=/tmp/sat_cache
+ENV PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
+
+COPY --chown=sat:sat . ${SAT_ROOT}
+WORKDIR ${SAT_ROOT}
+
+# ---- Expose JupyterLab port ----
+EXPOSE 8888
+
+USER sat
+
+# Default: start JupyterLab
+# Override with: docker run ... segmentanytree:latest bash
+CMD ["jupyter", "lab", \
+     "--ip=0.0.0.0", \
+     "--port=8888", \
+     "--no-browser", \
+     "--NotebookApp.token=''", \
+     "--NotebookApp.password=''", \
+     "--notebook-dir=/opt/segmentanytree"]

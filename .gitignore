@@ -164,18 +164,17 @@ cython_debug/
 #.idea/
 .vscode/
 
-# my 
+# Point cloud data
 *.las
 *.pt
 !model_file/PointGroup-PAPER.pt
 *.ply
-*.__pycache__
 wandb/
 outputs/
-**/__pycache__/
 
+# Data directories
+data/
 check_list.info
 
 *.pdf
-*.png
 *.csv

@@ -1,145 +1,120 @@
- 
+
 ![SegmentAnyTree_logo](https://github.com/user-attachments/assets/8849a4b2-3bb3-4c6d-b1f1-13f91efc0936)
 
-## Description
-This repo includes the code for training and inference for the method developed by [Wielgosz et al. (2024)SegmentAnyTree: A sensor and platform agnostic deep learning model for tree segmentation using laser scanning data. Remote Sensing of Environment](https://www.sciencedirect.com/science/article/pii/S0034425724003936). 
+# SegmentAnyTree
 
-Under the hood, SegmentAnyTree relies on the [torch-points3d framework](https://github.com/torch-points3d/torch-points3d) as the code base. So please take a look there for more information regarding the training and parametrization of the code.
+Deep learning framework for **tree instance segmentation from 3D LiDAR point clouds**.
 
-## Usage
-The code has been tested on a Linux machine and it relies on a docker image. The method has not been tested in a Windows environment and parts of the code (e.g. Minkowski Engine) might not be available for Windows.
+Based on [Wielgosz et al. (2024) "SegmentAnyTree: A sensor and platform agnostic deep learning model for tree segmentation using laser scanning data"](https://www.sciencedirect.com/science/article/pii/S0034425724003936), Remote Sensing of Environment.
 
-### Using the docker image
-There is a quick start for all who want to quickly process the data.
+Built on the [torch-points3d](https://github.com/torch-points3d/torch-points3d) framework using PointGroup panoptic segmentation architecture.
 
-### Quick start
-1. Create the necessary folders
-2. Upload your files to the folders
-3. Pull docker image
-4. Run the SaT model
-5. Check the results in the output folder
+## Quick Start
 
-```
-mkdir -p $HOME/segmentanytree/input
-mkdir -p $HOME/segmentanytree/output
+```bash
+# 1. Create directories
+mkdir -p $HOME/segmentanytree/input $HOME/segmentanytree/output
 
-docker pull maciekwielgosz/segment-any-tree:latest
+# 2. Copy your .las/.laz/.ply files into the input directory
 
-docker run -it --rm --gpus all \
-  --mount type=bind,source=$HOME/segmentanytree/input,target=/home/nibio/mutable-outside-world/bucket_in_folder \
-  --mount type=bind,source=$HOME/segmentanytree/output,target=/home/nibio/mutable-outside-world/bucket_out_folder \
-  maciekwielgosz/segment-any-tree:latest
+# 3. Run inference
+docker run --gpus all \
+  -v $HOME/segmentanytree/input:/data/input \
+  -v $HOME/segmentanytree/output:/data/output \
+  segmentanytree:latest \
+  bash scripts/run_inference.sh /data/input /data/output true
 
+# 4. Results in $HOME/segmentanytree/output/final_results/
 ```
 
-### Additional information
+### Interactive Mode (JupyterLab)
 
-A pre-built docker image can be pulled from [here](https://hub.docker.com/repository/docker/donaldmaen/segment-any-tree/general)
-
-You can also download the docker image : `docker pull maciekwielgosz/segment-any-tree:latest`
-
-There is also image for cuda 11.8.0 available : `docker pull maciekwielgosz/segment-any-tree-cuda11.8.0` . This one is not well tested.
-
-In order to run code using docker container you should edit the content of `run_docker_locally.sh` file.  You should change the following lines:
-```
-docker run -it --gpus all \
-    --name $CONTAINER_NAME \
-    --mount type=bind,source=/home/nibio/mutable-outside-world/code/PanopticSegForLargeScalePointCloud_maciej/bucket_in_folder,target=/home/nibio/mutable-outside-world/bucket_in_folder \
-    --mount type=bind,source=/home/nibio/mutable-outside-world/code/PanopticSegForLargeScalePointCloud_maciej/bucket_out_folder,target=/home/nibio/mutable-outside-world/bucket_out_folder \
-    $IMAGE_NAME
+```bash
+docker run --gpus all -p 8888:8888 \
+  -v $HOME/segmentanytree/input:/data/input \
+  -v $HOME/segmentanytree/output:/data/output \
+  segmentanytree:latest
 ```
 
-You should change the mounting folders : 
+Open http://localhost:8888 and use the starter notebooks.
+
+## Build from Source
+
+```bash
+git clone https://github.com/<org>/SegmentAnyTree.git
+cd SegmentAnyTree
+docker build -t segmentanytree:latest .
 ```
- --mount type=bind,source=/home/nibio/mutable-outside-world/code/PanopticSegForLargeScalePointCloud_maciej/bucket_in_folder
-```
-and 
-```
- --mount type=bind,source=/home/nibio/mutable-outside-world/code/PanopticSegForLargeScalePointCloud_maciej/bucket_out_folder
-```
-to match your folders where you keep your local point clound files (las, ply, laz or zip ) to be processed. 
 
-Once you introduce changes to `run_docker_locally.sh` file, you should run it: `bash run_docker_locally.sh` and expect the results in your output folder e.g. `/home/nibio/mutable-outside-world/code/PanopticSegForLargeScalePointCloud_maciej/bucket_out_folder`.
-
-
-## Inference
-This section explains how to use the inference script (`run_inference.sh`) to process data and manage the output. This is to be used if you do not run using docker container.
-Follow the steps below for successful execution. 
-
-### Steps to Use the Script
-
-1. **Set Up Environment**:
-   - The script defines the working directory (`WORK_DIR`) and ensures all necessary modules are accessible by updating the `PYTHONPATH`. No changes are needed unless the working directory path must be modified.
-   ```bash
-   WORK_DIR='/home/nibio/mutable-outside-world'
-   export PYTHONPATH=$WORK_DIR:$PYTHONPATH
-   ```
-
-2. **Provide Input Parameters**:
-   - The script requires three parameters to run:
-     1. **SOURCE_DIR**: The input directory with files to process.
-     2. **DEST_DIR**: The output directory where results will be saved.
-     3. **CLEAN_OUTPUT_DIR**: Set to `true` or `false` to decide if the output directory should be cleaned before execution.
-
-   - If no parameters are provided, default values are used:
-   ```bash
-   SOURCE_DIR="$WORK_DIR/data_for_test"
-   DEST_DIR="$WORK_DIR/data_for_test_results"
-   CLEAN_OUTPUT_DIR=true
-   ```
-
-3. **Run the Script**:
-   - To execute the script, use the following command:
-   ```bash
-   bash run_inference.sh <path_to_input_dir> <path_to_output_dir> <clean_output_dir>
-   ```
-
-4. **Cleaning the Output Directory**:
-   - If `CLEAN_OUTPUT_DIR` is set to `true`, the script will remove existing contents from the output directory before processing.
-
-5. **File Preparation**:
-   - The script copies input files to an `input_data` folder in the output directory to avoid modifying the original files:
-   ```bash
-   cp -r "$SOURCE_DIR/"* "$DEST_DIR/input_data/"
-   ```
-
-6. **Run Python Scripts**:
-   - The script runs multiple Python scripts for tasks like updating the `eval.yaml` file, renaming files, and performing UTM normalization. These scripts are called sequentially to ensure correct data preparation.
-
-7. **Inference Execution**:
-   - After preparing the files, the script runs the inference pipeline with this command:
-   ```bash
-   bash large_PC_predict.sh "$DEST_DIR"
-   ```
-
-8. **Post-Processing and Results**:
-   - After inference, the script processes and renames output files, stores them in a `final_results` folder, and counts the number of result files generated:
- 
-
+**Requirements**: Docker with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html), NVIDIA GPU (Volta+).
 
 ## Training
-Please follow the command to train the model.
-`python train.py task=panoptic data=panoptic/treeins models=panoptic/area4_ablation_3heads model_name=PointGroup-PAPER training=treeins job_name=treeins_my_first_run`
 
-In order to train the model you have to prepare the data. You can take a look at file : `sample_data_conversion.py` to check how it may be done. 
+```bash
+# Prepare data: convert LAS to PLY with semantic labels
+python -m sat.io.conversion --las_dir /path/to/data --output_dir /path/to/ply
 
-## Issues
-If you encounter any issues with the code please provide your feedback by raising an issue in this repo rather than contacting the paper authors!
+# Train
+python train.py task=panoptic data=panoptic/treeins \
+  models=panoptic/area4_ablation_3heads \
+  model_name=PointGroup-PAPER \
+  training=treeins \
+  job_name=my_experiment
+```
 
-## Citation
-If you use the code or data in this repository for your research or project, please make sure to cite the associated article:
+## Documentation
+
+| Guide | Description |
+|-------|-------------|
+| [docs/quickstart.md](docs/quickstart.md) | Get running in 5 minutes |
+| [docs/inference.md](docs/inference.md) | Detailed inference pipeline |
+| [docs/training.md](docs/training.md) | Training and data preparation |
+| [docs/docker.md](docs/docker.md) | Docker build, run, and configuration |
+| [docs/architecture.md](docs/architecture.md) | Model architecture and design |
+| [docs/singularity.md](docs/singularity.md) | HPC / SLURM / Singularity usage |
+| [docs/troubleshooting.md](docs/troubleshooting.md) | Common issues and solutions |
+
+## Project Structure
 
 ```
+SegmentAnyTree/
+├── sat/                    # Python package (pipeline, I/O, metrics, preprocessing)
+├── torch_points3d/         # Core ML framework (PointGroup model, training, datasets)
+├── conf/                   # Hydra configuration (model, data, training configs)
+├── model_file/             # Pre-trained PointGroup-PAPER checkpoint
+├── scripts/                # Shell scripts (inference, batch, docker, training)
+├── notebooks/              # JupyterLab starter notebooks
+├── docs/                   # Documentation
+├── tests/                  # Automated tests
+├── train.py                # Training entry point
+├── eval.py                 # Evaluation/inference entry point
+└── Dockerfile              # Ubuntu 22.04 + CUDA 12.4 + PyTorch 2.4 + JupyterLab
+```
+
+## Docker Image Stack
+
+| Component | Version |
+|-----------|---------|
+| Ubuntu | 22.04 |
+| CUDA | 12.4.1 + cuDNN |
+| Python | 3.10 |
+| PyTorch | 2.4.1 |
+| JupyterLab | 4.x |
+
+## Issues
+
+If you encounter problems, please [open an issue](https://github.com/<org>/SegmentAnyTree/issues).
+
+## Citation
+
+```bibtex
 @article{WIELGOSZ2024114367,
-title = {SegmentAnyTree: A sensor and platform agnostic deep learning model for tree segmentation using laser scanning data},
-journal = {Remote Sensing of Environment},
-volume = {313},
-pages = {114367},
-year = {2024},
-issn = {0034-4257},
-doi = {https://doi.org/10.1016/j.rse.2024.114367},
-url = {https://www.sciencedirect.com/science/article/pii/S0034425724003936},
-author = {Maciej Wielgosz and Stefano Puliti and Binbin Xiang and Konrad Schindler and Rasmus Astrup},
-keywords = {3D deep learning, Instance segmentation, ITC, ALS, TLS, Drones}
+  title = {SegmentAnyTree: A sensor and platform agnostic deep learning model for tree segmentation using laser scanning data},
+  journal = {Remote Sensing of Environment},
+  volume = {313},
+  pages = {114367},
+  year = {2024},
+  doi = {https://doi.org/10.1016/j.rse.2024.114367},
+  author = {Maciej Wielgosz and Stefano Puliti and Binbin Xiang and Konrad Schindler and Rasmus Astrup},
 }
 ```
