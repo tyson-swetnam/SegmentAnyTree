@@ -57,21 +57,22 @@ python3 -m sat.pipeline.file_preparation "$DEST_DIR/input_data"
 python3 -m sat.pipeline.coordinate_transform -i "$DEST_DIR/input_data" -o "$DEST_DIR/utm2local"
 
 # Step 3: Update eval.yaml with file paths
-cp "$SAT_ROOT/conf/eval.yaml" "$DEST_DIR/"
-python3 -m sat.pipeline.config_update "$DEST_DIR/eval.yaml" "$DEST_DIR/utm2local" "$DEST_DIR"
+# Write a run-specific eval config into conf/ so Hydra can resolve all defaults
+EVAL_CONFIG="$SAT_ROOT/conf/eval_run.yaml"
+cp "$SAT_ROOT/conf/eval.yaml" "$EVAL_CONFIG"
+python3 -m sat.pipeline.config_update "$EVAL_CONFIG" "$DEST_DIR/utm2local" "$DEST_DIR"
 
 # Step 4: Clear cache
-python3 -m sat.pipeline.cache --eval_yaml "$DEST_DIR/eval.yaml"
+python3 -m sat.pipeline.cache --eval_yaml "$EVAL_CONFIG"
 
 # Step 5: Run model inference
-# Hydra needs --config-path (directory) and --config-name (filename without .yaml)
 cd "$SAT_ROOT"
-python3 eval.py --config-path "$DEST_DIR" --config-name eval
+python3 eval.py --config-name eval_run
 echo "Inference complete."
 
 # Step 6: Rename output files
-python3 -m sat.pipeline.result_rename instance "$DEST_DIR/eval.yaml" "$DEST_DIR"
-python3 -m sat.pipeline.result_rename semantic "$DEST_DIR/eval.yaml" "$DEST_DIR"
+python3 -m sat.pipeline.result_rename instance "$EVAL_CONFIG" "$DEST_DIR"
+python3 -m sat.pipeline.result_rename semantic "$EVAL_CONFIG" "$DEST_DIR"
 
 # Step 7: Merge results with original point clouds
 FINAL_DIR="$DEST_DIR/final_results"
@@ -89,6 +90,10 @@ for file in "$FINAL_DIR"/*; do
 done
 
 num_files=$(find "$FINAL_DIR" -maxdepth 1 -type f | wc -l)
+
+# Clean up temporary eval config
+rm -f "$EVAL_CONFIG"
+
 echo "================================================"
 echo "Done! $num_files result files in: $FINAL_DIR"
 echo "================================================"
