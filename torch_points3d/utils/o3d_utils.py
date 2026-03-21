@@ -38,7 +38,7 @@ def torch2o3d(data, color=[1, 0, 0]):
 def apply_mask(d, mask, skip_keys=[]):
     data = d.clone()
     size_pos = len(data.pos)
-    for k in data.keys:
+    for k in data.keys():
         if size_pos == len(data[k]) and k not in skip_keys:
             data[k] = data[k][mask]
     return data

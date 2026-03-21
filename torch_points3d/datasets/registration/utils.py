@@ -287,7 +287,7 @@ class PatchExtractor:
 
         row, col = ind[dist[:, 0] > 0].t()
         patch = Data()
-        for key in data.keys:
+        for key in data.keys():
             if torch.is_tensor(data[key]):
                 if torch.all(col < data[key].shape[0]):
                     patch[key] = data[key][col]

@@ -372,7 +372,7 @@ class UnwrappedUnetBasedModel(BaseModel):
         d = {}
         if self.save_sampling_id:
             for idx, data in enumerate(list_data):
-                key = extract_matching_key(data.keys, "sampling_id")
+                key = extract_matching_key(data.keys(), "sampling_id")
                 if key:
                     d[key] = getattr(data, key)
         return d

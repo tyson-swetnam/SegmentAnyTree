@@ -190,7 +190,7 @@ class ShapeNet(InMemoryDataset):
         if hasattr(self.raw_data, '__num_nodes__'):
             data.num_nodes = self.raw_data.__num_nodes__[idx]
 
-        for key in self.raw_data.keys:
+        for key in self.raw_data.keys():
             item, slices = self.raw_data[key], self.raw_slices[key]
             start, end = slices[idx].item(), slices[idx + 1].item()
             # print(slices[idx], slices[idx + 1])

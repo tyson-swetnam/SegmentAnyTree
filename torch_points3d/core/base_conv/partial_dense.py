@@ -27,7 +27,7 @@ from torch_points3d.core.common_modules import MLP
 
 
 def copy_from_to(data, batch):
-    for key in data.keys:
+    for key in data.keys():
         if key not in batch.keys:
             setattr(batch, key, getattr(data, key, None))
 

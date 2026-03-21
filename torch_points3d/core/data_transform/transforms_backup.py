@@ -44,7 +44,7 @@ class RemoveAttributes(object):
         self._strict = strict
 
     def __call__(self, data):
-        keys = set(data.keys)
+        keys = set(data.keys())
         for attr_name in self._attr_names:
             if attr_name not in keys and self._strict:
                 raise Exception("attr_name: {} isn t within keys: {}".format(attr_name, keys))
@@ -366,7 +366,7 @@ class SphereSampling:
         t_center = torch.FloatTensor(self._centre)
         ind = torch.LongTensor(tree.query_radius(self._centre, r=self._radius)[0])
         new_data = Data()
-        for key in set(data.keys):
+        for key in set(data.keys()):
             if key == self.KDTREE_KEY:
                 continue
             item = data[key]
@@ -421,7 +421,7 @@ class CylinderSampling:
         ind = torch.LongTensor(tree.query_radius(self._centre, r=self._radius)[0])
 
         new_data = Data()
-        for key in set(data.keys):
+        for key in set(data.keys()):
             if key == self.KDTREE_KEY:
                 continue
             item = data[key]
@@ -455,7 +455,7 @@ class Select:
     def __call__(self, data):
         num_points = data.pos.shape[0]
         new_data = Data()
-        for key in data.keys:
+        for key in data.keys():
             if key == KDTREE_KEY:
                 continue
             item = data[key]
@@ -787,7 +787,7 @@ class RandomDropout:
 
 def apply_mask(data, mask, skip_keys=[]):
     size_pos = len(data.pos)
-    for k in data.keys:
+    for k in data.keys():
         if size_pos == len(data[k]) and k not in skip_keys:
             data[k] = data[k][mask]
     return data
@@ -962,7 +962,7 @@ class SphereCrop(object):
         ind, dist = ball_query(data.pos, data.pos[i].view(1, 3), radius=self.radius, max_num=-1, mode=1)
         ind = ind[dist[:, 0] > 0]
         size_pos = len(data.pos)
-        for k in data.keys:
+        for k in data.keys():
             if size_pos == len(data[k]):
                 data[k] = data[k][ind[:, 0]]
         return data

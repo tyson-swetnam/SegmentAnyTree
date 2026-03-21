@@ -18,7 +18,7 @@ class SimpleBatch(Data):
         r"""Constructs a batch object from a python list holding
         :class:`torch_geometric.data.Data` objects. 
         """
-        keys = [set(data.keys) for data in data_list]
+        keys = [set(data.keys()) for data in data_list]
         keys = list(set.union(*keys))
 
         # Check if all dimensions matches and we can concatenate data
@@ -34,7 +34,7 @@ class SimpleBatch(Data):
             batch[key] = []
 
         for _, data in enumerate(data_list):
-            for key in data.keys:
+            for key in data.keys():
                 item = data[key]
                 batch[key].append(item)
 

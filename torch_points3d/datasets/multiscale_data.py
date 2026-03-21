@@ -106,7 +106,7 @@ def from_data_list_token(data_list, follow_batch=[]):
     batch object with the difference that indexes that are negative are not incremented
     """
 
-    keys = [set(data.keys) for data in data_list]
+    keys = [set(data.keys()) for data in data_list]
     keys = list(set.union(*keys))
     assert "batch" not in keys
 
@@ -123,7 +123,7 @@ def from_data_list_token(data_list, follow_batch=[]):
     cumsum = {key: 0 for key in keys}
     batch.batch = []
     for i, data in enumerate(data_list):
-        for key in data.keys:
+        for key in data.keys():
             item = data[key]
             if torch.is_tensor(item) and item.dtype != torch.bool and cumsum[key] > 0:
                 mask = item >= 0

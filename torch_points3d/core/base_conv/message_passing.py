@@ -24,7 +24,7 @@ from torch_points3d.core.spatial_ops import *
 
 
 def copy_from_to(data, batch):
-    for key in data.keys:
+    for key in data.keys():
         if key not in batch.keys:
             setattr(batch, key, getattr(data, key, None))
 

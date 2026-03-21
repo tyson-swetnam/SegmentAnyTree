@@ -519,7 +519,7 @@ class PanopticTreeinsBase:
         #un = torch.max(data['instance_labels']).item()
         #data2 = super().__getitem__(idx)
         #data2['instance_labels'] = data2['instance_labels'] + un
-        #for key in data.keys:
+        #for key in data.keys():
         #    if key == 'grid_size':
         #        continue
         #    data[key] = torch.cat((data[key], data2[key]), 0)
