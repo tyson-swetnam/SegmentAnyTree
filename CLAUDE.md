@@ -80,7 +80,7 @@ All paths are derived from environment variables (no hardcoded paths):
 - `SAT_CACHE` — Temporary files
 
 ### Key Technical Details
-- **Python 3.10**, **PyTorch 2.4**, **CUDA 12.4** (Docker base: `nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04`)
+- **Python 3.10**, **PyTorch 2.1.2**, **CUDA 11.8** (Docker base: `nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04`)
 - GPU libraries: MinkowskiEngine, torchsparse v1.4.0, torch-points-kernels
 - Pre-trained model: `model_file/PointGroup-PAPER.pt`
 - Input formats: .las, .laz, .ply; Output format: .las with PredSemantic + PredInstance fields

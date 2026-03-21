@@ -88,7 +88,7 @@ SegmentAnyTree/
 ├── tests/                  # Automated tests
 ├── train.py                # Training entry point
 ├── eval.py                 # Evaluation/inference entry point
-└── Dockerfile              # Ubuntu 22.04 + CUDA 12.4 + PyTorch 2.4 + JupyterLab
+└── Dockerfile              # Ubuntu 22.04 + CUDA 11.8 + PyTorch 2.1 + JupyterLab
 ```
 
 ## Docker Image Stack
@@ -96,10 +96,12 @@ SegmentAnyTree/
 | Component | Version |
 |-----------|---------|
 | Ubuntu | 22.04 |
-| CUDA | 12.4.1 + cuDNN |
+| CUDA | 11.8.0 + cuDNN 8 |
 | Python | 3.10 |
-| PyTorch | 2.4.1 |
+| PyTorch | 2.1.2 |
 | JupyterLab | 4.x |
+
+> **Note**: CUDA 11.8 is used because MinkowskiEngine (a core dependency) is incompatible with CUDA 12.x due to unresolved `libcu++` template conflicts. Your NVIDIA driver (525+) supports CUDA 11.8 containers.
 
 ## Issues
 
