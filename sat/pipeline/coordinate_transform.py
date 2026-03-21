@@ -3,40 +3,83 @@
 The model expects points in a local coordinate system (near origin).
 This module subtracts the minimum x/y/z values before inference and
 restores them afterward. Min values are saved to JSON for round-tripping.
+
+Optimized for large point clouds (100M+ points):
+- Uses numpy arrays directly instead of pandas DataFrames
+- Avoids row-by-row iteration in PLY writing
+- Coordinate subtraction is vectorized numpy (multi-threaded via BLAS)
 """
 
 import argparse
 import json
 import os
-from pathlib import Path
+import time
 
+import numpy as np
 from joblib import Parallel, delayed
 
-from sat.io.las_io import las_to_pandas
-from sat.io.ply_io import ply_to_pandas, pandas_to_ply
+from sat.io.las_io import las_to_numpy
+from sat.io.ply_io import ply_to_numpy, numpy_to_ply
 
 
 def utm_to_local(input_file_path, output_file_path, json_file_path):
     """Transform a point cloud from UTM to local coordinates.
 
-    Subtracts minimum x, y, z values and saves them to a JSON file
-    so coordinates can be restored later.
+    Uses numpy arrays directly — no pandas DataFrames — for maximum speed
+    on large files. Coordinate subtraction is vectorized.
     """
+    t0 = time.time()
     is_ply = input_file_path.endswith('.ply')
-    coord_names = ['x', 'y', 'z'] if is_ply else ['X', 'Y', 'Z']
-    print(f"Processing UTM->local: {input_file_path}")
+    print(f"[UTM->local] Reading: {os.path.basename(input_file_path)}")
 
-    points_df = ply_to_pandas(input_file_path) if is_ply else las_to_pandas(input_file_path)
+    if is_ply:
+        structured, prop_names = ply_to_numpy(input_file_path)
+        coord_names = ['x', 'y', 'z']
+        # Convert structured array to dict of arrays for mutation
+        arrays = {name: np.array(structured[name], dtype=np.float64) for name in prop_names}
+    else:
+        arrays, prop_names, _ = las_to_numpy(input_file_path)
+        coord_names = ['X', 'Y', 'Z']
+        # Ensure float64 for coordinate arithmetic
+        for c in coord_names:
+            arrays[c] = arrays[c].astype(np.float64)
 
-    min_values = {name: points_df[name].min() for name in coord_names}
-    for name in coord_names:
-        points_df[name] -= min_values[name]
+    n_points = len(arrays[coord_names[0]])
+    t_read = time.time() - t0
+    print(f"[UTM->local] Read {n_points:,} points in {t_read:.1f}s")
 
-    min_values_list = [float(val) for val in min_values.values()]
+    # Compute and subtract min values (vectorized numpy, uses all cores via BLAS)
+    t1 = time.time()
+    min_values = [float(arrays[c].min()) for c in coord_names]
+    for c, mv in zip(coord_names, min_values):
+        arrays[c] -= mv  # in-place subtract, no copy
+
+    t_transform = time.time() - t1
+    print(f"[UTM->local] Transform in {t_transform:.1f}s, min_values={min_values}")
+
+    # Save min values for later restoration
     with open(json_file_path, 'w') as f:
-        json.dump(min_values_list, f)
+        json.dump(min_values, f)
 
-    pandas_to_ply(points_df, output_file_path)
+    # Write PLY output using numpy path (no pandas, no row iteration)
+    t2 = time.time()
+    # Output always uses lowercase coordinate names for PLY
+    output_arrays = {}
+    out_names = []
+    for name in prop_names:
+        if name in coord_names:
+            # Map LAS uppercase to PLY lowercase
+            out_name = name.lower()
+            output_arrays[out_name] = arrays[name].astype(np.float32)
+        else:
+            out_name = name
+            output_arrays[out_name] = np.asarray(arrays[name], dtype=np.float32)
+        out_names.append(out_name)
+
+    numpy_to_ply(output_arrays, out_names, output_file_path)
+    t_write = time.time() - t2
+    t_total = time.time() - t0
+    print(f"[UTM->local] Wrote PLY in {t_write:.1f}s (total: {t_total:.1f}s)")
 
 
 def local_to_utm(input_file_path, json_file_path, output_file_path):
@@ -44,15 +87,26 @@ def local_to_utm(input_file_path, json_file_path, output_file_path):
     is_ply = input_file_path.endswith('.ply')
     coord_names = ['x', 'y', 'z'] if is_ply else ['X', 'Y', 'Z']
 
-    points_df = ply_to_pandas(input_file_path) if is_ply else las_to_pandas(input_file_path)
+    if is_ply:
+        structured, prop_names = ply_to_numpy(input_file_path)
+        arrays = {name: np.array(structured[name], dtype=np.float64) for name in prop_names}
+    else:
+        arrays, prop_names, _ = las_to_numpy(input_file_path)
+        for c in coord_names:
+            arrays[c] = arrays[c].astype(np.float64)
 
     with open(json_file_path, 'r') as f:
         min_values = json.load(f)
 
-    for name, min_val in zip(coord_names, min_values):
-        points_df[name] = points_df[name].astype(float) + min_val
+    for c, mv in zip(coord_names, min_values):
+        arrays[c] += mv
 
-    pandas_to_ply(points_df, output_file_path)
+    # Write back as PLY
+    out_names = [c.lower() if c in coord_names else c for c in prop_names]
+    output_arrays = {}
+    for name, out_name in zip(prop_names, out_names):
+        output_arrays[out_name] = arrays[name].astype(np.float32)
+    numpy_to_ply(output_arrays, out_names, output_file_path)
 
 
 def _process_file(filename, input_folder, output_folder):
@@ -67,13 +121,22 @@ def _process_file(filename, input_folder, output_folder):
 
 
 def utm_to_local_folder(input_folder, output_folder, n_jobs=4):
-    """Transform all point clouds in a folder from UTM to local coordinates."""
+    """Transform all point clouds in a folder from UTM to local coordinates.
+
+    Files are processed in parallel using joblib. Within each file,
+    numpy operations are vectorized across all available cores.
+    """
     os.makedirs(output_folder, exist_ok=True)
-    filenames = os.listdir(input_folder)
-    print(f"Processing {len(filenames)} files...")
-    Parallel(n_jobs=n_jobs)(
-        delayed(_process_file)(f, input_folder, output_folder) for f in filenames
-    )
+    filenames = [f for f in os.listdir(input_folder)
+                 if f.endswith(('.ply', '.las', '.laz'))]
+    print(f"Processing {len(filenames)} files (n_jobs={n_jobs})...")
+    if len(filenames) == 1:
+        # Single file: run directly (no joblib overhead)
+        _process_file(filenames[0], input_folder, output_folder)
+    else:
+        Parallel(n_jobs=n_jobs)(
+            delayed(_process_file)(f, input_folder, output_folder) for f in filenames
+        )
     print(f"Output files saved in: {output_folder}")
 
 

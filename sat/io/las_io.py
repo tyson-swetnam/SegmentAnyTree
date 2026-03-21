@@ -1,30 +1,40 @@
-"""Read/write LAS/LAZ point cloud files via laspy."""
+"""Read/write LAS/LAZ point cloud files via laspy.
+
+Optimized for large point clouds (100M+ points):
+- Reads dimensions directly into dict of numpy arrays (no vstack/transpose)
+- Provides both pandas and numpy-native interfaces
+"""
 
 import numpy as np
 import pandas as pd
 import laspy
 
 
+def las_to_numpy(las_file_path):
+    """Read a LAS/LAZ file and return (dict_of_arrays, column_names).
+
+    Fastest path — returns a dict of 1D numpy arrays keyed by dimension name.
+    Avoids DataFrame construction overhead for large files.
+    """
+    las = laspy.read(las_file_path)
+
+    columns = {}
+    for dim in las.point_format.dimension_names:
+        if hasattr(las, dim.lower()):
+            columns[dim] = np.asarray(getattr(las, dim.lower()))
+
+    for dim in las.point_format.extra_dimension_names:
+        if dim not in columns:
+            columns[dim] = np.asarray(getattr(las, dim))
+
+    return columns, list(columns.keys()), las
+
+
 def las_to_pandas(las_file_path, csv_file_path=None):
     """Read a LAS/LAZ file and return a pandas DataFrame with all dimensions."""
-    file_content = laspy.read(las_file_path)
+    columns, col_names, _ = las_to_numpy(las_file_path)
 
-    basic_dimensions = list(file_content.point_format.dimension_names)
-    available_dimensions = [dim for dim in basic_dimensions if hasattr(file_content, dim.lower())]
-    basic_points = np.vstack([getattr(file_content, dim.lower()) for dim in available_dimensions]).T
-
-    gt_extra_dimensions = list(file_content.point_format.extra_dimension_names)
-    gt_extra_dimensions = list(set(gt_extra_dimensions) - set(available_dimensions))
-
-    if gt_extra_dimensions:
-        extra_points = np.vstack([getattr(file_content, dim) for dim in gt_extra_dimensions]).T
-        all_points = np.hstack((basic_points, extra_points))
-        all_columns = available_dimensions + gt_extra_dimensions
-    else:
-        all_points = basic_points
-        all_columns = available_dimensions
-
-    points_df = pd.DataFrame(all_points, columns=all_columns)
+    points_df = pd.DataFrame(columns)
 
     if csv_file_path is not None:
         points_df.to_csv(csv_file_path, index=False, header=True, sep=',')

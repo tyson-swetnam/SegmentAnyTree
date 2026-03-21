@@ -185,7 +185,7 @@ RUN python3 -m pip install --no-cache-dir \
 # ---- Create non-root user ----
 RUN useradd -m -s /bin/bash -u 1000 sat
 RUN mkdir -p /data/input /data/output /tmp/sat_cache && \
-    chown -R sat:sat /data /tmp/sat_cache
+    chmod -R 777 /data /tmp/sat_cache
 
 # ---- Copy project code ----
 ENV SAT_ROOT=/opt/segmentanytree
