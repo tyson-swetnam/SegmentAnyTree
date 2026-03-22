@@ -7,12 +7,11 @@ from typing import List as TypingList
 
 def region_grow(pos, labels, batch, ignore_labels=[], nsample=16, radius=0.02,
                 min_cluster_size=32) -> TypingList[torch.Tensor]:
-    """GPU-compatible region growing that keeps ball_query on device.
+    """GPU-compatible region growing that keeps ball_query on device."""
+    import time as _time
+    import logging as _logging
+    _log = _logging.getLogger(__name__)
 
-    The upstream region_grow creates CPU-only index tensors causing device
-    mismatch with GPU labels. This version keeps ball_query on GPU for
-    speed and only moves results to CPU for the cluster assignment.
-    """
     assert labels.dim() == 1
     assert pos.dim() == 2
     unique_labels = torch.unique(labels)
@@ -22,6 +21,9 @@ def region_grow(pos, labels, batch, ignore_labels=[], nsample=16, radius=0.02,
         if l in ignore_labels:
             continue
         label_mask = labels == l
+        n_label = label_mask.sum().item()
+        if n_label == 0:
+            continue
         local_ind = ind[label_mask]
         label_batch = batch[label_mask]
         unique_in_batch = torch.unique(label_batch)
@@ -29,13 +31,22 @@ def region_grow(pos, labels, batch, ignore_labels=[], nsample=16, radius=0.02,
         for new, old in enumerate(unique_in_batch):
             mask = label_batch == old
             remaped_batch[mask] = new
-        # Ball query stays on device (GPU) for speed
+
+        t0 = _time.time()
         label_pos = pos[label_mask, :]
         neighbours = ball_query_partial_dense(
             radius, nsample, label_pos, label_pos, remaped_batch, remaped_batch
         )[0].cpu().numpy()
-        # Cluster assignment on CPU (numba)
+        t_bq = _time.time() - t0
+
+        t1 = _time.time()
         label_clusters = _grow_proximity_core(neighbours, min_cluster_size)
+        t_grow = _time.time() - t1
+
+        _log.info(f"[region_grow] label={l.item()}, points={n_label}, "
+                  f"ball_query={t_bq:.1f}s, grow={t_grow:.1f}s, "
+                  f"clusters={len(label_clusters)}")
+
         if len(label_clusters):
             for cluster in label_clusters:
                 cluster_t = torch.tensor(cluster, device=pos.device)
@@ -237,7 +248,7 @@ class PointGroup3heads(BaseModel):
             self.input.batch.to(self.device),
             ignore_labels=self._stuff_classes.to(self.device),
             radius=self.opt.cluster_radius_search,
-            nsample=200,
+            nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10
         )
         #clusters_votes = []
@@ -265,7 +276,7 @@ class PointGroup3heads(BaseModel):
             self.input.batch.to(self.device),
             ignore_labels=self._stuff_classes.to(self.device),
             radius=self.opt.cluster_radius_search,
-            nsample=200,
+            nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10
         )
         #clusters_votes = []
@@ -367,7 +378,7 @@ class PointGroup3heads(BaseModel):
             self.input.batch.to(self.device),
             ignore_labels=self._stuff_classes.to(self.device),
             radius=self.opt.cluster_radius_search,
-            nsample=200,
+            nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10
         )
         ###### Cluster using embedding without predicted semantic labels ######
@@ -420,7 +431,7 @@ class PointGroup3heads(BaseModel):
             self.input.batch.to(self.device),
             ignore_labels=self._stuff_classes.to(self.device),
             radius=self.opt.cluster_radius_search,
-            nsample=200,
+            nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10
         )
         ###### Cluster using embedding without predicted semantic labels ######
@@ -475,7 +486,7 @@ class PointGroup3heads(BaseModel):
             self.input.batch.to(self.device),
             ignore_labels=self._stuff_classes.to(self.device),
             radius=self.opt.cluster_radius_search,
-            nsample=200,
+            nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10
         )
         ###### Cluster using embedding without predicted semantic labels ######
