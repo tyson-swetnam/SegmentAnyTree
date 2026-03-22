@@ -11,12 +11,14 @@ import json
 import os
 import sys
 
+import time
+
 import numpy as np
 import pandas as pd
-import dask.dataframe as dd
+from scipy.spatial import cKDTree
 from tqdm import tqdm
 
-from sat.io.ply_io import ply_to_pandas
+from sat.io.ply_io import ply_to_pandas, ply_to_numpy
 from sat.io.las_io import pandas_to_las
 
 
@@ -31,46 +33,79 @@ class ResultMerger:
         self.output_path = output_path
         self.verbose = verbose
 
-    def _preprocess(self, file_path):
-        df = ply_to_pandas(file_path)
-        df.rename(columns={'X': 'x', 'Y': 'y', 'Z': 'z'}, inplace=True)
-        df.sort_values(by=['x', 'y', 'z'], inplace=True)
-        df['xyz_index'] = (df['x'].astype(str) + "_" +
-                           df['y'].astype(str) + "_" +
-                           df['z'].astype(str))
-        df.set_index('xyz_index', inplace=True)
-        return df
+    @staticmethod
+    def _read_preds_numpy(file_path):
+        """Read only the 'preds' column from a segmentation PLY using numpy."""
+        structured, prop_names = ply_to_numpy(file_path)
+        n_points = len(structured)
+        if n_points == 0:
+            return None, None, 0
+        coords = np.column_stack([
+            np.asarray(structured['x']),
+            np.asarray(structured['y']),
+            np.asarray(structured['z']),
+        ]).astype(np.float32)
+        preds = np.asarray(structured['preds']) if 'preds' in prop_names else None
+        return coords, preds, n_points
 
     def merge(self):
         if self.verbose:
             print(f'Merging: {os.path.basename(self.point_cloud_path)}')
 
-        pc_df = self._preprocess(self.point_cloud_path)
-        sem_df = self._preprocess(self.semantic_path)
-        inst_df = self._preprocess(self.instance_path)
+        t0 = time.time()
 
-        sem_df.columns = [f'{col}_semantic_segmentation' for col in sem_df.columns]
-        inst_df.columns = [f'{col}_instance_segmentation' for col in inst_df.columns]
+        # Read the original point cloud as a DataFrame (need all columns for LAS output)
+        pc_df = ply_to_pandas(self.point_cloud_path)
+        pc_df.rename(columns={'X': 'x', 'Y': 'y', 'Z': 'z'}, inplace=True)
+        n_pc = len(pc_df)
 
-        pc_dd = dd.from_pandas(pc_df, npartitions=48)
-        sem_dd = dd.from_pandas(sem_df, npartitions=48)
-        inst_dd = dd.from_pandas(inst_df, npartitions=48)
+        # Read segmentation results as numpy only (we just need preds)
+        sem_coords, sem_preds, n_sem = self._read_preds_numpy(self.semantic_path)
+        inst_coords, inst_preds, n_inst = self._read_preds_numpy(self.instance_path)
 
-        merged_dd = pc_dd.join(sem_dd, how='outer').join(inst_dd, how='outer')
-        merged_df = merged_dd.compute()
+        t_read = time.time() - t0
+        if self.verbose:
+            print(f'  Read 3 files in {t_read:.1f}s (pc={n_pc:,}, sem={n_sem:,}, inst={n_inst:,})')
 
-        # Drop duplicate coordinate columns from segmentation DataFrames
-        for prefix in ('instance_segmentation', 'semantic_segmentation'):
-            for coord in ('x', 'y', 'z'):
-                col = f'{coord}_{prefix}'
-                if col in merged_df.columns:
-                    merged_df.drop(columns=[col], inplace=True)
+        t1 = time.time()
 
-        # Rename prediction columns
-        merged_df.rename(columns={
-            'preds_semantic_segmentation': 'PredSemantic',
-            'preds_instance_segmentation': 'PredInstance',
-        }, inplace=True)
+        # Build pc_coords lazily — only needed if KD-tree matching is required
+        pc_coords = None
+        need_kdtree_sem = sem_preds is not None and n_sem != n_pc
+        need_kdtree_inst = inst_preds is not None and n_inst != n_pc
+        if need_kdtree_sem or need_kdtree_inst:
+            pc_coords = np.column_stack([
+                pc_df['x'].values, pc_df['y'].values, pc_df['z'].values
+            ]).astype(np.float32)
+
+        # Attach semantic predictions
+        if sem_preds is not None:
+            if n_sem == n_pc:
+                # Point counts match — assume preserved order, skip KD-tree
+                pc_df['PredSemantic'] = sem_preds
+            else:
+                sem_tree = cKDTree(sem_coords)
+                _, sem_idx = sem_tree.query(pc_coords, k=1, workers=-1)
+                pc_df['PredSemantic'] = sem_preds[sem_idx]
+        else:
+            pc_df['PredSemantic'] = np.nan
+
+        # Attach instance predictions
+        if inst_preds is not None:
+            if n_inst == n_pc:
+                pc_df['PredInstance'] = inst_preds
+            else:
+                inst_tree = cKDTree(inst_coords)
+                _, inst_idx = inst_tree.query(pc_coords, k=1, workers=-1)
+                pc_df['PredInstance'] = inst_preds[inst_idx]
+        else:
+            pc_df['PredInstance'] = np.nan
+
+        t_match = time.time() - t1
+        if self.verbose:
+            print(f'  Matched predictions in {t_match:.1f}s')
+
+        merged_df = pc_df
 
         # Restore UTM coordinates
         min_values_path = self.point_cloud_path.replace('.ply', '_min_values.json')
@@ -85,6 +120,9 @@ class ResultMerger:
         if 'PredInstance' in merged_df.columns:
             merged_df['PredInstance'] = merged_df['PredInstance'] + 1
             merged_df['PredInstance'] = merged_df['PredInstance'].fillna(0)
+
+        if self.verbose:
+            print(f'  Total merge: {time.time() - t0:.1f}s')
 
         return merged_df
 
