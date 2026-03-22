@@ -93,6 +93,8 @@ done
 echo "Converting to COPC format..."
 for laz_file in "$FINAL_DIR"/*.laz; do
     [ -f "$laz_file" ] || continue
+    # Skip files that are already COPC
+    case "$laz_file" in *.copc.laz) continue ;; esac
     copc_file="${laz_file%.laz}.copc.laz"
     python3 -c "from sat.io.las_io import laz_to_copc; laz_to_copc('$laz_file', '$copc_file', verbose=True)"
     # Remove the non-COPC LAZ after successful conversion

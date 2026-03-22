@@ -167,12 +167,23 @@ def laz_to_copc(input_path, output_path=None, verbose=False):
     t0 = time.time()
 
     if output_path is None:
-        if input_path.endswith('.laz'):
-            output_path = input_path.replace('.laz', '.copc.laz')
+        if input_path.endswith('.copc.laz'):
+            output_path = input_path  # already has correct extension
+        elif input_path.endswith('.laz'):
+            output_path = input_path[:-4] + '.copc.laz'
         elif input_path.endswith('.las'):
-            output_path = input_path.replace('.las', '.copc.laz')
+            output_path = input_path[:-4] + '.copc.laz'
         else:
             output_path = input_path + '.copc.laz'
+
+    # Ensure output always has .copc.laz extension
+    if not output_path.endswith('.copc.laz'):
+        if output_path.endswith('.laz'):
+            output_path = output_path[:-4] + '.copc.laz'
+        elif output_path.endswith('.las'):
+            output_path = output_path[:-4] + '.copc.laz'
+        else:
+            output_path = output_path + '.copc.laz'
 
     pipeline = json.dumps({
         "pipeline": [
