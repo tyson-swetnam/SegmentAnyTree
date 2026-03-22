@@ -3,7 +3,10 @@
 Optimized for large point clouds (100M+ points):
 - Reads dimensions directly into dict of numpy arrays (no vstack/transpose)
 - Provides both pandas and numpy-native interfaces
+- LAZ compression uses lazrs (Rust) for multi-threaded parallel encoding
 """
+
+import time
 
 import numpy as np
 import pandas as pd
@@ -48,10 +51,23 @@ def pandas_to_las(df, output_file_path, do_compress=False, verbose=False):
     Args:
         df: DataFrame with point cloud data (x/X, y/Y, z/Z columns required).
         output_file_path: Output .las or .laz file path.
-        do_compress: If True, write as .laz.
+        do_compress: If True, write as .laz (uses lazrs parallel compression).
         verbose: Print status messages.
     """
-    df = df.copy()
+    t0 = time.time()
+
+    # Rename in place — avoid full df.copy() for 214M+ point DataFrames
+    col_renames = {}
+    if 'x' in df.columns:
+        col_renames['x'] = 'X'
+    if 'y' in df.columns:
+        col_renames['y'] = 'Y'
+    if 'z' in df.columns:
+        col_renames['z'] = 'Z'
+    if 'scan_angle_rank' in df.columns:
+        col_renames['scan_angle_rank'] = 'scan_angle'
+    if col_renames:
+        df = df.rename(columns=col_renames)
 
     standard_columns_with_data_types = {
         'X': 'int32', 'Y': 'int32', 'Z': 'int32',
@@ -72,19 +88,19 @@ def pandas_to_las(df, output_file_path, do_compress=False, verbose=False):
         'PredSemantic': 'uint8', 'PredInstance': 'uint16',
     }
 
-    df.rename(columns={'x': 'X', 'y': 'Y', 'z': 'Z'}, inplace=True)
-
-    if 'scan_angle_rank' in df.columns:
-        df.rename(columns={'scan_angle_rank': 'scan_angle'}, inplace=True)
+    # Use numpy arrays directly for min/max (faster than pandas Series methods)
+    x_vals = df['X'].values
+    y_vals = df['Y'].values
+    z_vals = df['Z'].values
 
     scale = [0.001, 0.001, 0.001]
-    offset = [df['X'].min(), df['Y'].min(), df['Z'].min()]
+    offset = [float(x_vals.min()), float(y_vals.min()), float(z_vals.min())]
 
     las_header = laspy.LasHeader(point_format=6, version="1.4")
     las_header.scale = scale
     las_header.offset = offset
     las_header.min = offset
-    las_header.max = [df['X'].max(), df['Y'].max(), df['Z'].max()]
+    las_header.max = [float(x_vals.max()), float(y_vals.max()), float(z_vals.max())]
 
     standard_columns = list(las_header.point_format.dimension_names)
     columns_which_match = [c for c in standard_columns if c in df.columns and c not in ('X', 'Y', 'Z')]
@@ -98,23 +114,29 @@ def pandas_to_las(df, output_file_path, do_compress=False, verbose=False):
         ))
 
     las_file = laspy.LasData(las_header)
-    las_file.X = (df['X'] - offset[0]) / scale[0]
-    las_file.Y = (df['Y'] - offset[1]) / scale[1]
-    las_file.Z = (df['Z'] - offset[2]) / scale[2]
+
+    # Use numpy for coordinate scaling (avoid pandas Series overhead)
+    las_file.X = ((x_vals - offset[0]) / scale[0]).astype(np.int32)
+    las_file.Y = ((y_vals - offset[1]) / scale[1]).astype(np.int32)
+    las_file.Z = ((z_vals - offset[2]) / scale[2]).astype(np.int32)
 
     for column in columns_which_match:
         target_dtype = standard_columns_with_data_types[column]
-        col_data = df[column]
+        col_data = df[column].values
         if target_dtype == 'uint16':
-            col_data = col_data.fillna(0).clip(0, 65535).round()
+            col_data = np.nan_to_num(col_data, nan=0.0)
+            col_data = np.clip(col_data, 0, 65535).round()
         las_file[column] = col_data.astype(target_dtype)
 
     for column in extra_columns:
         target_dtype = extended_columns_with_data_types[column]
-        col_data = df[column]
+        col_data = df[column].values
         if target_dtype == 'uint16':
-            col_data = col_data.fillna(0).clip(0, 65535).round()
+            col_data = np.nan_to_num(col_data, nan=0.0)
+            col_data = np.clip(col_data, 0, 65535).round()
         las_file[column] = col_data.astype(target_dtype)
+
+    t_prep = time.time() - t0
 
     if do_compress:
         output_file_path = output_file_path.replace('.las', '.laz')
@@ -123,7 +145,8 @@ def pandas_to_las(df, output_file_path, do_compress=False, verbose=False):
         las_file.write(output_file_path, do_compress=False)
 
     if verbose:
-        print(f'File saved as: {output_file_path}')
+        t_total = time.time() - t0
+        print(f'File saved as: {output_file_path} (prep: {t_prep:.1f}s, total: {t_total:.1f}s)')
 
 
 if __name__ == "__main__":

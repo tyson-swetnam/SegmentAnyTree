@@ -1,7 +1,8 @@
-"""Read/write PLY point cloud files via plyfile.
+"""Read/write PLY point cloud files via plyfile + fast binary paths.
 
 Optimized for large point clouds (100M+ points):
 - Uses numpy structured arrays directly, avoiding row-by-row Python iteration
+- Fast binary reader/writer bypass plyfile for known binary_little_endian files
 - Reads PLY structured data without unnecessary copies
 """
 
@@ -9,24 +10,25 @@ import numpy as np
 import pandas as pd
 from plyfile import PlyElement, PlyData
 
+# Map PLY type strings to numpy dtypes
+_NUMPY_DTYPE_MAP = {
+    'float': np.float32, 'float32': np.float32,
+    'double': np.float64, 'float64': np.float64,
+    'char': np.int8, 'int8': np.int8,
+    'uchar': np.uint8, 'uint8': np.uint8,
+    'short': np.int16, 'int16': np.int16,
+    'ushort': np.uint16, 'uint16': np.uint16,
+    'int': np.int32, 'int32': np.int32,
+    'uint': np.uint32, 'uint32': np.uint32,
+}
+
 
 def ply_to_pandas(ply_file_path, csv_file_path=None):
     """Read a PLY file and return a pandas DataFrame."""
-    ply_content = PlyData.read(ply_file_path)
-
-    available_elements = [elem.name for elem in ply_content.elements]
-    if 'vertex' in available_elements:
-        point_element_name = 'vertex'
-    elif 'point' in available_elements:
-        point_element_name = 'point'
-    else:
-        raise ValueError(f"No vertex/point element in PLY file: {ply_file_path}")
-
-    point_data = ply_content[point_element_name].data
-    property_names = point_data.dtype.names
+    data, property_names = ply_to_numpy(ply_file_path)
 
     # Build DataFrame directly from structured array columns (no vstack/transpose)
-    df = pd.DataFrame({name: np.asarray(point_data[name]) for name in property_names})
+    df = pd.DataFrame({name: np.asarray(data[name]) for name in property_names})
 
     if csv_file_path is not None:
         df.to_csv(csv_file_path, index=False)
@@ -34,11 +36,71 @@ def ply_to_pandas(ply_file_path, csv_file_path=None):
     return df
 
 
+def _try_read_binary_ply(ply_file_path):
+    """Try to read a binary_little_endian PLY directly via numpy.fromfile.
+
+    Returns (structured_array, property_names) or None if the file is not
+    a simple binary_little_endian PLY (e.g. ASCII, big-endian, or list props).
+    """
+    with open(ply_file_path, 'rb') as f:
+        # Parse header
+        header_bytes = b''
+        while True:
+            line = f.readline()
+            header_bytes += line
+            if line.strip() == b'end_header':
+                break
+            if len(header_bytes) > 10000:
+                return None  # Header too large, bail
+
+        header = header_bytes.decode('ascii')
+        lines = header.strip().split('\n')
+
+        # Check format
+        if 'format binary_little_endian 1.0' not in header:
+            return None
+
+        n_vertices = 0
+        fields = []
+        in_vertex = False
+        for line in lines:
+            parts = line.strip().split()
+            if len(parts) >= 3 and parts[0] == 'element' and parts[1] == 'vertex':
+                n_vertices = int(parts[2])
+                in_vertex = True
+            elif parts[0] == 'element':
+                in_vertex = False
+            elif in_vertex and parts[0] == 'property':
+                if parts[1] == 'list':
+                    return None  # List properties not supported in fast path
+                dtype = _NUMPY_DTYPE_MAP.get(parts[1])
+                if dtype is None:
+                    return None
+                fields.append((parts[2], dtype))
+
+        if not fields or n_vertices == 0:
+            # Empty file — return valid empty structured array
+            if fields:
+                dtype = np.dtype(fields)
+                return np.empty(0, dtype=dtype), tuple(name for name, _ in fields)
+            return None
+
+        dtype = np.dtype(fields)
+        data = np.fromfile(f, dtype=dtype, count=n_vertices)
+        return data, tuple(name for name, _ in fields)
+
+
 def ply_to_numpy(ply_file_path):
     """Read a PLY file and return (structured_array, property_names).
 
-    Faster than ply_to_pandas for cases where DataFrame overhead is unnecessary.
+    Uses a fast binary reader for binary_little_endian files (our output format),
+    falling back to plyfile for other formats.
     """
+    result = _try_read_binary_ply(ply_file_path)
+    if result is not None:
+        return result
+
+    # Fallback to plyfile for ASCII or other formats
     ply_content = PlyData.read(ply_file_path)
 
     available_elements = [elem.name for elem in ply_content.elements]
