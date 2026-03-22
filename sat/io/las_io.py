@@ -45,7 +45,7 @@ def las_to_pandas(las_file_path, csv_file_path=None):
     return points_df
 
 
-def pandas_to_las(df, output_file_path, do_compress=False, verbose=False):
+def pandas_to_las(df, output_file_path, do_compress=False, verbose=False, crs_wkt=None):
     """Convert a pandas DataFrame to a LAS/LAZ file.
 
     Args:
@@ -53,6 +53,8 @@ def pandas_to_las(df, output_file_path, do_compress=False, verbose=False):
         output_file_path: Output .las or .laz file path.
         do_compress: If True, write as .laz (uses lazrs parallel compression).
         verbose: Print status messages.
+        crs_wkt: WKT string for the coordinate reference system. If provided,
+                 written as a VLR so the output file carries its projection.
     """
     t0 = time.time()
 
@@ -101,6 +103,15 @@ def pandas_to_las(df, output_file_path, do_compress=False, verbose=False):
     las_header.offset = offset
     las_header.min = offset
     las_header.max = [float(x_vals.max()), float(y_vals.max()), float(z_vals.max())]
+
+    # Write CRS as WKT VLR if provided
+    if crs_wkt:
+        las_header.vlrs.append(laspy.VLR(
+            user_id="LASF_Projection",
+            record_id=2112,
+            description="OGC Coordinate System WKT",
+            record_data=crs_wkt.encode("utf-8") + b"\x00",
+        ))
 
     standard_columns = list(las_header.point_format.dimension_names)
     columns_which_match = [c for c in standard_columns if c in df.columns and c not in ('X', 'Y', 'Z')]
@@ -188,7 +199,8 @@ def laz_to_copc(input_path, output_path=None, verbose=False):
     pipeline = json.dumps({
         "pipeline": [
             {"type": "readers.las", "filename": input_path},
-            {"type": "writers.copc", "filename": output_path},
+            {"type": "writers.copc", "filename": output_path,
+             "extra_dims": "all", "forward": "all"},
         ]
     })
 

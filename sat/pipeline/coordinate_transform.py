@@ -32,17 +32,25 @@ def utm_to_local(input_file_path, output_file_path, json_file_path):
     is_ply = input_file_path.endswith('.ply')
     print(f"[UTM->local] Reading: {os.path.basename(input_file_path)}")
 
+    crs_wkt = None
     if is_ply:
         structured, prop_names = ply_to_numpy(input_file_path)
         coord_names = ['x', 'y', 'z']
         # Convert structured array to dict of arrays for mutation
         arrays = {name: np.array(structured[name], dtype=np.float64) for name in prop_names}
     else:
-        arrays, prop_names, _ = las_to_numpy(input_file_path)
+        arrays, prop_names, las_obj = las_to_numpy(input_file_path)
         coord_names = ['X', 'Y', 'Z']
         # Ensure float64 for coordinate arithmetic
         for c in coord_names:
             arrays[c] = arrays[c].astype(np.float64)
+        # Preserve CRS from input for round-tripping
+        try:
+            crs_wkt = las_obj.header.parse_crs()
+            if crs_wkt:
+                crs_wkt = str(crs_wkt)
+        except Exception:
+            crs_wkt = None
 
     n_points = len(arrays[coord_names[0]])
     t_read = time.time() - t0
@@ -57,9 +65,13 @@ def utm_to_local(input_file_path, output_file_path, json_file_path):
     t_transform = time.time() - t1
     print(f"[UTM->local] Transform in {t_transform:.1f}s, min_values={min_values}")
 
-    # Save min values for later restoration
+    # Save min values and CRS for later restoration
     with open(json_file_path, 'w') as f:
         json.dump(min_values, f)
+    if crs_wkt:
+        crs_path = json_file_path.replace('_min_values.json', '_crs.wkt')
+        with open(crs_path, 'w') as f:
+            f.write(crs_wkt)
 
     # Write PLY output using numpy path (no pandas, no row iteration)
     t2 = time.time()

@@ -116,6 +116,16 @@ class ResultMerger:
         merged_df['y'] = merged_df['y'].astype(float) + min_y
         merged_df['z'] = merged_df['z'].astype(float) + min_z
 
+        # Restore CRS if saved during coordinate transform
+        crs_path = min_values_path.replace('_min_values.json', '_crs.wkt')
+        crs_wkt = None
+        if os.path.exists(crs_path):
+            with open(crs_path, 'r') as f:
+                crs_wkt = f.read().strip()
+            if self.verbose:
+                crs_short = crs_wkt[:60].replace('\n', ' ')
+                print(f'  Restored CRS: {crs_short}...')
+
         # PredInstance: shift from 0-indexed to 1-indexed, fill NaN with 0
         if 'PredInstance' in merged_df.columns:
             merged_df['PredInstance'] = merged_df['PredInstance'] + 1
@@ -124,20 +134,20 @@ class ResultMerger:
         if self.verbose:
             print(f'  Total merge: {time.time() - t0:.1f}s')
 
-        return merged_df
+        return merged_df, crs_wkt
 
-    def save(self, merged_df):
+    def save(self, merged_df, crs_wkt=None):
         for col in ('return_num', 'num_returns'):
             if col in merged_df:
                 merged_df[col] = merged_df[col].clip(upper=7)
 
         pandas_to_las(merged_df, output_file_path=self.output_path,
-                      do_compress=True, verbose=self.verbose)
+                      do_compress=True, verbose=self.verbose, crs_wkt=crs_wkt)
 
     def run(self):
-        merged_df = self.merge()
+        merged_df, crs_wkt = self.merge()
         if self.output_path:
-            self.save(merged_df)
+            self.save(merged_df, crs_wkt=crs_wkt)
         return merged_df
 
 
