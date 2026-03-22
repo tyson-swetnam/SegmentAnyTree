@@ -89,6 +89,16 @@ for file in "$FINAL_DIR"/*; do
     [ "$filename" != "$new_name" ] && mv -n "$file" "$FINAL_DIR/$new_name"
 done
 
+# Step 9: Convert LAZ outputs to COPC (Cloud-Optimized Point Cloud)
+echo "Converting to COPC format..."
+for laz_file in "$FINAL_DIR"/*.laz; do
+    [ -f "$laz_file" ] || continue
+    copc_file="${laz_file%.laz}.copc.laz"
+    python3 -c "from sat.io.las_io import laz_to_copc; laz_to_copc('$laz_file', '$copc_file', verbose=True)"
+    # Remove the non-COPC LAZ after successful conversion
+    rm -f "$laz_file"
+done
+
 num_files=$(find "$FINAL_DIR" -maxdepth 1 -type f | wc -l)
 
 # Clean up temporary eval config

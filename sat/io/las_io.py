@@ -149,6 +149,52 @@ def pandas_to_las(df, output_file_path, do_compress=False, verbose=False):
         print(f'File saved as: {output_file_path} (prep: {t_prep:.1f}s, total: {t_total:.1f}s)')
 
 
+def laz_to_copc(input_path, output_path=None, verbose=False):
+    """Convert a LAS/LAZ file to COPC (Cloud-Optimized Point Cloud) format.
+
+    Uses PDAL's writers.copc to build a proper spatial octree index.
+    COPC enables efficient streaming and partial reads over HTTP
+    (e.g. for web viewers like potree/copc-viewer).
+
+    Args:
+        input_path: Path to input .las or .laz file.
+        output_path: Path for output .copc.laz. If None, replaces .laz with .copc.laz.
+        verbose: Print status messages.
+    """
+    import json
+    import subprocess
+
+    t0 = time.time()
+
+    if output_path is None:
+        if input_path.endswith('.laz'):
+            output_path = input_path.replace('.laz', '.copc.laz')
+        elif input_path.endswith('.las'):
+            output_path = input_path.replace('.las', '.copc.laz')
+        else:
+            output_path = input_path + '.copc.laz'
+
+    pipeline = json.dumps({
+        "pipeline": [
+            {"type": "readers.las", "filename": input_path},
+            {"type": "writers.copc", "filename": output_path},
+        ]
+    })
+
+    result = subprocess.run(
+        ["pdal", "pipeline", "--stdin"],
+        input=pipeline, capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"PDAL COPC conversion failed: {result.stderr}")
+
+    if verbose:
+        t_total = time.time() - t0
+        print(f'COPC: {output_path} ({t_total:.1f}s)')
+
+    return output_path
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Convert LAS/LAZ to pandas DataFrame.')

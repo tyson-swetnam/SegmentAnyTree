@@ -187,6 +187,18 @@ RUN python3 -m pip install --no-cache-dir \
     jupyterlab>=4.0 \
     ipywidgets
 
+# ---- PDAL via Miniforge/Mamba (for COPC output support) ----
+RUN curl -fsSL -o /tmp/miniforge.sh https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh && \
+    bash /tmp/miniforge.sh -b -p /opt/miniforge && \
+    rm /tmp/miniforge.sh && \
+    /opt/miniforge/bin/mamba install -y -c conda-forge pdal && \
+    /opt/miniforge/bin/mamba clean -afy && \
+    ln -sf /opt/miniforge/bin/pdal /usr/local/bin/pdal && \
+    ln -sf /opt/miniforge/bin/mamba /usr/local/bin/mamba
+# Add miniforge libs to linker path so pdal can find its shared libraries,
+# but do NOT add miniforge/bin to PATH (it would shadow system python3.10)
+ENV LD_LIBRARY_PATH="/opt/miniforge/lib:${LD_LIBRARY_PATH}"
+
 # ---- Create non-root user ----
 RUN useradd -m -s /bin/bash -u 1000 sat
 RUN mkdir -p /data/input /data/output /tmp/sat_cache && \
