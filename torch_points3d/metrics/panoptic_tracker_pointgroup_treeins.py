@@ -158,6 +158,7 @@ class PanopticTracker(SegmentationTracker):
             iou_threshold=0.5,  # 0.25,
             track_instances=True,
             min_cluster_points=10,
+            min_score=0.0,
             **kwargs
     ):
         """ Track metrics for panoptic segmentation
@@ -173,6 +174,21 @@ class PanopticTracker(SegmentationTracker):
         outputs: PanopticResults = model.get_output()
         labels: PanopticLabels = model.get_labels()
 
+        # Diagnostic: log raw cluster info before any filtering
+        n_raw_clusters = len(outputs.clusters) if outputs.clusters else 0
+        has_scores = outputs.cluster_scores is not None
+        if n_raw_clusters > 0:
+            log.info(f"[DIAG] Raw clusters: {n_raw_clusters}, has_scores: {has_scores}")
+            if has_scores:
+                scores = outputs.cluster_scores.cpu().numpy()
+                log.info(f"[DIAG] Score stats: min={scores.min():.4f}, max={scores.max():.4f}, "
+                         f"mean={scores.mean():.4f}, >0.5: {(scores>0.5).sum()}, >0.1: {(scores>0.1).sum()}")
+                sizes = [len(c) for c in outputs.clusters]
+                log.info(f"[DIAG] Cluster sizes: min={min(sizes)}, max={max(sizes)}, "
+                         f"mean={sum(sizes)/len(sizes):.0f}, >10: {sum(1 for s in sizes if s>10)}")
+        else:
+            log.info(f"[DIAG] No clusters produced (clusters empty={not outputs.clusters})")
+
         # Track semantic
         super()._compute_metrics(outputs.semantic_logits, labels.y)
 
@@ -181,7 +197,7 @@ class PanopticTracker(SegmentationTracker):
         assert data.pos.dim() == 2, "Only supports packed batches"
 
         # Object accuracy
-        clusters, valid_c_idx = PanopticTracker._extract_clusters(outputs, min_cluster_points)
+        clusters, valid_c_idx = PanopticTracker._extract_clusters(outputs, min_cluster_points, min_score=min_score)
         # if not clusters:
         #    return
         predicted_labels = outputs.semantic_logits.max(1)[1]
@@ -965,9 +981,21 @@ class PanopticTracker(SegmentationTracker):
         self._full_vote_miou = self._full_confusion.get_average_intersection_union() * 100
 
     @staticmethod
-    def _extract_clusters(outputs, min_cluster_points):
-        valid_cluster_idx, clusters = outputs.get_instances(min_cluster_points=min_cluster_points)
-        # clusters = [outputs.clusters[i] for i in valid_cluster_idx]
+    def _extract_clusters(outputs, min_cluster_points, min_score=0.0):
+        valid_cluster_idx, clusters = outputs.get_instances(
+            min_cluster_points=min_cluster_points, min_score=min_score)
+        # Log cluster statistics for debugging
+        if outputs.clusters and outputs.cluster_scores is not None:
+            n_raw = len(outputs.clusters)
+            scores = outputs.cluster_scores.cpu().numpy()
+            n_accepted = len(clusters) if clusters else 0
+            if n_raw > 0:
+                import logging
+                log = logging.getLogger(__name__)
+                log.info(f"Clusters: {n_raw} raw, {n_accepted} accepted "
+                         f"(min_score={min_score:.2f}, scores: "
+                         f"min={scores.min():.3f}, max={scores.max():.3f}, "
+                         f"mean={scores.mean():.3f})")
         return clusters, valid_cluster_idx
 
     @staticmethod

@@ -1,6 +1,46 @@
 import torch
 import os
-from torch_points_kernels import region_grow
+from torch_points_kernels.torchpoints import ball_query_partial_dense
+from torch_points_kernels.cluster import _grow_proximity_core
+from typing import List as TypingList
+
+
+def region_grow(pos, labels, batch, ignore_labels=[], nsample=16, radius=0.02,
+                min_cluster_size=32) -> TypingList[torch.Tensor]:
+    """GPU-compatible region growing that keeps ball_query on device.
+
+    The upstream region_grow creates CPU-only index tensors causing device
+    mismatch with GPU labels. This version keeps ball_query on GPU for
+    speed and only moves results to CPU for the cluster assignment.
+    """
+    assert labels.dim() == 1
+    assert pos.dim() == 2
+    unique_labels = torch.unique(labels)
+    clusters = []
+    ind = torch.arange(0, pos.shape[0], device=pos.device)
+    for l in unique_labels:
+        if l in ignore_labels:
+            continue
+        label_mask = labels == l
+        local_ind = ind[label_mask]
+        label_batch = batch[label_mask]
+        unique_in_batch = torch.unique(label_batch)
+        remaped_batch = torch.empty_like(label_batch)
+        for new, old in enumerate(unique_in_batch):
+            mask = label_batch == old
+            remaped_batch[mask] = new
+        # Ball query stays on device (GPU) for speed
+        label_pos = pos[label_mask, :]
+        neighbours = ball_query_partial_dense(
+            radius, nsample, label_pos, label_pos, remaped_batch, remaped_batch
+        )[0].cpu().numpy()
+        # Cluster assignment on CPU (numba)
+        label_clusters = _grow_proximity_core(neighbours, min_cluster_size)
+        if len(label_clusters):
+            for cluster in label_clusters:
+                cluster_t = torch.tensor(cluster, device=pos.device)
+                clusters.append(local_ind[cluster_t])
+    return clusters
 from torch_geometric.data import Data
 from torch_scatter import scatter
 import random
@@ -241,23 +281,23 @@ class PointGroup3heads(BaseModel):
     def _cluster3(self, semantic_logits, embed_logits):
         """ Compute clusters"""
         #remove stuff points
-        N = embed_logits.shape[0]  #.cpu().detach().numpy().shape[0]
-        predicted_labels = torch.max(semantic_logits, 1)[1] #.cpu().detach().numpy() # [N]
-        ind = torch.arange(0, N)
-        unique_predicted_labels = torch.unique(predicted_labels) #np.unique(predicted_labels)
-        ignore_labels=self._stuff_classes.to(self.device)  #.cpu().detach().numpy()
-        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool) #.cpu().detach().numpy()
+        N = embed_logits.shape[0]
+        predicted_labels = torch.max(semantic_logits, 1)[1]
+        ind = torch.arange(0, N, device=self.device)
+        unique_predicted_labels = torch.unique(predicted_labels)
+        ignore_labels=self._stuff_classes.to(self.device)
+        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool, device=self.device)
         for l in unique_predicted_labels:
             if l in ignore_labels:
                 # Build clusters for a given label (ignore other points)
                 label_mask_l = predicted_labels == l
                 label_mask[label_mask_l] = False
         local_ind = ind[label_mask]
-        label_batch = self.input.batch[label_mask]  #.cpu().detach().numpy()
+        label_batch = self.input.batch.to(self.device)[label_mask]
         unique_in_batch = torch.unique(label_batch)
         
         #Clustering based on embeddings
-        embeds_u = embed_logits[label_mask]  #.cpu().detach().numpy()
+        embeds_u = embed_logits[label_mask]
         
         #clusters_embed, cluster_type_embeds = hdbscan_cluster.cluster_single(embeds_u, unique_in_batch, label_batch, local_ind, 0)
         clusters_embed, cluster_type_embeds = meanshift_cluster.cluster_single(embeds_u, unique_in_batch, label_batch, local_ind, 0, self.opt.bandwidth)
@@ -285,22 +325,22 @@ class PointGroup3heads(BaseModel):
         )
         ###### Cluster using embedding without predicted semantic labels ######
         #remove stuff points
-        N = embed_logits.shape[0]  #.cpu().detach().numpy().shape[0]
-        ind = torch.arange(0, N)
-        unique_predicted_labels = torch.unique(predicted_labels) #np.unique(predicted_labels)
-        ignore_labels=self._stuff_classes.to(self.device)  #.cpu().detach().numpy()
-        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool) #.cpu().detach().numpy()
+        N = embed_logits.shape[0]
+        ind = torch.arange(0, N, device=self.device)
+        unique_predicted_labels = torch.unique(predicted_labels)
+        ignore_labels=self._stuff_classes.to(self.device)
+        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool, device=self.device)
         for l in unique_predicted_labels:
             if l in ignore_labels:
                 # Build clusters for a given label (ignore other points)
                 label_mask_l = predicted_labels == l
                 label_mask[label_mask_l] = False
         local_ind = ind[label_mask]
-        label_batch = self.input.batch[label_mask]  #.cpu().detach().numpy()
+        label_batch = self.input.batch.to(self.device)[label_mask]
         unique_in_batch = torch.unique(label_batch)
         
         #Clustering based on embeddings
-        embeds_u = embed_logits[label_mask]  #.cpu().detach().numpy()
+        embeds_u = embed_logits[label_mask]
         clusters_embed, cluster_type_embeds = meanshift_cluster.cluster_single(embeds_u, unique_in_batch, label_batch, local_ind, 1, self.opt.bandwidth)
 
 
@@ -332,22 +372,22 @@ class PointGroup3heads(BaseModel):
         )
         ###### Cluster using embedding without predicted semantic labels ######
         #remove stuff points
-        N = embed_logits.shape[0]  #.cpu().detach().numpy().shape[0]
-        ind = torch.arange(0, N)
-        unique_predicted_labels = torch.unique(predicted_labels) #np.unique(predicted_labels)
-        ignore_labels=self._stuff_classes.to(self.device)  #.cpu().detach().numpy()
-        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool) #.cpu().detach().numpy()
+        N = embed_logits.shape[0]
+        ind = torch.arange(0, N, device=self.device)
+        unique_predicted_labels = torch.unique(predicted_labels)
+        ignore_labels=self._stuff_classes.to(self.device)
+        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool, device=self.device)
         for l in unique_predicted_labels:
             if l in ignore_labels:
                 # Build clusters for a given label (ignore other points)
                 label_mask_l = predicted_labels == l
                 label_mask[label_mask_l] = False
         local_ind = ind[label_mask]
-        label_batch = self.input.batch[label_mask]  #.cpu().detach().numpy()
+        label_batch = self.input.batch.to(self.device)[label_mask]
         unique_in_batch = torch.unique(label_batch)
         
         #Clustering based on embeddings
-        embeds_u = embed_logits[label_mask]  #.cpu().detach().numpy()
+        embeds_u = embed_logits[label_mask]
         clusters_embed, cluster_type_embeds = meanshift_cluster.cluster_single(embeds_u, unique_in_batch, label_batch, local_ind, 1, self.opt.bandwidth)
 
 
@@ -385,22 +425,22 @@ class PointGroup3heads(BaseModel):
         )
         ###### Cluster using embedding without predicted semantic labels ######
         #remove stuff points
-        N = embed_logits.shape[0]  #.cpu().detach().numpy().shape[0]
-        ind = torch.arange(0, N)
-        unique_predicted_labels = torch.unique(predicted_labels) #np.unique(predicted_labels)
-        ignore_labels=self._stuff_classes.to(self.device)  #.cpu().detach().numpy()
-        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool) #.cpu().detach().numpy()
+        N = embed_logits.shape[0]
+        ind = torch.arange(0, N, device=self.device)
+        unique_predicted_labels = torch.unique(predicted_labels)
+        ignore_labels=self._stuff_classes.to(self.device)
+        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool, device=self.device)
         for l in unique_predicted_labels:
             if l in ignore_labels:
                 # Build clusters for a given label (ignore other points)
                 label_mask_l = predicted_labels == l
                 label_mask[label_mask_l] = False
         local_ind = ind[label_mask]
-        label_batch = self.input.batch[label_mask]  #.cpu().detach().numpy()
+        label_batch = self.input.batch.to(self.device)[label_mask]
         unique_in_batch = torch.unique(label_batch)
         
         #Clustering based on embeddings
-        embeds_u = embed_logits[label_mask]  #.cpu().detach().numpy()
+        embeds_u = embed_logits[label_mask]
         clusters_embed, cluster_type_embeds = meanshift_cluster.cluster_single(embeds_u, unique_in_batch, label_batch, local_ind, 2, self.opt.bandwidth)
 
 
@@ -440,22 +480,22 @@ class PointGroup3heads(BaseModel):
         )
         ###### Cluster using embedding without predicted semantic labels ######
         #remove stuff points
-        N = embed_logits.shape[0]  #.cpu().detach().numpy().shape[0]
-        ind = torch.arange(0, N)
-        unique_predicted_labels = torch.unique(predicted_labels) #np.unique(predicted_labels)
-        ignore_labels=self._stuff_classes.to(self.device)  #.cpu().detach().numpy()
-        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool) #.cpu().detach().numpy()
+        N = embed_logits.shape[0]
+        ind = torch.arange(0, N, device=self.device)
+        unique_predicted_labels = torch.unique(predicted_labels)
+        ignore_labels=self._stuff_classes.to(self.device)
+        label_mask = torch.ones(predicted_labels.shape[0], dtype=torch.bool, device=self.device)
         for l in unique_predicted_labels:
             if l in ignore_labels:
                 # Build clusters for a given label (ignore other points)
                 label_mask_l = predicted_labels == l
                 label_mask[label_mask_l] = False
         local_ind = ind[label_mask]
-        label_batch = self.input.batch[label_mask]  #.cpu().detach().numpy()
+        label_batch = self.input.batch.to(self.device)[label_mask]
         unique_in_batch = torch.unique(label_batch)
         
         #Clustering based on embeddings
-        embeds_u = embed_logits[label_mask]  #.cpu().detach().numpy()
+        embeds_u = embed_logits[label_mask]
         clusters_embed, cluster_type_embeds = meanshift_cluster.cluster_single(embeds_u, unique_in_batch, label_batch, local_ind, 1, self.opt.bandwidth)
 
 

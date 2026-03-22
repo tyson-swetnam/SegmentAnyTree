@@ -53,6 +53,7 @@ tracker_options: # Extra options for the tracker
   full_res: True
   make_submission: True
   ply_output: "maciej_eval.ply"
+  min_score: 0.0  # Minimum cluster score for instance acceptance (paper default: 0.5)
 
 hydra:
   run:

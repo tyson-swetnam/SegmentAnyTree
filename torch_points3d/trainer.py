@@ -171,7 +171,10 @@ class Trainer:
     def eval(self, stage_name=""):
         self._is_training = False
 
-        epoch = self._checkpoint.start_epoch
+        # Use a high epoch value to ensure clustering is active during
+        # inference. The model skips clustering when epoch <= prepare_epoch
+        # (default 30), but start_epoch returns 1 for eval-only runs.
+        epoch = max(self._checkpoint.start_epoch, 200)
         if self._dataset.has_val_loader:
             if not stage_name or stage_name == "val":
                 self._test_epoch(epoch, "val")
