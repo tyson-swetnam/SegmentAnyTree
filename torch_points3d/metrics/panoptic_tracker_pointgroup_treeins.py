@@ -198,8 +198,9 @@ class PanopticTracker(SegmentationTracker):
 
         # Object accuracy
         clusters, valid_c_idx = PanopticTracker._extract_clusters(outputs, min_cluster_points, min_score=min_score)
-        # if not clusters:
-        #    return
+        # Move clusters to CPU — all downstream tracker ops (block_merging, dump_visuals) use CPU tensors
+        if clusters:
+            clusters = [c.cpu() for c in clusters]
         predicted_labels = outputs.semantic_logits.max(1)[1]
 
         if clusters:
@@ -325,6 +326,7 @@ class PanopticTracker(SegmentationTracker):
             os.mkdir("viz_for_test_valid_proposals")
         j = 0
         for i, cluster in enumerate(outputs.clusters):
+            cluster = cluster.cpu()
             semantic_prob = outputs.semantic_logits[cluster, :].softmax(dim=1)
             score_i = -1
             if outputs.cluster_scores != None:
