@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/quickstart/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/docker/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/singularity/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/inference/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/training/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/example-data/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/architecture/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/troubleshooting/</loc>
+      </url>
+</urlset>
