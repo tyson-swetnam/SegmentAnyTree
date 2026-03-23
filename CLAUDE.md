@@ -4,9 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
+**This is a fork of [SmartForest-no/SegmentAnyTree](https://github.com/SmartForest-no/SegmentAnyTree)** focused on:
+- Updating the Docker build environment for reliability and reproducibility
+- Finding and implementing computation speed improvements for inference and training
+
 SegmentAnyTree is a deep learning framework for **tree instance segmentation from 3D point cloud data** (LiDAR). It builds on the [torch-points3d](https://github.com/torch-points3d/torch-points3d) framework and implements panoptic segmentation (combined semantic + instance segmentation) using the PointGroup architecture with a 3-head variant. The primary model is `PointGroup-PAPER`.
 
 Paper: Wielgosz et al. (2024), "SegmentAnyTree: A sensor and platform agnostic deep learning model for tree segmentation using laser scanning data", Remote Sensing of Environment.
+
+### Fork-Specific Notes
+- Upstream repository: `https://github.com/SmartForest-no/SegmentAnyTree`
+- This fork's repository: `https://github.com/tyson-swetnam/SegmentAnyTree`
+- Branch `2026-update` contains Docker build and performance work
+- When making changes, consider whether they should be contributed back upstream via PR
 
 ## Build & Run Commands
 

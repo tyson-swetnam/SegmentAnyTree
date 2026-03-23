@@ -1,13 +1,21 @@
 
 ![SegmentAnyTree_logo](https://github.com/user-attachments/assets/8849a4b2-3bb3-4c6d-b1f1-13f91efc0936)
 
-# SegmentAnyTree
+# SegmentAnyTree (Fork)
+
+> **This is a fork of [SmartForest-no/SegmentAnyTree](https://github.com/SmartForest-no/SegmentAnyTree)** focused on updating the Docker build environment and finding additional improvements in computation speed for inference and training workflows.
 
 Deep learning framework for **tree instance segmentation from 3D LiDAR point clouds**.
 
 Based on [Wielgosz et al. (2024) "SegmentAnyTree: A sensor and platform agnostic deep learning model for tree segmentation using laser scanning data"](https://www.sciencedirect.com/science/article/pii/S0034425724003936), Remote Sensing of Environment.
 
 Built on the [torch-points3d](https://github.com/torch-points3d/torch-points3d) framework using PointGroup panoptic segmentation architecture.
+
+## Fork Goals
+
+- **Docker build modernization** — Update base images, dependencies, and build process for reliability and reproducibility
+- **Computation speed improvements** — Profile and optimize inference/training pipelines, clustering, and I/O bottlenecks
+- **Dependency updates** — Evaluate newer CUDA, PyTorch, and sparse convolution library versions for compatibility and performance
 
 ## Quick Start
 
@@ -41,7 +49,7 @@ Open http://localhost:8888 and use the starter notebooks.
 ## Build from Source
 
 ```bash
-git clone https://github.com/<org>/SegmentAnyTree.git
+git clone https://github.com/tyson-swetnam/SegmentAnyTree.git
 cd SegmentAnyTree
 docker build -t segmentanytree:latest .
 ```
@@ -105,7 +113,7 @@ SegmentAnyTree/
 
 ## Issues
 
-If you encounter problems, please [open an issue](https://github.com/<org>/SegmentAnyTree/issues).
+If you encounter problems, please [open an issue](https://github.com/tyson-swetnam/SegmentAnyTree/issues). For issues with the core model or algorithm, consider reporting to the [upstream repository](https://github.com/SmartForest-no/SegmentAnyTree/issues).
 
 ## Citation
 
