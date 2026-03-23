@@ -173,5 +173,5 @@ PointGroup-PAPER:
   min_iou_threshold: 0.25
   max_iou_threshold: 0.75
 
-  cluster_type: 5
+  cluster_type: 1  # 1=region_grow only (fast), 5=region_grow+meanshift (paper, slow)
   vizual_ratio: 0

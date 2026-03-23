@@ -531,10 +531,11 @@ class PointGroup3heads(BaseModel):
             batch = [] 
             pos = []
             for i, cluster in enumerate(all_clusters):
+                cluster_cpu = cluster.cpu()
                 x.append(backbone_features[cluster])
-                coords.append(self.input.coords[cluster])
+                coords.append(self.input.coords[cluster_cpu])
                 batch.append(i * torch.ones(cluster.shape[0]))
-                pos.append(self.input.pos[cluster])
+                pos.append(self.input.pos[cluster_cpu])
             batch_cluster = Data(x=torch.cat(x), coords=torch.cat(coords), batch=torch.cat(batch),)
 
             # Voxelise if required
@@ -600,11 +601,11 @@ class PointGroup3heads(BaseModel):
                 pos = []
                 for i, mask_i in enumerate(type_mask_l):
                     cluster = all_clusters[mask_i]
-                    #for i, cluster in enumerate(all_clusters):
+                    cluster_cpu = cluster.cpu()
                     x.append(backbone_features[cluster])
-                    coords.append(self.input.coords[cluster])
+                    coords.append(self.input.coords[cluster_cpu])
                     batch.append(i * torch.ones(cluster.shape[0]))
-                    pos.append(self.input.pos[cluster])
+                    pos.append(self.input.pos[cluster_cpu])
                 batch_cluster = Data(x=torch.cat(x), coords=torch.cat(coords), batch=torch.cat(batch),)
 
                 # Voxelise if required
