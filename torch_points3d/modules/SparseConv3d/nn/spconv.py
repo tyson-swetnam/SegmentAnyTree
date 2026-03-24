@@ -76,9 +76,14 @@ class Conv3d(nn.Module):
                 kernel_size=kernel_size, dilation=dilation, bias=bias,
             )
         else:
+            # Add padding to match MinkowskiEngine behavior where strided conv
+            # doesn't reduce spatial dimensions beyond the stride factor.
+            # Without padding, kernel_size=3 + stride=2 collapses small dimensions to 0.
+            padding = kernel_size // 2
             self.conv = spconv.SparseConv3d(
                 in_channels, out_channels,
                 kernel_size=kernel_size, stride=stride, dilation=dilation, bias=bias,
+                padding=padding,
             )
 
     @property
@@ -117,9 +122,11 @@ class Conv3dTranspose(nn.Module):
                 kernel_size=kernel_size, dilation=dilation, bias=bias,
             )
         else:
+            padding = kernel_size // 2
             self.conv = spconv.SparseConvTranspose3d(
                 in_channels, out_channels,
                 kernel_size=kernel_size, stride=stride, dilation=dilation, bias=bias,
+                padding=padding,
             )
 
     @property
@@ -331,8 +338,11 @@ def SparseTensor(feats, coordinates, batch, device=torch.device("cpu")):
     coords_zyx = coordinates[:, [2, 1, 0]].int()
     indices = torch.cat([batch.int(), coords_zyx], dim=-1).contiguous()
 
-    # Compute spatial shape from coordinate ranges (add 1 for 0-indexing)
-    spatial_shape = (coords_zyx.max(0).values + 1).tolist()  # [D, H, W] = [z, y, x] ranges
+    # Compute spatial shape from coordinate ranges.
+    # Pad to at least 128 per dimension to prevent spatial collapse in deep UNets
+    # (7 encoder layers with stride=2 need 2^7=128 minimum).
+    raw_shape = (coords_zyx.max(0).values + 1).tolist()
+    spatial_shape = [max(s, 128) for s in raw_shape]  # [D, H, W] = [z, y, x]
 
     batch_size = int(batch.max().item()) + 1
 

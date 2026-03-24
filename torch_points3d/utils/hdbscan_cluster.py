@@ -1,7 +1,10 @@
 import numpy as np
 import torch
 import torch
-import hdbscan
+try:
+    import hdbscan
+except ImportError:
+    hdbscan = None
 import time
 import multiprocessing
 from multiprocessing import Process
