@@ -26,3 +26,8 @@ test-docker:
 
 infer-parallel:
 	bash scripts/run_inference_parallel.sh $(INPUT) $(OUTPUT) $(GPUS)
+
+train-ddp:
+	torchrun --nproc_per_node=$(GPUS) train.py task=panoptic data=panoptic/treeins \
+		models=panoptic/area4_ablation_3heads \
+		model_name=PointGroup-PAPER training=treeins job_name=ddp_run

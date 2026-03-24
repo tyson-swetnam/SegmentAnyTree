@@ -143,6 +143,28 @@ class Trainer:
                 self._cfg.visualization, self._dataset.num_batches, self._dataset.batch_size, os.getcwd()
             )
 
+        self._is_ddp = False
+        self._local_rank = 0
+
+    def _setup_ddp(self):
+        """Initialize DistributedDataParallel if torch.distributed is initialized."""
+        import torch.distributed as dist
+        from torch.nn.parallel import DistributedDataParallel as DDP
+
+        if not dist.is_initialized():
+            return
+
+        self._local_rank = int(os.environ.get("LOCAL_RANK", 0))
+        self._world_size = dist.get_world_size()
+        torch.cuda.set_device(self._local_rank)
+        self._device = torch.device(f"cuda:{self._local_rank}")
+        self._model = self._model.to(self._device)
+        self._model = DDP(self._model, device_ids=[self._local_rank], find_unused_parameters=True)
+        self._is_ddp = True
+
+        if self._local_rank == 0:
+            log.info(f"DDP initialized: {self._world_size} GPUs")
+
     def train(self):
         self._is_training = True
 
@@ -184,6 +206,8 @@ class Trainer:
                 self._test_epoch(epoch, "test")
 
     def _finalize_epoch(self, epoch):
+        if self._is_ddp and self._local_rank != 0:
+            return
         self._tracker.finalise(**self.tracker_options)
         if self._is_training:
             metrics = self._tracker.publish(epoch)
@@ -199,6 +223,19 @@ class Trainer:
         self._tracker.reset("train")
         self._visualizer.reset(epoch, "train")
         train_loader = self._dataset.train_dataloader
+
+        if self._is_ddp:
+            from torch.utils.data.distributed import DistributedSampler
+            if not isinstance(train_loader.sampler, DistributedSampler):
+                train_loader = torch.utils.data.DataLoader(
+                    train_loader.dataset,
+                    batch_size=train_loader.batch_size,
+                    sampler=DistributedSampler(train_loader.dataset),
+                    num_workers=train_loader.num_workers,
+                    collate_fn=train_loader.collate_fn,
+                )
+            else:
+                train_loader.sampler.set_epoch(epoch)
 
         iter_data_time = time.time()
         with Ctq(train_loader) as tq_train_loader:

@@ -1,4 +1,8 @@
 # Ref: https://github.com/chrischoy/SpatioTemporalSegmentation/blob/master/config.py
+# Multi-GPU DDP training:
+#   torchrun --nproc_per_node=4 train.py task=panoptic data=panoptic/treeins \
+#     models=panoptic/area4_ablation_3heads model_name=PointGroup-PAPER \
+#     training=treeins job_name=ddp_run
 # @package training
 epochs: 2 #TO ADAPT: specify number of training epochs 150
 num_workers: 0
