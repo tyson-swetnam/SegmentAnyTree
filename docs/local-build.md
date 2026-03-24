@@ -2,6 +2,11 @@
 
 This guide sets up SegmentAnyTree for development and inference directly on a Linux machine with an NVIDIA GPU, without Docker.
 
+!!! warning "Linux with NVIDIA GPU required"
+    Local GPU inference requires **Linux** with an NVIDIA GPU and CUDA drivers installed.
+    Windows and macOS users should use [Docker](docker.md) or connect to a remote Linux machine.
+    WSL2 and Apple MPS are not supported.
+
 ## Prerequisites
 
 - Linux (Ubuntu 20.04/22.04/24.04)
@@ -158,7 +163,7 @@ If you have the Docker image built:
 CONDA_SITE=$(python -c "import site; print(site.getsitepackages()[0])")
 DOCKER_SITE=/usr/local/lib/python3.10/dist-packages
 
-docker create --name sat_extract segmentanytree:latest true
+docker create --name sat_extract segmentanytree:cuda11 true
 for pkg in MinkowskiEngine MinkowskiEngineBackend torchsparse torch_points_kernels torchnet; do
   docker cp sat_extract:$DOCKER_SITE/$pkg $CONDA_SITE/$pkg 2>/dev/null
 done
@@ -198,8 +203,7 @@ cd /tmp/ME && python setup.py install --blas=openblas --force_cuda
 ```bash
 python -c "
 import torch; print('torch:', torch.__version__, 'cuda:', torch.cuda.is_available())
-import spconv; print('spconv:', spconv.__version__)
-from sat.clustering.region_grow import region_grow; print('region_grow: OK')
+import MinkowskiEngine as ME; print('MinkowskiEngine:', ME.__version__)
 import laspy; print('laspy: OK')
 import subprocess; subprocess.run(['pdal', '--version'])
 "
@@ -219,15 +223,28 @@ bash scripts/run_inference.sh /path/to/input /path/to/output true
 
 ## Shell Setup (add to ~/.bashrc)
 
-```bash
-# SegmentAnyTree environment
-alias sat-env='
-  export PATH="$HOME/miniforge/envs/sat/bin:$HOME/cuda-11.8/bin:$PATH"
-  export LD_LIBRARY_PATH="$HOME/cuda-11.8/lib64:$LD_LIBRARY_PATH"
-  export PYTHONPATH="$HOME/github/SegmentAnyTree:$PYTHONPATH"
-  export SAT_ROOT="$HOME/github/SegmentAnyTree"
-  echo "SegmentAnyTree env activated"
-'
-```
+=== "CUDA 12.4"
+
+    ```bash
+    alias sat-env='
+      conda activate sat
+      export PYTHONPATH="$HOME/github/SegmentAnyTree:$PYTHONPATH"
+      export SAT_ROOT="$HOME/github/SegmentAnyTree"
+      export SPARSE_BACKEND=spconv
+      echo "SegmentAnyTree env activated (CUDA 12.4 + SpConv)"
+    '
+    ```
+
+=== "CUDA 11.8"
+
+    ```bash
+    alias sat-env='
+      export PATH="$HOME/miniforge/envs/sat/bin:$HOME/cuda-11.8/bin:$PATH"
+      export LD_LIBRARY_PATH="$HOME/cuda-11.8/lib64:$LD_LIBRARY_PATH"
+      export PYTHONPATH="$HOME/github/SegmentAnyTree:$PYTHONPATH"
+      export SAT_ROOT="$HOME/github/SegmentAnyTree"
+      echo "SegmentAnyTree env activated (CUDA 11.8 + MinkowskiEngine)"
+    '
+    ```
 
 Then just run `sat-env` before working with SegmentAnyTree.

@@ -1,12 +1,26 @@
 # Docker Guide
 
-Two Docker image variants are provided. See [docker/README.md](../docker/README.md) for a quick comparison.
+## Pulling Pre-built Images
+
+Pre-built images are available on the CyVerse Harbor registry:
+
+=== "CUDA 12.4 (recommended)"
+
+    ```bash
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    ```
+
+=== "CUDA 11.8 (legacy)"
+
+    ```bash
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda11
+    ```
 
 ## Image Variants
 
 | | CUDA 12.4 (recommended) | CUDA 11.8 (legacy) |
 |---|---|---|
-| **Tag** | `segmentanytree:cuda12` | `segmentanytree:cuda11` |
+| **Registry** | `harbor.cyverse.org/vice/segmentanytree:cuda12` | `harbor.cyverse.org/vice/segmentanytree:cuda11` |
 | **Dockerfile** | `docker/Dockerfile.cuda12` | `docker/Dockerfile.cuda11` |
 | **PyTorch** | 2.5.1 | 2.1.2 |
 | **Sparse Backend** | SpConv v2.x (pip install) | MinkowskiEngine + torchsparse (source build) |
@@ -15,7 +29,9 @@ Two Docker image variants are provided. See [docker/README.md](../docker/README.
 | **GPU Support** | Volta through Blackwell (sm_70 - sm_100) | Volta through Hopper (sm_70 - sm_90) |
 | **Driver** | 525+ | 525+ |
 
-## Building
+See [docker/README.md](../docker/README.md) for additional comparison details.
+
+## Building Locally
 
 ```bash
 git clone https://github.com/tyson-swetnam/SegmentAnyTree.git
@@ -48,33 +64,67 @@ docker build --no-cache -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
 
 ### JupyterLab (default)
 
-```bash
-docker run --gpus all -p 8888:8888 \
-  -v $HOME/data/input:/data/input \
-  -v $HOME/data/output:/data/output \
-  segmentanytree:cuda12
-```
+=== "Harbor Registry"
+
+    ```bash
+    docker run --gpus all -p 8888:8888 \
+      -v $HOME/data/input:/data/input \
+      -v $HOME/data/output:/data/output \
+      harbor.cyverse.org/vice/segmentanytree:cuda12
+    ```
+
+=== "Local Build"
+
+    ```bash
+    docker run --gpus all -p 8888:8888 \
+      -v $HOME/data/input:/data/input \
+      -v $HOME/data/output:/data/output \
+      segmentanytree:cuda12
+    ```
 
 Open http://localhost:8888 in your browser.
 
 ### Batch inference
 
-```bash
-docker run --gpus all \
-  -v $HOME/data/input:/data/input \
-  -v $HOME/data/output:/data/output \
-  segmentanytree:cuda12 \
-  bash scripts/run_inference.sh /data/input /data/output true
-```
+=== "Harbor Registry"
+
+    ```bash
+    docker run --gpus all \
+      -v $HOME/data/input:/data/input \
+      -v $HOME/data/output:/data/output \
+      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      bash scripts/run_inference.sh /data/input /data/output true
+    ```
+
+=== "Local Build"
+
+    ```bash
+    docker run --gpus all \
+      -v $HOME/data/input:/data/input \
+      -v $HOME/data/output:/data/output \
+      segmentanytree:cuda12 \
+      bash scripts/run_inference.sh /data/input /data/output true
+    ```
 
 ### Interactive shell
 
-```bash
-docker run --gpus all -it \
-  -v $HOME/data/input:/data/input \
-  -v $HOME/data/output:/data/output \
-  segmentanytree:cuda12 bash
-```
+=== "Harbor Registry"
+
+    ```bash
+    docker run --gpus all -it \
+      -v $HOME/data/input:/data/input \
+      -v $HOME/data/output:/data/output \
+      harbor.cyverse.org/vice/segmentanytree:cuda12 bash
+    ```
+
+=== "Local Build"
+
+    ```bash
+    docker run --gpus all -it \
+      -v $HOME/data/input:/data/input \
+      -v $HOME/data/output:/data/output \
+      segmentanytree:cuda12 bash
+    ```
 
 ## Volume Mounts
 
@@ -93,6 +143,8 @@ docker run --gpus all -it \
 | `SAT_MODEL` | `/opt/segmentanytree/model_file` | Model checkpoint directory |
 | `SAT_CACHE` | `/tmp/sat_cache` | Temporary files |
 | `SPARSE_BACKEND` | `spconv` (CUDA 12) / not set (CUDA 11) | Sparse convolution backend |
+| `SAT_GPU` | `0` | GPU device index for single-GPU inference |
+| `NUM_GPUS` | auto-detect | Number of GPUs for parallel inference |
 
 ## Pre-trained Weights
 
@@ -124,46 +176,7 @@ Both images use a **multi-stage build**:
 
 ## Local Build (without Docker)
 
-### CUDA 12.4 (recommended)
-
-```bash
-python3 -m venv .venv-cuda12
-source .venv-cuda12/bin/activate
-
-# PyTorch + CUDA 12.4
-pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
-    --index-url https://download.pytorch.org/whl/cu124
-
-# PyG ecosystem
-pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric \
-    -f https://data.pyg.org/whl/torch-2.5.1+cu124.html
-
-# SpConv (pip, no compilation!)
-pip install spconv-cu124
-
-# Python dependencies
-pip install hydra-core==1.3.2 omegaconf==2.3.0 wandb tensorboard tqdm pandas \
-    scikit-learn matplotlib h5py plyfile "laspy[lazrs]" gdown numba joblib \
-    pykdtree jaklas pytorch-metric-learning addict
-
-# Environment
-export SAT_ROOT=$(pwd)
-export SPARSE_BACKEND=spconv
-export PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
-```
-
-### CUDA 11.8 (legacy)
-
-See [local-build.md](local-build.md) for the full local build guide with MinkowskiEngine.
-
-### Verify installation
-
-```bash
-# CUDA 12.4
-python -c "import torch; print(f'PyTorch {torch.__version__}, CUDA {torch.cuda.is_available()}')"
-python -c "import spconv; print(f'SpConv {spconv.__version__}')"
-python -c "from sat.clustering.region_grow import region_grow; print('region_grow OK')"
-```
+See [local-build.md](local-build.md) for the full local build guide.
 
 ## Singularity / Apptainer
 

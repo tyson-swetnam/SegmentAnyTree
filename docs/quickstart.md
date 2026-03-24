@@ -26,35 +26,61 @@ Copy your `.las`, `.laz`, or `.ply` files into `$HOME/segmentanytree/input/`.
 
 ### 3. Run inference
 
-```bash
-docker run --gpus all \
-  -v $HOME/segmentanytree/input:/data/input \
-  -v $HOME/segmentanytree/output:/data/output \
-  segmentanytree:latest \
-  bash scripts/run_inference.sh /data/input /data/output true
-```
+=== "Harbor Registry"
+
+    ```bash
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    docker run --gpus all \
+      -v $HOME/segmentanytree/input:/data/input \
+      -v $HOME/segmentanytree/output:/data/output \
+      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      bash scripts/run_inference.sh /data/input /data/output true
+    ```
+
+=== "Local Build"
+
+    ```bash
+    docker run --gpus all \
+      -v $HOME/segmentanytree/input:/data/input \
+      -v $HOME/segmentanytree/output:/data/output \
+      segmentanytree:cuda12 \
+      bash scripts/run_inference.sh /data/input /data/output true
+    ```
 
 ### 4. Check results
 
-Segmented files appear in `$HOME/segmentanytree/output/final_results/`:
-- `*_instance_segmentation.las` — each tree gets a unique instance ID
-- `*_semantic_segmentation.las` — per-point tree/non-tree classification
+Segmented files appear in `$HOME/segmentanytree/output/final_results/` as `.copc.laz` files (Cloud-Optimized Point Clouds). Each file contains the original point cloud with two extra dimensions added by the model.
+
+If COPC conversion is not available, output files will be `.las` instead.
 
 ### 5. Interactive mode (JupyterLab)
 
-```bash
-docker run --gpus all -p 8888:8888 \
-  -v $HOME/segmentanytree/input:/data/input \
-  -v $HOME/segmentanytree/output:/data/output \
-  segmentanytree:latest
-```
+=== "Harbor Registry"
 
-Open http://localhost:8888 and use the notebooks in `notebooks/`.
+    ```bash
+    docker run --gpus all -p 8888:8888 \
+      -v $HOME/segmentanytree/input:/data/input \
+      -v $HOME/segmentanytree/output:/data/output \
+      harbor.cyverse.org/vice/segmentanytree:cuda12
+    ```
+
+=== "Local Build"
+
+    ```bash
+    docker run --gpus all -p 8888:8888 \
+      -v $HOME/segmentanytree/input:/data/input \
+      -v $HOME/segmentanytree/output:/data/output \
+      segmentanytree:cuda12
+    ```
+
+Open http://localhost:8888 and use the notebooks in `notebooks/`. See the [Notebooks](notebooks.md) page for descriptions of each notebook.
 
 ## Output format
 
-The output LAS files contain two extra dimensions:
+The output files contain two extra dimensions:
 - **PredSemantic**: `0` = unclassified, `1` = non-tree, `2` = tree
 - **PredInstance**: unique integer ID per detected tree (0 = unassigned)
 
-These files preserve all original point attributes (coordinates, intensity, return number, etc.) with UTM coordinates restored.
+These files preserve all original point attributes (coordinates, intensity, return number, etc.) with UTM coordinates restored. Output is in [COPC](https://copc.io/) format (`.copc.laz`) for efficient streaming and visualization in tools like [CloudCompare](https://www.danielgm.net/cc/), [QGIS](https://qgis.org/), and [Potree](https://potree.github.io/).
+
+See the [Scientific Workflow](workflow.md) guide for the full end-to-end process including visualization.

@@ -74,13 +74,24 @@ iget -r /iplant/projects/sweri/lidar_examples/ $HOME/segmentanytree/input/
 
 Once you have data downloaded:
 
-=== "Docker"
+=== "Docker (Harbor)"
+
+    ```bash
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    docker run --gpus all \
+      -v $HOME/segmentanytree/input:/data/input \
+      -v $HOME/segmentanytree/output:/data/output \
+      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      bash scripts/run_inference.sh /data/input /data/output true
+    ```
+
+=== "Docker (Local Build)"
 
     ```bash
     docker run --gpus all \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      segmentanytree:latest \
+      segmentanytree:cuda12 \
       bash scripts/run_inference.sh /data/input /data/output true
     ```
 
@@ -90,7 +101,7 @@ Once you have data downloaded:
     singularity exec --nv \
       --bind $HOME/segmentanytree/input:/data/input \
       --bind $HOME/segmentanytree/output:/data/output \
-      segmentanytree.sif \
+      segmentanytree-cuda12.sif \
       bash /opt/segmentanytree/scripts/run_inference.sh /data/input /data/output true
     ```
 

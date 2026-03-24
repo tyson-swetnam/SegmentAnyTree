@@ -1,18 +1,37 @@
 # Inference Guide
 
+## Scientific Context
+
+SegmentAnyTree performs **panoptic segmentation** on 3D LiDAR point clouds, combining two complementary tasks:
+
+- **Semantic segmentation**: classifies each point as tree, non-tree, or unclassified
+- **Instance segmentation**: assigns a unique ID to each individual tree
+
+This enables downstream forestry analysis including per-tree height estimation, crown diameter measurement, stem position mapping, and biomass estimation. The model works across sensor types (ALS, UAS, TLS, MLS) without retraining.
+
+See the [Scientific Workflow](workflow.md) guide for the full end-to-end process.
+
 ## Pipeline Overview
 
 The inference pipeline transforms input point clouds through several stages:
 
+```mermaid
+graph LR
+    A[Input .las/.laz/.ply] --> B[Sanitize filenames]
+    B --> C[UTM → local coords]
+    C --> D[Model inference]
+    D --> E[Rename & merge results]
+    E --> F[Restore UTM coords]
+    F --> G[Convert to COPC]
+    G --> H[Output .copc.laz]
 ```
-Input (.las/.laz/.ply)
-  → File preparation (sanitize filenames)
-  → UTM → local coordinates (subtract min x/y/z, save offsets)
-  → Model inference (PointGroup-PAPER, panoptic segmentation)
-  → Result renaming (index → descriptive names)
-  → Result merging (combine predictions with original point cloud, restore UTM)
-  → Output (.las with PredSemantic + PredInstance fields)
-```
+
+1. **File preparation** — sanitize filenames (replace spaces/dashes)
+2. **UTM → local coordinates** — subtract min x/y/z, save offsets to JSON
+3. **Model inference** — PointGroup-PAPER panoptic segmentation
+4. **Result renaming** — map generic indices to descriptive filenames
+5. **Result merging** — combine predictions with original point cloud, restore UTM
+6. **COPC conversion** — convert LAZ to Cloud-Optimized Point Cloud format via PDAL
 
 ## Running Inference
 
@@ -86,6 +105,34 @@ You never need to manually transform coordinates.
 
 All original point attributes are preserved in the output.
 
+## COPC Output
+
+The pipeline automatically converts output files to **COPC** (Cloud-Optimized Point Cloud) format using [PDAL](https://pdal.io/). COPC is a LAZ 1.4 file with an embedded spatial octree index that enables:
+
+- Efficient HTTP range-request streaming for web viewers
+- Fast partial reads — load only the spatial region you need
+- Native support in QGIS 3.26+, CloudCompare, Potree, and [copc.io](https://viewer.copc.io/)
+
+Output files have the `.copc.laz` extension. If PDAL is not available, the pipeline falls back to standard `.laz` output.
+
+### Standalone COPC conversion
+
+To convert existing LAZ files to COPC format outside the inference pipeline:
+
+```python
+from sat.io.las_io import laz_to_copc
+
+# Single file
+laz_to_copc("segmented.laz", "segmented.copc.laz", verbose=True)
+```
+
+```bash
+# Or via PDAL directly
+pdal translate input.laz output.copc.laz --writer copc
+```
+
+See the [COPC Conversion notebook](notebooks.md) for batch conversion examples.
+
 ## Environment Variables
 
 | Variable | Default | Description |
@@ -94,6 +141,8 @@ All original point attributes are preserved in the output.
 | `SAT_MODEL` | `$SAT_ROOT/model_file` | Checkpoint directory |
 | `SAT_DATA` | `$SAT_ROOT/data` | Data directory |
 | `SAT_CACHE` | `/tmp/sat_cache` | Temporary files |
+| `SAT_GPU` | `0` | GPU device index for single-GPU inference |
+| `NUM_GPUS` | Auto-detect all | Number of GPUs for parallel inference |
 
 ## Multi-GPU Inference
 
@@ -110,13 +159,26 @@ bash scripts/run_inference_parallel.sh /data/input /data/output 4
 Files are assigned round-robin across GPUs. Each GPU runs an independent inference pipeline. Results are merged into `output/final_results/`.
 
 For Docker:
-```bash
-docker run --gpus all \
-  -v $HOME/data/input:/data/input \
-  -v $HOME/data/output:/data/output \
-  segmentanytree:cuda12 \
-  bash scripts/run_inference_parallel.sh /data/input /data/output
-```
+
+=== "Harbor Registry"
+
+    ```bash
+    docker run --gpus all \
+      -v $HOME/data/input:/data/input \
+      -v $HOME/data/output:/data/output \
+      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      bash scripts/run_inference_parallel.sh /data/input /data/output
+    ```
+
+=== "Local Build"
+
+    ```bash
+    docker run --gpus all \
+      -v $HOME/data/input:/data/input \
+      -v $HOME/data/output:/data/output \
+      segmentanytree:cuda12 \
+      bash scripts/run_inference_parallel.sh /data/input /data/output
+    ```
 
 ## Troubleshooting
 
