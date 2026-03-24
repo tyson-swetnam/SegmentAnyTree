@@ -339,10 +339,12 @@ def SparseTensor(feats, coordinates, batch, device=torch.device("cpu")):
     indices = torch.cat([batch.int(), coords_zyx], dim=-1).contiguous()
 
     # Compute spatial shape from coordinate ranges.
-    # Pad to at least 128 per dimension to prevent spatial collapse in deep UNets
-    # (7 encoder layers with stride=2 need 2^7=128 minimum).
+    # Add generous padding so boundary coordinates survive all strided convolutions.
+    # Each stride=2 + kernel=3 + padding=1 layer needs coordinates well within bounds.
+    # Use max(coord) + kernel_padding_margin to ensure no points are dropped.
     raw_shape = (coords_zyx.max(0).values + 1).tolist()
-    spatial_shape = [max(s, 128) for s in raw_shape]  # [D, H, W] = [z, y, x]
+    # Pad each dimension: at least 2x the max coord to handle deep UNets with stride=2
+    spatial_shape = [max(s * 2, 256) for s in raw_shape]  # [D, H, W] = [z, y, x]
 
     batch_size = int(batch.max().item()) + 1
 
