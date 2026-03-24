@@ -10,6 +10,10 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SAT_ROOT="${SAT_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
 export PYTHONPATH="$SAT_ROOT:${PYTHONPATH:-}"
+export SPARSE_BACKEND="${SPARSE_BACKEND:-spconv}"
+
+# GPU device assignment (default: 0, set by parallel launcher)
+export CUDA_VISIBLE_DEVICES="${SAT_GPU:-${CUDA_VISIBLE_DEVICES:-0}}"
 
 # Parse arguments with portable defaults
 SOURCE_DIR="${1:-}"
@@ -96,9 +100,12 @@ for laz_file in "$FINAL_DIR"/*.laz; do
     # Skip files that are already COPC
     case "$laz_file" in *.copc.laz) continue ;; esac
     copc_file="${laz_file%.laz}.copc.laz"
-    python3 -c "from sat.io.las_io import laz_to_copc; laz_to_copc('$laz_file', '$copc_file', verbose=True)"
-    # Remove the non-COPC LAZ after successful conversion
-    rm -f "$laz_file"
+    if python3 -c "from sat.io.las_io import laz_to_copc; laz_to_copc('$laz_file', '$copc_file', verbose=True)" 2>/dev/null; then
+        # Remove the non-COPC LAZ after successful conversion
+        rm -f "$laz_file"
+    else
+        echo "COPC conversion failed for $laz_file (keeping original LAZ)"
+    fi
 done
 
 num_files=$(find "$FINAL_DIR" -maxdepth 1 -type f | wc -l)
