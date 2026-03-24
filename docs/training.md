@@ -88,3 +88,19 @@ python train.py \
     job_name=finetune_run \
     training.checkpoint_dir=model_file
 ```
+
+## Multi-GPU Training (DDP)
+
+Train across multiple GPUs using PyTorch DistributedDataParallel:
+
+```bash
+# 4-GPU training
+torchrun --nproc_per_node=4 train.py task=panoptic data=panoptic/treeins \
+  models=panoptic/area4_ablation_3heads model_name=PointGroup-PAPER \
+  training=treeins job_name=ddp_4gpu
+
+# Or use the Makefile
+make train-ddp GPUS=4
+```
+
+DDP automatically shards the dataset across GPUs and synchronizes gradients. Only rank 0 saves checkpoints and logs to wandb. Single-GPU training (`python train.py ...`) is unchanged.

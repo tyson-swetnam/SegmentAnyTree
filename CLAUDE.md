@@ -16,6 +16,7 @@ Paper: Wielgosz et al. (2024), "SegmentAnyTree: A sensor and platform agnostic d
 - Upstream repository: `https://github.com/SmartForest-no/SegmentAnyTree`
 - This fork's repository: `https://github.com/tyson-swetnam/SegmentAnyTree`
 - Branch `2026-update` contains Docker build and performance work
+- Branch `cuda12-spconv` replaces MinkowskiEngine with SpConv v2.x for CUDA 12.4+ support
 - When making changes, consider whether they should be contributed back upstream via PR
 
 ## Build & Run Commands
@@ -88,9 +89,15 @@ All paths are derived from environment variables (no hardcoded paths):
 - `SAT_DATA` — Data directory (Docker: `/data`)
 - `SAT_MODEL` — Model checkpoint directory
 - `SAT_CACHE` — Temporary files
+- `SPARSE_BACKEND` — Sparse convolution backend: `spconv` (default), `torchsparse`, or `minkowski`
+- `SAT_GPU` — GPU device index for single-GPU inference (default: 0, set by parallel launcher)
+- `NUM_GPUS` — Number of GPUs for parallel inference (default: auto-detect all)
 
 ### Key Technical Details
-- **Python 3.10**, **PyTorch 2.1.2**, **CUDA 11.8** (Docker base: `nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04`)
-- GPU libraries: MinkowskiEngine, torchsparse v1.4.0, torch-points-kernels
-- Pre-trained model: `model_file/PointGroup-PAPER.pt`
+- **Python 3.10**, **PyTorch 2.5.1**, **CUDA 12.4** (Docker base: `nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04`)
+- Sparse convolution backend: **SpConv v2.x** (`spconv-cu124`, pip-installable)
+- Clustering: Pure PyTorch `region_grow` implementation (`sat/clustering/region_grow.py`) using `torch_cluster.radius()`
+- Backend abstraction: `torch_points3d/modules/SparseConv3d/nn/` supports spconv, torchsparse, and minkowski backends via `SPARSE_BACKEND` env var
+- GPU scaling: Auto-detects GPU memory to scale `cluster_nsample` (32 default → 200 on A100 80GB); multi-GPU parallel inference via `scripts/run_inference_parallel.sh`; DDP training via `torchrun`
+- Pre-trained model: `model_file/PointGroup-PAPER.pt` (use `scripts/migrate_weights.py` to convert from ME format)
 - Input formats: .las, .laz, .ply; Output format: .las with PredSemantic + PredInstance fields

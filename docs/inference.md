@@ -95,6 +95,29 @@ All original point attributes are preserved in the output.
 | `SAT_DATA` | `$SAT_ROOT/data` | Data directory |
 | `SAT_CACHE` | `/tmp/sat_cache` | Temporary files |
 
+## Multi-GPU Inference
+
+Distribute files across all available GPUs for parallel processing:
+
+```bash
+# Auto-detect all GPUs
+bash scripts/run_inference_parallel.sh /data/input /data/output
+
+# Specify GPU count
+bash scripts/run_inference_parallel.sh /data/input /data/output 4
+```
+
+Files are assigned round-robin across GPUs. Each GPU runs an independent inference pipeline. Results are merged into `output/final_results/`.
+
+For Docker:
+```bash
+docker run --gpus all \
+  -v $HOME/data/input:/data/input \
+  -v $HOME/data/output:/data/output \
+  segmentanytree:cuda12 \
+  bash scripts/run_inference_parallel.sh /data/input /data/output
+```
+
 ## Troubleshooting
 
 See [troubleshooting.md](troubleshooting.md) for common issues.

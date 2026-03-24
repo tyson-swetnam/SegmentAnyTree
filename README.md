@@ -35,6 +35,13 @@ docker run --gpus all \
 # 4. Results in $HOME/segmentanytree/output/final_results/
 ```
 
+# 5. Multi-GPU inference (if multiple GPUs available)
+docker run --gpus all \
+  -v $HOME/segmentanytree/input:/data/input \
+  -v $HOME/segmentanytree/output:/data/output \
+  segmentanytree:latest \
+  bash scripts/run_inference_parallel.sh /data/input /data/output
+
 ### Interactive Mode (JupyterLab)
 
 ```bash
@@ -51,10 +58,17 @@ Open http://localhost:8888 and use the starter notebooks.
 ```bash
 git clone https://github.com/tyson-swetnam/SegmentAnyTree.git
 cd SegmentAnyTree
-docker build -t segmentanytree:latest .
+
+# CUDA 12.4 (recommended — faster build, modern GPU support)
+make build-cuda12
+
+# CUDA 11.8 (legacy — for older drivers or MinkowskiEngine compatibility)
+make build-cuda11
 ```
 
 **Requirements**: Docker with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html), NVIDIA GPU (Volta+).
+
+See [docker/README.md](docker/README.md) for details on both image variants.
 
 ## Training
 
@@ -92,24 +106,23 @@ SegmentAnyTree/
 ├── model_file/             # Pre-trained PointGroup-PAPER checkpoint
 ├── scripts/                # Shell scripts (inference, batch, docker, training)
 ├── notebooks/              # JupyterLab starter notebooks
+├── docker/                 # Dockerfiles for CUDA 11 and CUDA 12
 ├── docs/                   # Documentation
 ├── tests/                  # Automated tests
 ├── train.py                # Training entry point
 ├── eval.py                 # Evaluation/inference entry point
-└── Dockerfile              # Ubuntu 22.04 + CUDA 11.8 + PyTorch 2.1 + JupyterLab
+└── Dockerfile              # Default (CUDA 12.4 + SpConv v2.x)
 ```
 
 ## Docker Image Stack
 
-| Component | Version |
-|-----------|---------|
-| Ubuntu | 22.04 |
-| CUDA | 11.8.0 + cuDNN 8 |
-| Python | 3.10 |
-| PyTorch | 2.1.2 |
-| JupyterLab | 4.x |
-
-> **Note**: CUDA 11.8 is used because MinkowskiEngine (a core dependency) is incompatible with CUDA 12.x due to unresolved `libcu++` template conflicts. Your NVIDIA driver (525+) supports CUDA 11.8 containers.
+| | CUDA 12.4 (default) | CUDA 11.8 (legacy) |
+|---|---|---|
+| **Dockerfile** | `docker/Dockerfile.cuda12` | `docker/Dockerfile.cuda11` |
+| **PyTorch** | 2.5.1 | 2.1.2 |
+| **Sparse Backend** | SpConv v2.x (pip) | MinkowskiEngine (source) |
+| **Build Time** | ~15 min | ~40 min |
+| **GPU Support** | Volta → Blackwell | Volta → Hopper |
 
 ## Issues
 
