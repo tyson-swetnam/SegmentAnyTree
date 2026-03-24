@@ -1,12 +1,16 @@
 # ============================================================
-# SegmentAnyTree — Default Dockerfile (CUDA 12.4 + SpConv v2.x)
+# SegmentAnyTree — CUDA 12.4 Docker Image
 #
-# This file mirrors docker/Dockerfile.cuda12. See docker/ for both variants.
+# Ubuntu 22.04 + CUDA 12.4 + Python 3.10 + PyTorch 2.5 + SpConv v2.x
+# No source-built GPU libraries — all pip-installable.
 #
-# Build:
-#   docker build -t segmentanytree:latest .
-#   make build-cuda12    (recommended)
-#   make build-cuda11    (legacy CUDA 11.8 + MinkowskiEngine)
+# Build (from repo root):
+#   docker build -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
+#
+# Run:
+#   docker run --gpus all -p 8888:8888 segmentanytree:cuda12
+#   docker run --gpus all segmentanytree:cuda12 bash scripts/run_inference.sh /data/input /data/output
+#   docker run --gpus all segmentanytree:cuda12 bash scripts/run_inference_parallel.sh /data/input /data/output
 # ============================================================
 
 # ---- Stage 1: Builder ----

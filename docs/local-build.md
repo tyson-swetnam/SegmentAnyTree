@@ -4,12 +4,68 @@ This guide sets up SegmentAnyTree for development and inference directly on a Li
 
 ## Prerequisites
 
-- Linux (Ubuntu 20.04/22.04 recommended)
+- Linux (Ubuntu 20.04/22.04/24.04)
 - NVIDIA GPU with CUDA support (Compute Capability 7.0+)
 - NVIDIA driver installed (`nvidia-smi` works)
-- ~20 GB disk for CUDA toolkit + conda env
 
-## 1. Install Miniforge (conda + mamba)
+## Option A: CUDA 12.4 with SpConv (Recommended)
+
+The fastest setup — no source compilation needed.
+
+### Using conda/mamba (easiest)
+
+```bash
+mamba env create -f environment.yml
+conda activate sat
+export SAT_ROOT=$(pwd) SPARSE_BACKEND=spconv PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
+```
+
+### Using venv (no conda required)
+
+```bash
+# Create venv
+python3 -m venv .venv-cuda12
+source .venv-cuda12/bin/activate
+
+# PyTorch + CUDA 12.4
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
+    --index-url https://download.pytorch.org/whl/cu124
+
+# PyG ecosystem
+pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric \
+    -f https://data.pyg.org/whl/torch-2.5.1+cu124.html
+
+# SpConv v2.x (pip install, no compilation!)
+pip install spconv-cu124
+
+# Python dependencies
+pip install hydra-core==1.3.2 omegaconf==2.3.0 wandb tensorboard tqdm pandas \
+    scikit-learn matplotlib h5py plyfile "laspy[lazrs]" gdown numba joblib \
+    pykdtree jaklas pytorch-metric-learning addict torchnet
+
+# Environment setup
+export SAT_ROOT=$(pwd)
+export SAT_DATA=$SAT_ROOT/data
+export SPARSE_BACKEND=spconv
+export PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
+mkdir -p $SAT_DATA/input $SAT_DATA/output
+
+# Verify
+python -c "
+import torch; print('torch:', torch.__version__, 'cuda:', torch.cuda.is_available())
+import spconv; print('spconv:', spconv.__version__)
+from sat.clustering.region_grow import region_grow; print('region_grow: OK')
+"
+
+# Run inference
+bash scripts/run_inference.sh $SAT_DATA/input $SAT_DATA/output true
+```
+
+## Option B: CUDA 11.8 with MinkowskiEngine (Legacy)
+
+Requires source compilation of GPU libraries (~30 min).
+
+### B.1. Install Miniforge (conda + mamba)
 
 ```bash
 curl -fsSL -o /tmp/miniforge.sh \
@@ -19,7 +75,7 @@ rm /tmp/miniforge.sh
 export PATH="$HOME/miniforge/bin:$PATH"
 ```
 
-## 2. Install CUDA 11.8 Toolkit
+### B.2. Install CUDA 11.8 Toolkit
 
 The GPU libraries (MinkowskiEngine, torchsparse, torch-points-kernels) require CUDA 11.8 to match the PyTorch build. Install it to a user directory (no sudo needed):
 
@@ -32,13 +88,13 @@ rm /tmp/cuda_11.8.run
 
 Verify: `$HOME/cuda-11.8/bin/nvcc --version` should show `release 11.8`.
 
-## 3. Create Conda Environment
+### B.3. Create Conda Environment
 
 ```bash
 mamba create -n sat python=3.10 pdal cmake ninja git -y -c conda-forge
 ```
 
-## 4. Install Python Dependencies
+### B.4. Install Python Dependencies
 
 Activate the env and set CUDA paths:
 
@@ -90,7 +146,7 @@ except ImportError:
 PATCH
 ```
 
-## 5. Install GPU Libraries
+### B.5. Install GPU Libraries
 
 These must be compiled from source with matching CUDA 11.8 and GCC <= 11.
 
@@ -137,20 +193,19 @@ git clone --depth 1 https://github.com/NVIDIA/MinkowskiEngine.git /tmp/ME
 cd /tmp/ME && python setup.py install --blas=openblas --force_cuda
 ```
 
-## 6. Verify Installation
+### B.6. Verify Installation
 
 ```bash
 python -c "
 import torch; print('torch:', torch.__version__, 'cuda:', torch.cuda.is_available())
-from torch_points_kernels import region_grow; print('torch-points-kernels: OK')
-import MinkowskiEngine; print('MinkowskiEngine:', MinkowskiEngine.__version__)
-import torchsparse; print('torchsparse: OK')
+import spconv; print('spconv:', spconv.__version__)
+from sat.clustering.region_grow import region_grow; print('region_grow: OK')
 import laspy; print('laspy: OK')
 import subprocess; subprocess.run(['pdal', '--version'])
 "
 ```
 
-## 7. Run Inference
+### B.7. Run Inference
 
 ```bash
 export PATH="$HOME/miniforge/envs/sat/bin:$HOME/cuda-11.8/bin:$PATH"

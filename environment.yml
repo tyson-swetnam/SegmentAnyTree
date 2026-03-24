@@ -1,12 +1,17 @@
-# Conda environment for SegmentAnyTree local development.
-# Creates the base env; PyTorch + GPU libs installed via pip (see docs/local-build.md).
+# Conda environment for SegmentAnyTree local development (CUDA 12.4).
+#
+# Creates a complete env with PyTorch + SpConv + all dependencies.
+# No source compilation needed — all GPU libraries are pip-installable.
 #
 # Usage:
 #   mamba env create -f environment.yml
-#   # Then follow docs/local-build.md for PyTorch + GPU library installation
+#   conda activate sat
+#
+# For CUDA 11.8 (legacy MinkowskiEngine), see docs/local-build.md Option B.
 name: sat
 channels:
   - conda-forge
+  - pytorch
 dependencies:
   - python=3.10
   - pdal
@@ -14,3 +19,45 @@ dependencies:
   - ninja
   - git
   - pip
+  - pip:
+    # PyTorch + CUDA 12.4
+    - --extra-index-url https://download.pytorch.org/whl/cu124
+    - torch==2.5.1
+    - torchvision==0.20.1
+    - torchaudio==2.5.1
+    # PyG ecosystem (wheels from PyG server)
+    - torch-scatter
+    - torch-sparse
+    - torch-cluster
+    - torch-spline-conv
+    - torch-geometric
+    # SpConv (CUDA 12.4 wheel, replaces MinkowskiEngine)
+    - spconv-cu124
+    # Core dependencies
+    - hydra-core==1.3.2
+    - omegaconf==2.3.0
+    - wandb
+    - tensorboard
+    - tqdm
+    - pandas
+    - scikit-learn
+    - scikit-image
+    - matplotlib
+    - seaborn
+    - h5py
+    - plyfile
+    - "laspy[lazrs]"
+    - open3d
+    - gdown
+    - numba
+    - joblib
+    - dask
+    - pykdtree
+    - jaklas
+    - pytorch-metric-learning
+    - addict
+    - python-louvain
+    - hdbscan
+    - torchnet
+    - jupyterlab>=4.0
+    - ipywidgets
