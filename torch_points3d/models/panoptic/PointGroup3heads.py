@@ -494,11 +494,13 @@ class PointGroup3heads(BaseModel):
                 batch_cluster = self._voxelizer(batch_cluster)
 
             # Score
+            input_batch = batch_cluster.batch.long().clone()  # Save before UNet may alter it
             batch_cluster = batch_cluster.to("cpu")
             if self._scorer_type == "MLP":
                 score_backbone_out = self.ScorerMLP(batch_cluster.x.to(self.device))
                 cluster_feats = scatter(
-                    score_backbone_out, batch_cluster.batch.long().to(self.device), dim=0, reduce="max"
+                    score_backbone_out, input_batch.to(self.device), dim=0, reduce="max",
+                    dim_size=len(all_clusters),
                 )
             elif self._scorer_type == "encoder":
                 score_backbone_out = self.ScorerEncoder(batch_cluster)
@@ -507,15 +509,19 @@ class PointGroup3heads(BaseModel):
                 score_backbone_out = self.ScorerUnet(batch_cluster)
                 if self.mask_supervise:
                     mask_scores = self.MaskScore(score_backbone_out.x) # [point num of all proposals (voxelized), 1]
-                    
+
                     if self.use_mask_filter_score_feature and epoch > self.use_mask_filter_score_feature_start_epoch:
                         mask_index_select = torch.ones_like(mask_scores)
                         mask_index_select[torch.sigmoid(mask_scores) < self.mask_filter_score_feature_thre] = 0.
                         score_backbone_out.x = score_backbone_out.x * mask_index_select
                     # mask_scores = mask_scores[batch_cluster.inverse_indices] # [point num of all proposals, 1]
-                
+
+                # Use input_batch (preserved from before UNet) since the UNet's
+                # coordinate filtering may change point count and batch indices.
+                # If output has different point count, use output batch instead.
+                out_batch = score_backbone_out.batch.long().to(self.device) if hasattr(score_backbone_out, 'batch') and score_backbone_out.batch is not None else input_batch.to(self.device)
                 cluster_feats = scatter(
-                    score_backbone_out.x, batch_cluster.batch.long().to(self.device), dim=0, reduce="max",
+                    score_backbone_out.x, out_batch, dim=0, reduce="max",
                     dim_size=len(all_clusters),
                 ) # [num_cluster, 16]
 
