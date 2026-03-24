@@ -515,7 +515,8 @@ class PointGroup3heads(BaseModel):
                     # mask_scores = mask_scores[batch_cluster.inverse_indices] # [point num of all proposals, 1]
                 
                 cluster_feats = scatter(
-                    score_backbone_out.x, batch_cluster.batch.long().to(self.device), dim=0, reduce="max"
+                    score_backbone_out.x, batch_cluster.batch.long().to(self.device), dim=0, reduce="max",
+                    dim_size=len(all_clusters),
                 ) # [num_cluster, 16]
 
             cluster_scores = self.ScorerHead(cluster_feats).squeeze(-1) # [num_cluster, 1]
