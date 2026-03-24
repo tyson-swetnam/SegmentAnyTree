@@ -336,19 +336,19 @@ def SparseTensor(feats, coordinates, batch, device=torch.device("cpu")):
     # SpConv expects indices as [batch, z, y, x] (int32)
     # Input coordinates are [x, y, z], so we reorder to [z, y, x]
     coords_zyx = coordinates[:, [2, 1, 0]].int()
+
+    # Shift all coordinates away from boundaries by a margin.
+    # SpConv's strided conv validation rejects points that would fall outside
+    # the output spatial volume. A margin ensures no point is near any edge.
+    margin = 32
+    coords_zyx = coords_zyx + margin
+
     indices = torch.cat([batch.int(), coords_zyx], dim=-1).contiguous()
 
-    # Compute spatial shape from coordinate ranges.
-    # SpConv requires that ALL points survive through strided convolutions.
-    # With stride=2, kernel=3, padding=1, the output coord is floor((in + pad) / stride).
-    # For a 7-layer UNet with stride=2 each, coordinates are divided by 2^7 = 128.
-    # The spatial_shape must be a power of 2 that's larger than max(coord)+1
-    # to prevent boundary points from being dropped.
-    max_coords = (coords_zyx.max(0).values + 1).tolist()
-    # Round up to next power of 2 that provides headroom for strided convolutions.
-    # Minimum 512 to handle deep UNets (7 levels of stride=2).
+    # Spatial shape: max coord + margin, rounded to next power of 2 (min 512).
     import math
-    spatial_shape = [max(2 ** math.ceil(math.log2(max(s + 32, 1))), 512) for s in max_coords]
+    max_coords = (coords_zyx.max(0).values + margin + 1).tolist()
+    spatial_shape = [max(2 ** math.ceil(math.log2(max(s, 1))), 512) for s in max_coords]
 
     batch_size = int(batch.max().item()) + 1
 
