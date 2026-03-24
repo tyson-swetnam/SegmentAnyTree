@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 
 import sys
 
@@ -144,14 +145,19 @@ class ResNetDown(torch.nn.Module):
 
 class ResNetUp(ResNetDown):
     """
-    Same as Down conv but for the Decoder
+    Same as Down conv but for the Decoder.
+
+    For SpConv backend: uses the standard cat-then-transpose approach but filters
+    the transposed conv output to only keep coordinates present in the skip tensor.
+    This prevents the exponential coordinate growth that SparseConvTranspose3d causes.
     """
 
     CONVOLUTION = "Conv3dTranspose"
 
     def __init__(self, up_conv_nn=[], kernel_size=2, dilation=1, stride=2, N=1, **kwargs):
         super().__init__(
-            down_conv_nn=up_conv_nn, kernel_size=kernel_size, dilation=dilation, stride=stride, N=N, **kwargs,
+            down_conv_nn=up_conv_nn, kernel_size=kernel_size, dilation=dilation,
+            stride=stride, N=N, **kwargs,
         )
 
     def forward(self, x, skip):
@@ -159,4 +165,17 @@ class ResNetUp(ResNetDown):
             inp = snn.cat(x, skip)
         else:
             inp = x
-        return super().forward(inp)
+
+        out = super().forward(inp)
+
+        # For SpConv: SparseConvTranspose3d creates many new voxels beyond those in
+        # the skip connection. Filter output to only keep coordinates present in skip.
+        # This prevents exponential coordinate growth across decoder layers and matches
+        # MinkowskiEngine's behavior where transposed conv output stays within the
+        # encoder's coordinate set.
+        backend = snn.get_backend() if hasattr(snn, "get_backend") else None
+        if backend == "spconv" and skip is not None:
+            from torch_points3d.modules.SparseConv3d.nn.spconv import _filter_to_coords
+            out = _filter_to_coords(out, skip)
+
+        return out

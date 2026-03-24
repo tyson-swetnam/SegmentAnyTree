@@ -1,6 +1,6 @@
 import torch
 import os
-from torch_points_kernels import region_grow
+from sat.clustering.region_grow import region_grow
 from torch_geometric.data import Data
 from torch_scatter import scatter
 import random
@@ -8,7 +8,7 @@ import random
 from sklearn.cluster import MeanShift
 from torch_points3d.datasets.segmentation import IGNORE_LABEL
 from torch_points3d.models.base_model import BaseModel
-from torch_points3d.applications.minkowski import Minkowski
+from torch_points3d.applications.sparseconv3d import SparseConv3d
 from torch_points3d.core.common_modules import Seq, MLP, FastBatchNorm1d
 from torch_points3d.core.losses import offset_loss, instance_iou_loss, mask_loss, instance_ious, discriminative_loss
 from torch_points3d.core.data_transform import GridSampling3D
@@ -36,11 +36,12 @@ class PointGroupEmbed(BaseModel):
     def __init__(self, option, model_type, dataset, modules):
         super(PointGroupEmbed, self).__init__(option)
         backbone_options = option.get("backbone", {"architecture": "unet"})
-        self.Backbone = Minkowski(
+        self.Backbone = SparseConv3d(
             backbone_options.get("architecture", "unet"),
             input_nc=dataset.feature_dimension,
             num_layers=4,
             config=backbone_options.get("config", {}),
+            backend="spconv",
         )
 
         self._scorer_type = option.get("scorer_type", None)
@@ -51,9 +52,9 @@ class PointGroupEmbed(BaseModel):
             self._voxelizer = GridSampling3D(cluster_voxel_size, quantize_coords=True, mode="mean", return_inverse=True)
         else:
             self._voxelizer = None
-        self.ScorerUnet = Minkowski("unet", input_nc=self.Backbone.output_nc, num_layers=4, config=option.scorer_unet)
-        self.ScorerEncoder = Minkowski(
-            "encoder", input_nc=self.Backbone.output_nc, num_layers=4, config=option.scorer_encoder
+        self.ScorerUnet = SparseConv3d("unet", input_nc=self.Backbone.output_nc, num_layers=4, config=option.scorer_unet, backend="spconv")
+        self.ScorerEncoder = SparseConv3d(
+            "encoder", input_nc=self.Backbone.output_nc, num_layers=4, config=option.scorer_encoder, backend="spconv"
         )
         self.ScorerMLP = MLP([self.Backbone.output_nc, self.Backbone.output_nc, self.ScorerUnet.output_nc])
         self.ScorerHead = Seq().append(torch.nn.Linear(self.ScorerUnet.output_nc, 1)).append(torch.nn.Sigmoid())

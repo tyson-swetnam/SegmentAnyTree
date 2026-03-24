@@ -171,6 +171,14 @@ class SparseConv3dEncoder(BaseSparseConv3d):
 
 
 class SparseConv3dUnet(BaseSparseConv3d):
+    def __init__(self, option, model_type, dataset, modules):
+        super().__init__(option, model_type, dataset, modules)
+        # Pair encoder SparseConv3d layers with decoder SparseInverseConv3d layers
+        # so transposed convolutions reconstruct exact encoder input coordinates.
+        if sp3d.nn.get_backend() == "spconv":
+            from torch_points3d.modules.SparseConv3d.nn.spconv import pair_encoder_decoder
+            pair_encoder_decoder(self.down_modules, self.up_modules)
+
     def forward(self, data, *args, **kwargs):
         """Run forward pass.
         Input --- D1 -- D2 -- D3 -- U1 -- U2 -- output
@@ -204,7 +212,8 @@ class SparseConv3dUnet(BaseSparseConv3d):
         for i in range(len(self.up_modules)):
             data = self.up_modules[i](data, stack_down.pop())
 
-        out = Batch(x=data.F, pos=self.xyz).to(self.device)
+        # .C is standardized to [batch, x, y, z] by all backend wrappers
+        out = Batch(x=data.F, pos=self.xyz, batch=data.C[:, 0].long().to(data.F.device))
         if self.has_mlp_head:
             out.x = self.mlp(out.x)
         return out

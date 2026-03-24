@@ -24,7 +24,7 @@ from torch_points3d.applications.minkowski import Minkowski
 from torch_points3d.utils import is_list
 from .ply import read_ply, write_ply
 from os.path import exists, join
-from torch_points_kernels import region_grow
+from sat.clustering.region_grow import region_grow
 
 log = logging.getLogger(__name__)
 import time

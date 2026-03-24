@@ -1,57 +1,6 @@
 import torch
 import os
-from torch_points_kernels.torchpoints import ball_query_partial_dense
-from torch_points_kernels.cluster import _grow_proximity_core
-from typing import List as TypingList
-
-
-def region_grow(pos, labels, batch, ignore_labels=[], nsample=16, radius=0.02,
-                min_cluster_size=32) -> TypingList[torch.Tensor]:
-    """GPU-compatible region growing that keeps ball_query on device."""
-    import time as _time
-    import logging as _logging
-    _log = _logging.getLogger(__name__)
-
-    assert labels.dim() == 1
-    assert pos.dim() == 2
-    unique_labels = torch.unique(labels)
-    clusters = []
-    ind = torch.arange(0, pos.shape[0], device=pos.device)
-    for l in unique_labels:
-        if l in ignore_labels:
-            continue
-        label_mask = labels == l
-        n_label = label_mask.sum().item()
-        if n_label == 0:
-            continue
-        local_ind = ind[label_mask]
-        label_batch = batch[label_mask]
-        unique_in_batch = torch.unique(label_batch)
-        remaped_batch = torch.empty_like(label_batch)
-        for new, old in enumerate(unique_in_batch):
-            mask = label_batch == old
-            remaped_batch[mask] = new
-
-        t0 = _time.time()
-        label_pos = pos[label_mask, :]
-        neighbours = ball_query_partial_dense(
-            radius, nsample, label_pos, label_pos, remaped_batch, remaped_batch
-        )[0].cpu().numpy()
-        t_bq = _time.time() - t0
-
-        t1 = _time.time()
-        label_clusters = _grow_proximity_core(neighbours, min_cluster_size)
-        t_grow = _time.time() - t1
-
-        _log.info(f"[region_grow] label={l.item()}, points={n_label}, "
-                  f"ball_query={t_bq:.1f}s, grow={t_grow:.1f}s, "
-                  f"clusters={len(label_clusters)}")
-
-        if len(label_clusters):
-            for cluster in label_clusters:
-                cluster_t = torch.tensor(cluster, device=pos.device)
-                clusters.append(local_ind[cluster_t])
-    return clusters
+from sat.clustering.region_grow import region_grow
 from torch_geometric.data import Data
 from torch_scatter import scatter
 import random
@@ -59,7 +8,7 @@ import numpy as np
 
 from torch_points3d.datasets.segmentation import IGNORE_LABEL
 from torch_points3d.models.base_model import BaseModel
-from torch_points3d.applications.minkowski import Minkowski
+from torch_points3d.applications.sparseconv3d import SparseConv3d
 from torch_points3d.core.common_modules import Seq, MLP, FastBatchNorm1d
 from torch_points3d.core.losses import offset_loss, instance_iou_loss, mask_loss, instance_ious, discriminative_loss
 from torch_points3d.core.data_transform import GridSampling3D
@@ -80,11 +29,12 @@ class PointGroup3heads(BaseModel):
     def __init__(self, option, model_type, dataset, modules):
         super(PointGroup3heads, self).__init__(option)
         backbone_options = option.get("backbone", {"architecture": "unet"})
-        self.Backbone = Minkowski(
+        self.Backbone = SparseConv3d(
             backbone_options.get("architecture", "unet"),
             input_nc=dataset.feature_dimension,
             num_layers=4,
             config=backbone_options.get("config", {}),
+            backend="spconv",
         )
 
         self._scorer_type = option.get("scorer_type", None)
@@ -95,9 +45,9 @@ class PointGroup3heads(BaseModel):
             self._voxelizer = GridSampling3D(cluster_voxel_size, quantize_coords=True, mode="mean", return_inverse=True)
         else:
             self._voxelizer = None
-        self.ScorerUnet = Minkowski("unet", input_nc=self.Backbone.output_nc, num_layers=4, config=option.scorer_unet)
-        self.ScorerEncoder = Minkowski(
-            "encoder", input_nc=self.Backbone.output_nc, num_layers=4, config=option.scorer_encoder
+        self.ScorerUnet = SparseConv3d("unet", input_nc=self.Backbone.output_nc, num_layers=4, config=option.scorer_unet, backend="spconv")
+        self.ScorerEncoder = SparseConv3d(
+            "encoder", input_nc=self.Backbone.output_nc, num_layers=4, config=option.scorer_encoder, backend="spconv"
         )
         self.ScorerMLP = MLP([self.Backbone.output_nc, self.Backbone.output_nc, self.ScorerUnet.output_nc])
         self.ScorerHead = Seq().append(torch.nn.Linear(self.ScorerUnet.output_nc, 1)).append(torch.nn.Sigmoid())
@@ -243,15 +193,14 @@ class PointGroup3heads(BaseModel):
         """ Compute clusters from positions and votes """
         predicted_labels = torch.max(semantic_logits, 1)[1] # [N]
         clusters_votes = region_grow(
-            self.raw_pos + offset_logits,
-            predicted_labels,
-            self.input.batch.to(self.device),
-            ignore_labels=self._stuff_classes.to(self.device),
+            (self.raw_pos + offset_logits).cpu(),
+            predicted_labels.cpu(),
+            self.input.batch.cpu(),
+            ignore_labels=self._stuff_classes.cpu(),
             radius=self.opt.cluster_radius_search,
             nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10
         )
-        #clusters_votes = []
 
         all_clusters = clusters_votes
         all_clusters = [c.to(self.device) for c in all_clusters]
@@ -262,24 +211,22 @@ class PointGroup3heads(BaseModel):
         """ Compute clusters from positions and votes """
         predicted_labels = torch.max(semantic_logits, 1)[1] # [N]
         clusters_pos = region_grow(
-            self.raw_pos,
-            predicted_labels,
-            self.input.batch.to(self.device),
-            ignore_labels=self._stuff_classes.to(self.device),
+            self.raw_pos.cpu(),
+            predicted_labels.cpu(),
+            self.input.batch.cpu(),
+            ignore_labels=self._stuff_classes.cpu(),
             radius=self.opt.cluster_radius_search,
             min_cluster_size=10
         )
-        #clusters_pos = []
         clusters_votes = region_grow(
-            self.raw_pos + offset_logits,
-            predicted_labels,
-            self.input.batch.to(self.device),
-            ignore_labels=self._stuff_classes.to(self.device),
+            (self.raw_pos + offset_logits).cpu(),
+            predicted_labels.cpu(),
+            self.input.batch.cpu(),
+            ignore_labels=self._stuff_classes.cpu(),
             radius=self.opt.cluster_radius_search,
             nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10
         )
-        #clusters_votes = []
 
         all_clusters = clusters_pos + clusters_votes
         all_clusters = [c.to(self.device) for c in all_clusters]
@@ -371,12 +318,11 @@ class PointGroup3heads(BaseModel):
         """ Compute clusters from positions and votes """
         ###### Cluster using original position with predicted semantic labels ######
         predicted_labels = torch.max(semantic_logits, 1)[1] # [N]
-        clusters_pos = []
         clusters_pos = region_grow(
-            self.raw_pos + offset_logits,
-            predicted_labels,
-            self.input.batch.to(self.device),
-            ignore_labels=self._stuff_classes.to(self.device),
+            (self.raw_pos + offset_logits).cpu(),
+            predicted_labels.cpu(),
+            self.input.batch.cpu(),
+            ignore_labels=self._stuff_classes.cpu(),
             radius=self.opt.cluster_radius_search,
             nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10
@@ -396,7 +342,7 @@ class PointGroup3heads(BaseModel):
         local_ind = ind[label_mask]
         label_batch = self.input.batch.to(self.device)[label_mask]
         unique_in_batch = torch.unique(label_batch)
-        
+
         #Clustering based on embeddings
         embeds_u = embed_logits[label_mask]
         clusters_embed, cluster_type_embeds = meanshift_cluster.cluster_single(embeds_u, unique_in_batch, label_batch, local_ind, 1, self.opt.bandwidth)
@@ -417,19 +363,18 @@ class PointGroup3heads(BaseModel):
         """ Compute clusters from positions and votes """
         predicted_labels = torch.max(semantic_logits, 1)[1] # [N]
         clusters_pos = region_grow(
-            self.raw_pos,
-            predicted_labels,
-            self.input.batch.to(self.device),
-            ignore_labels=self._stuff_classes.to(self.device),
+            self.raw_pos.cpu(),
+            predicted_labels.cpu(),
+            self.input.batch.cpu(),
+            ignore_labels=self._stuff_classes.cpu(),
             radius=self.opt.cluster_radius_search,
             min_cluster_size=10
         )
-        #clusters_pos = []
         clusters_votes = region_grow(
-            self.raw_pos + offset_logits,
-            predicted_labels,
-            self.input.batch.to(self.device),
-            ignore_labels=self._stuff_classes.to(self.device),
+            (self.raw_pos + offset_logits).cpu(),
+            predicted_labels.cpu(),
+            self.input.batch.cpu(),
+            ignore_labels=self._stuff_classes.cpu(),
             radius=self.opt.cluster_radius_search,
             nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10
@@ -479,12 +424,11 @@ class PointGroup3heads(BaseModel):
         min_thing_label = torch.min(self._thing_classes)
         for i in self._thing_classes:
             predicted_labels[predicted_labels_copy==i] = min_thing_label.to(self.device)
-        clusters_pos = []
         clusters_pos = region_grow(
-            self.raw_pos + offset_logits,
-            predicted_labels,
-            self.input.batch.to(self.device),
-            ignore_labels=self._stuff_classes.to(self.device),
+            (self.raw_pos + offset_logits).cpu(),
+            predicted_labels.cpu(),
+            self.input.batch.cpu(),
+            ignore_labels=self._stuff_classes.cpu(),
             radius=self.opt.cluster_radius_search,
             nsample=self.opt.get("cluster_nsample", 200),
             min_cluster_size=10

@@ -8,24 +8,50 @@ sys.path.insert(0, ROOT)
 
 log = logging.getLogger(__name__)
 
-# Import torchsparse for documentation and linting purposes
+# Import a backend for documentation and linting purposes
 try:
-    from .torchsparse import *  # type: ignore
-except:
+    from .spconv import *  # type: ignore
+except Exception:
     try:
-        from .minkowski import *  # type: ignore
-    except:
-        pass
+        from .torchsparse import *  # type: ignore
+    except Exception:
+        try:
+            from .minkowski import *  # type: ignore
+        except Exception:
+            pass
 
 
 __all__ = ["cat", "Conv3d", "Conv3dTranspose", "ReLU", "SparseTensor", "BatchNorm"]
-for val in __all__:
-    exec(val + "=None")
 
 def backend_valid(_backend):
-    return _backend in {"torchsparse", "minkowski"}
+    return _backend in {"spconv", "torchsparse", "minkowski"}
 
+# Detect which backend was successfully imported at the top of this file
 sp3d_backend = None
+_imported_ok = "Conv3d" in dir() and locals().get("Conv3d") is not None
+if _imported_ok:
+    try:
+        import spconv.pytorch
+        sp3d_backend = "spconv"
+    except ImportError:
+        try:
+            import torchsparse
+            sp3d_backend = "torchsparse"
+        except ImportError:
+            try:
+                import MinkowskiEngine
+                sp3d_backend = "minkowski"
+            except ImportError:
+                pass
+
+if sp3d_backend is None:
+    # No backend available — set symbols to None so downstream code gets clear errors
+    cat = None
+    Conv3d = None
+    Conv3dTranspose = None
+    ReLU = None
+    SparseTensor = None
+    BatchNorm = None
 
 def get_backend():
     return sp3d_backend

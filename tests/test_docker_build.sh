@@ -32,15 +32,40 @@ check "bash exists" bash --version
 echo ""
 echo "Checking Python imports..."
 check "import torch" python3 -c "import torch; print(torch.__version__)"
-check "import MinkowskiEngine" python3 -c "import MinkowskiEngine"
-check "import torchsparse" python3 -c "import torchsparse"
-check "import torch_points_kernels" python3 -c "import torch_points_kernels"
 check "import torch_geometric" python3 -c "import torch_geometric"
 check "import hydra" python3 -c "import hydra"
 check "import laspy" python3 -c "import laspy"
 check "import plyfile" python3 -c "import plyfile"
 check "import sat" python3 -c "import sat"
-check "import torch_points3d" python3 -c "import torch_points3d"
+
+# Backend-specific checks: detect CUDA 12 (SpConv) vs CUDA 11 (MinkowskiEngine)
+printf "  %-50s " "sparse backend detection"
+BACKEND=$(docker run --rm "$IMAGE" python3 -c "
+import os; os.environ.setdefault('SPARSE_BACKEND', 'spconv')
+try:
+    import spconv; print('spconv')
+except ImportError:
+    try:
+        import MinkowskiEngine; print('minkowski')
+    except ImportError:
+        print('none')
+" 2>/dev/null)
+echo "$BACKEND"
+
+if [ "$BACKEND" = "spconv" ]; then
+    check "import spconv" python3 -c "import spconv; print(spconv.__version__)"
+    check "import sat.clustering" python3 -c "from sat.clustering.region_grow import region_grow"
+elif [ "$BACKEND" = "minkowski" ]; then
+    check "import MinkowskiEngine" python3 -c "import MinkowskiEngine"
+    check "import torchsparse" python3 -c "import torchsparse"
+    check "import torch_points_kernels" python3 -c "import torch_points_kernels"
+fi
+
+check "import torch_points3d" python3 -c "
+import os; os.environ.setdefault('SPARSE_BACKEND', 'spconv')
+import sat.compat.install; sat.compat.install.install_shims()
+import torch_points3d
+"
 
 echo ""
 echo "Checking environment..."

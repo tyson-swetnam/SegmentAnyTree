@@ -5,7 +5,7 @@ Get tree segmentation results in 5 minutes using the pre-built Docker image.
 ## Prerequisites
 
 - Docker with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
-- An NVIDIA GPU (Volta or newer: V100, A100, RTX 20xx/30xx/40xx) with driver 525+
+- An NVIDIA GPU (Volta or newer: V100, A100, RTX 20xx/30xx/40xx/50xx) with driver 525+
 - Point cloud files in `.las`, `.laz`, or `.ply` format
 
 !!! tip "No data yet?"

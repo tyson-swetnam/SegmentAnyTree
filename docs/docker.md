@@ -1,33 +1,47 @@
 # Docker Guide
 
-## Pre-built Image
+Two Docker image variants are provided. See [docker/README.md](../docker/README.md) for a quick comparison.
 
-```bash
-docker pull segmentanytree:latest
-```
+## Image Variants
 
-## Building From Source
+| | CUDA 12.4 (recommended) | CUDA 11.8 (legacy) |
+|---|---|---|
+| **Tag** | `segmentanytree:cuda12` | `segmentanytree:cuda11` |
+| **Dockerfile** | `docker/Dockerfile.cuda12` | `docker/Dockerfile.cuda11` |
+| **PyTorch** | 2.5.1 | 2.1.2 |
+| **Sparse Backend** | SpConv v2.x (pip install) | MinkowskiEngine + torchsparse (source build) |
+| **Clustering** | Pure PyTorch (`sat.clustering`) | torch-points-kernels (C++/CUDA) |
+| **Build Time** | ~15 min | ~40 min |
+| **GPU Support** | Volta through Blackwell (sm_70 - sm_100) | Volta through Hopper (sm_70 - sm_90) |
+| **Driver** | 525+ | 525+ |
+
+## Building
 
 ```bash
 git clone https://github.com/tyson-swetnam/SegmentAnyTree.git
 cd SegmentAnyTree
-docker build -t segmentanytree:latest .
-```
 
-Build takes 30-60 minutes due to GPU library compilation (MinkowskiEngine, torchsparse, torch-points-kernels).
+# CUDA 12.4 (recommended)
+make build-cuda12
+
+# CUDA 11.8 (legacy)
+make build-cuda11
+
+# Or directly:
+docker build -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
+docker build -f docker/Dockerfile.cuda11 -t segmentanytree:cuda11 .
+```
 
 ### Build requirements
 
 - Docker 20.10+ with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
-- NVIDIA driver 525+ (supports CUDA 11.8 containers)
+- NVIDIA driver 525+ (supports both CUDA 11.8 and 12.4 containers)
 - ~15 GB disk space for the final image
 
 ### Build without cache
 
-If you encounter stale layer issues:
-
 ```bash
-docker build --no-cache -t segmentanytree:latest .
+docker build --no-cache -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
 ```
 
 ## Running
@@ -38,7 +52,7 @@ docker build --no-cache -t segmentanytree:latest .
 docker run --gpus all -p 8888:8888 \
   -v $HOME/data/input:/data/input \
   -v $HOME/data/output:/data/output \
-  segmentanytree:latest
+  segmentanytree:cuda12
 ```
 
 Open http://localhost:8888 in your browser.
@@ -49,7 +63,7 @@ Open http://localhost:8888 in your browser.
 docker run --gpus all \
   -v $HOME/data/input:/data/input \
   -v $HOME/data/output:/data/output \
-  segmentanytree:latest \
+  segmentanytree:cuda12 \
   bash scripts/run_inference.sh /data/input /data/output true
 ```
 
@@ -59,15 +73,7 @@ docker run --gpus all \
 docker run --gpus all -it \
   -v $HOME/data/input:/data/input \
   -v $HOME/data/output:/data/output \
-  segmentanytree:latest bash
-```
-
-### Helper script
-
-```bash
-bash scripts/run_docker.sh jupyter ~/data/input ~/data/output  # JupyterLab
-bash scripts/run_docker.sh infer ~/data/input ~/data/output    # Batch inference
-bash scripts/run_docker.sh shell ~/data/input ~/data/output    # Shell
+  segmentanytree:cuda12 bash
 ```
 
 ## Volume Mounts
@@ -78,23 +84,6 @@ bash scripts/run_docker.sh shell ~/data/input ~/data/output    # Shell
 | `/data/output` | Output segmentation results |
 | `/tmp/sat_cache` | Temporary processing files (optional mount) |
 
-## Image Details
-
-| Component | Version |
-|-----------|---------|
-| Base | Ubuntu 22.04 |
-| CUDA | 11.8.0 + cuDNN 8 |
-| Python | 3.10 |
-| PyTorch | 2.1.2 |
-| MinkowskiEngine | latest (source build) |
-| torchsparse | v1.4.0 (source build) |
-| JupyterLab | 4.x |
-| PDAL | via Miniforge/Mamba |
-| GPU architectures | Volta (7.0), Turing (7.5), Ampere (8.0/8.6), Hopper (9.0) |
-
-!!! note "Why CUDA 11.8 instead of 12.x?"
-    MinkowskiEngine is incompatible with CUDA 12.x due to unresolved `libcu++` template conflicts in the sparse convolution kernels. CUDA 11.8 with PyTorch 2.1.2 is the most modern compatible combination. Your NVIDIA driver (525+) supports running CUDA 11.8 containers via backward compatibility.
-
 ## Environment Variables
 
 | Variable | Default | Description |
@@ -103,90 +92,77 @@ bash scripts/run_docker.sh shell ~/data/input ~/data/output    # Shell
 | `SAT_DATA` | `/data` | Input/output data directory |
 | `SAT_MODEL` | `/opt/segmentanytree/model_file` | Model checkpoint directory |
 | `SAT_CACHE` | `/tmp/sat_cache` | Temporary files |
+| `SPARSE_BACKEND` | `spconv` (CUDA 12) / not set (CUDA 11) | Sparse convolution backend |
+
+## Pre-trained Weights
+
+The CUDA 12.4 image uses SpConv v2.x which has different weight format than MinkowskiEngine. To convert weights:
+
+```bash
+python scripts/migrate_weights.py \
+  --input model_file/PointGroup-PAPER.pt \
+  --output model_file/PointGroup-PAPER-spconv.pt
+```
+
+The CUDA 11.8 image uses the original weights directly.
 
 ## Dockerfile Architecture
 
-The image uses a **multi-stage build**:
+Both images use a **multi-stage build**:
 
-1. **Builder stage**: Compiles MinkowskiEngine, torchsparse, and torch-points-kernels from source with CUDA support
+1. **Builder stage**: Installs PyTorch, GPU libraries, and Python dependencies
 2. **Runtime stage**: Copies compiled libraries, adds JupyterLab, PDAL, and project code
 
-This keeps the final image smaller by excluding build tools (cmake, ninja, etc.).
+### CUDA 12.4 build highlights
+- SpConv v2.x installed via `pip install spconv-cu124` (no source compilation)
+- Clustering uses pure PyTorch (no C++/CUDA compilation)
+- ~20-30 min faster builds than CUDA 11.8
+
+### CUDA 11.8 build highlights
+- MinkowskiEngine, torchsparse, and torch-points-kernels compiled from source
+- Requires `libsparsehash-dev` and `libopenblas-dev` build dependencies
 
 ## Local Build (without Docker)
 
-For development or systems where Docker isn't available, you can build locally:
-
-### Prerequisites
-
-- NVIDIA GPU with CUDA 11.8 toolkit installed
-- Python 3.10
-- OpenBLAS (`libopenblas-dev`)
-- sparsehash (`libsparsehash-dev`)
-
-### Steps
+### CUDA 12.4 (recommended)
 
 ```bash
-# Clone the repository
-git clone https://github.com/tyson-swetnam/SegmentAnyTree.git
-cd SegmentAnyTree
+python3 -m venv .venv-cuda12
+source .venv-cuda12/bin/activate
 
-# Create a virtual environment
-python3.10 -m venv .venv
-source .venv/bin/activate
+# PyTorch + CUDA 12.4
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
+    --index-url https://download.pytorch.org/whl/cu124
 
-# Install PyTorch with CUDA 11.8
-pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 \
-    --index-url https://download.pytorch.org/whl/cu118
-
-# Install PyTorch Geometric ecosystem
+# PyG ecosystem
 pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric \
-    -f https://data.pyg.org/whl/torch-2.1.2+cu118.html
+    -f https://data.pyg.org/whl/torch-2.5.1+cu124.html
 
-# Build MinkowskiEngine from source
-git clone --depth 1 https://github.com/NVIDIA/MinkowskiEngine.git /tmp/MinkowskiEngine
-cd /tmp/MinkowskiEngine
-TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;9.0" python setup.py install --blas=openblas --force_cuda
-cd -
+# SpConv (pip, no compilation!)
+pip install spconv-cu124
 
-# Build torchsparse v1.4.0
-TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;9.0" FORCE_CUDA=1 \
-    pip install --no-build-isolation git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
-
-# Build torch-points-kernels
-git clone --depth 1 https://github.com/torch-points3d/torch-points-kernels.git /tmp/torch-points-kernels
-cd /tmp/torch-points-kernels
-TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;9.0" FORCE_CUDA=1 python setup.py install
-cd -
-
-# Install remaining Python dependencies
+# Python dependencies
 pip install hydra-core==1.3.2 omegaconf==2.3.0 wandb tensorboard tqdm pandas \
-    scikit-learn scikit-image matplotlib seaborn h5py plyfile "laspy[lazrs]" \
-    open3d gdown numba joblib dask pykdtree jaklas pytorch-metric-learning \
-    addict python-louvain hdbscan jupyterlab ipywidgets
+    scikit-learn matplotlib h5py plyfile "laspy[lazrs]" gdown numba joblib \
+    pykdtree jaklas pytorch-metric-learning addict
 
-# Set environment variables
+# Environment
 export SAT_ROOT=$(pwd)
-export SAT_DATA=$SAT_ROOT/data
-export SAT_MODEL=$SAT_ROOT/model_file
-export SAT_CACHE=/tmp/sat_cache
+export SPARSE_BACKEND=spconv
 export PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
-mkdir -p $SAT_DATA/input $SAT_DATA/output $SAT_CACHE
 ```
+
+### CUDA 11.8 (legacy)
+
+See [local-build.md](local-build.md) for the full local build guide with MinkowskiEngine.
 
 ### Verify installation
 
 ```bash
+# CUDA 12.4
 python -c "import torch; print(f'PyTorch {torch.__version__}, CUDA {torch.cuda.is_available()}')"
-python -c "import MinkowskiEngine; print(f'MinkowskiEngine {MinkowskiEngine.__version__}')"
-python -c "import torchsparse; print('torchsparse OK')"
-python -c "import torch_points_kernels; print('torch-points-kernels OK')"
-```
-
-### Run inference locally
-
-```bash
-bash scripts/run_inference.sh $SAT_DATA/input $SAT_DATA/output true
+python -c "import spconv; print(f'SpConv {spconv.__version__}')"
+python -c "from sat.clustering.region_grow import region_grow; print('region_grow OK')"
 ```
 
 ## Singularity / Apptainer

@@ -1,0 +1,230 @@
+# ============================================================
+# SegmentAnyTree — Modernized Docker Image (2026)
+#
+# Ubuntu 22.04 + CUDA 12.4 + Python 3.10 + PyTorch 2.4
+# Includes JupyterLab for interactive use
+#
+# Build:
+#   docker build -t segmentanytree:latest .
+#
+# Run (JupyterLab):
+#   docker run --gpus all -p 8888:8888 \
+#     -v $HOME/data/input:/data/input \
+#     -v $HOME/data/output:/data/output \
+#     segmentanytree:latest
+#
+# Run (batch inference):
+#   docker run --gpus all \
+#     -v $HOME/data/input:/data/input \
+#     -v $HOME/data/output:/data/output \
+#     segmentanytree:latest \
+#     bash scripts/run_inference.sh /data/input /data/output
+# ============================================================
+
+# ---- Stage 1: Builder ----
+# NOTE: MinkowskiEngine is incompatible with CUDA 12 (libcu++ template conflicts).
+# Using CUDA 11.8 + Ubuntu 22.04 as the most modern compatible combination.
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime
+
+# System dependencies for building GPU libraries
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    git \
+    ninja-build \
+    python3.10 \
+    python3.10-dev \
+    python3.10-venv \
+    python3-pip \
+    wget \
+    unzip \
+    libglib2.0-0 \
+    libglu1-mesa-dev \
+    libopenblas-dev \
+    libosmesa6-dev \
+    libsm6 \
+    libsparsehash-dev \
+    libusb-1.0-0-dev \
+    libtbb-dev \
+    libxcb-shm0 \
+    libxext6 \
+    libxrender-dev \
+    libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Make python3.10 the default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
+
+# Upgrade pip and install build prerequisites
+RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel ninja numpy scipy cython
+
+# ---- PyTorch 2.1 + CUDA 11.8 ----
+ENV CU_VERSION=cu118
+ENV TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;9.0"
+
+RUN python3 -m pip install --no-cache-dir \
+    torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 \
+    --index-url https://download.pytorch.org/whl/${CU_VERSION}
+
+# ---- PyTorch Geometric ecosystem ----
+RUN python3 -m pip install --no-cache-dir \
+    torch-scatter \
+    torch-sparse \
+    torch-cluster \
+    torch-spline-conv \
+    torch-geometric \
+    -f https://data.pyg.org/whl/torch-2.1.2+${CU_VERSION}.html
+
+# ---- MinkowskiEngine (source build) ----
+RUN git clone --depth 1 https://github.com/NVIDIA/MinkowskiEngine.git /tmp/MinkowskiEngine && \
+    cd /tmp/MinkowskiEngine && \
+    TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" \
+    python3 setup.py install --blas=openblas --force_cuda && \
+    rm -rf /tmp/MinkowskiEngine
+
+# ---- torchsparse v1.4.0 (source build, --no-build-isolation to find torch) ----
+RUN TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" FORCE_CUDA=1 \
+    python3 -m pip install --no-cache-dir --no-build-isolation \
+    git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
+
+# ---- torch-points-kernels (provides region_grow for clustering) ----
+# Build from source to avoid numpy distutils issues with pip build isolation
+RUN git clone --depth 1 https://github.com/torch-points3d/torch-points-kernels.git /tmp/torch-points-kernels && \
+    cd /tmp/torch-points-kernels && \
+    TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" FORCE_CUDA=1 \
+    python3 setup.py install && \
+    rm -rf /tmp/torch-points-kernels
+
+# ---- Core Python dependencies ----
+RUN python3 -m pip install --no-cache-dir \
+    hydra-core==1.3.2 \
+    omegaconf==2.3.0 \
+    wandb \
+    tensorboard \
+    tqdm \
+    pandas \
+    scikit-learn \
+    scikit-image \
+    matplotlib \
+    seaborn \
+    h5py \
+    plyfile \
+    "laspy[lazrs]" \
+    open3d \
+    gdown \
+    numba \
+    joblib \
+    dask \
+    pykdtree \
+    jaklas \
+    pytorch-metric-learning \
+    addict \
+    python-louvain
+
+# torchnet needs visdom for its logger module, but visdom fails to build.
+# Install torchnet without deps, then patch its logger init to not crash on missing visdom.
+RUN python3 -m pip install --no-cache-dir --no-deps torchnet && \
+    echo 'try:' > /usr/local/lib/python3.10/dist-packages/torchnet/logger/__init__.py && \
+    echo '    from .visdomlogger import *' >> /usr/local/lib/python3.10/dist-packages/torchnet/logger/__init__.py && \
+    echo 'except ImportError:' >> /usr/local/lib/python3.10/dist-packages/torchnet/logger/__init__.py && \
+    echo '    pass' >> /usr/local/lib/python3.10/dist-packages/torchnet/logger/__init__.py
+
+# ---- hdbscan ----
+RUN python3 -m pip install --no-cache-dir hdbscan
+
+# Clean up build artifacts
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    find /usr/local -depth \
+    \( \
+      \( -type d -a \( -name test -o -name tests \) \) \
+      -o \
+      \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+    \) -exec rm -rf '{}' +
+
+
+# ---- Stage 2: Runtime ----
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 AS runtime
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime
+
+# Copy compiled Python environment from builder
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /usr/local/lib /usr/local/lib
+COPY --from=builder /usr/local/include /usr/local/include
+COPY --from=builder /usr/lib/python3 /usr/lib/python3
+COPY --from=builder /usr/lib/python3.10 /usr/lib/python3.10
+
+# Runtime system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.10 \
+    python3.10-dev \
+    python3-pip \
+    libopenblas-base \
+    libgomp1 \
+    wget \
+    unzip \
+    zip \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Make python3.10 the default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
+
+# ---- JupyterLab ----
+# Pin numpy<2 to match the version GPU libraries were compiled against
+RUN python3 -m pip install --no-cache-dir \
+    "numpy<2" \
+    jupyterlab>=4.0 \
+    ipywidgets
+
+# ---- PDAL via Miniforge/Mamba (for COPC output support) ----
+RUN curl -fsSL -o /tmp/miniforge.sh https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh && \
+    bash /tmp/miniforge.sh -b -p /opt/miniforge && \
+    rm /tmp/miniforge.sh && \
+    /opt/miniforge/bin/mamba install -y -c conda-forge pdal && \
+    /opt/miniforge/bin/mamba clean -afy && \
+    ln -sf /opt/miniforge/bin/pdal /usr/local/bin/pdal && \
+    ln -sf /opt/miniforge/bin/mamba /usr/local/bin/mamba
+# Add miniforge libs to linker path so pdal can find its shared libraries,
+# but do NOT add miniforge/bin to PATH (it would shadow system python3.10)
+ENV LD_LIBRARY_PATH="/opt/miniforge/lib:${LD_LIBRARY_PATH}"
+
+# ---- Create non-root user ----
+RUN useradd -m -s /bin/bash -u 1000 sat
+RUN mkdir -p /data/input /data/output /tmp/sat_cache && \
+    chmod -R 777 /data /tmp/sat_cache
+
+# ---- Copy project code ----
+ENV SAT_ROOT=/opt/segmentanytree
+ENV SAT_DATA=/data
+ENV SAT_MODEL=/opt/segmentanytree/model_file
+ENV SAT_CACHE=/tmp/sat_cache
+ENV PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
+
+COPY --chown=sat:sat . ${SAT_ROOT}
+WORKDIR ${SAT_ROOT}
+
+# ---- Expose JupyterLab port ----
+EXPOSE 8888
+
+USER sat
+
+# Default: start JupyterLab
+# Override with: docker run ... segmentanytree:latest bash
+CMD ["jupyter", "lab", \
+     "--ip=0.0.0.0", \
+     "--port=8888", \
+     "--no-browser", \
+     "--NotebookApp.token=''", \
+     "--NotebookApp.password=''", \
+     "--notebook-dir=/opt/segmentanytree"]

@@ -1,3 +1,7 @@
+"""DEPRECATED: MinkowskiEngine modules are replaced by SparseConv3d with SpConv v2.x backend.
+These modules remain for backward compatibility with CUDA 11.x environments.
+For CUDA 12+, use torch_points3d.modules.SparseConv3d with backend='spconv'.
+"""
 import torch
 import MinkowskiEngine as ME
 import sys
