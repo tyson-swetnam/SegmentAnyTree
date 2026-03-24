@@ -468,11 +468,16 @@ class PointGroup3heads(BaseModel):
     def _compute_score(self, epoch, all_clusters, backbone_features, semantic_logits):
         """ Score the clusters """
         mask_scores = None
+
+        # Guard: no clusters produced (e.g., unmigrated weights or no trees detected)
+        if len(all_clusters) == 0:
+            return torch.zeros(0, device=self.device), None
+
         if self._scorer_type: # unet
             # Assemble batches
             x = [] # backbone features
             coords = [] # input coords
-            batch = [] 
+            batch = []
             pos = []
             for i, cluster in enumerate(all_clusters):
                 cluster_cpu = cluster.cpu()
