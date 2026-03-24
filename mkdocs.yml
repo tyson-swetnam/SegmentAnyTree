@@ -52,10 +52,13 @@ nav:
   - Getting Started:
     - Quick Start: quickstart.md
     - Docker Guide: docker.md
+    - Local Build: local-build.md
     - HPC / Singularity: singularity.md
   - User Guide:
+    - Scientific Workflow: workflow.md
     - Inference: inference.md
     - Training: training.md
+    - Notebooks: notebooks.md
     - Example Data: example-data.md
   - Reference:
     - Architecture: architecture.md
