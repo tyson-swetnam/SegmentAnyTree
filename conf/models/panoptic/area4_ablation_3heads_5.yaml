@@ -168,7 +168,7 @@ PointGroup-PAPER:
 
   prepare_epoch: 30
   cluster_radius_search: 1.5 * ${data.grid_size}
-  cluster_nsample: 32  # neighbors per point in region_grow (paper: 200, faster: 32)
+  cluster_nsample: 32  # Auto-scaled by GPU profile (32=default, 200=A100 80GB)
 
   min_iou_threshold: 0.25
   max_iou_threshold: 0.75

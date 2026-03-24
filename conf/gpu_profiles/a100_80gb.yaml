@@ -1,0 +1,4 @@
+# Optimized for A100 80GB
+cluster_nsample: 200
+cluster_type: 1
+num_workers: 8

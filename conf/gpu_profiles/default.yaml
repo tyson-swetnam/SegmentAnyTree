@@ -1,0 +1,4 @@
+# Default GPU profile (conservative, works on any GPU)
+cluster_nsample: 32
+cluster_type: 1
+num_workers: 2
