@@ -9,33 +9,48 @@ pass .cpu() tensors.
 
 from typing import List, Optional
 
+import numpy as np
+import numba
 import torch
 from torch_cluster import radius
 
 
-def _union_find_init(n: int) -> torch.Tensor:
-    """Initialize union-find parent array."""
-    return torch.arange(n, dtype=torch.long)
+@numba.jit(nopython=True)
+def _union_find_batch(parent, rank, edge_target, edge_source):
+    """Process all edges through union-find in compiled code."""
+    for i in range(edge_target.shape[0]):
+        a, b = edge_target[i], edge_source[i]
+        # inline find with path compression for a
+        ra = a
+        while parent[ra] != ra:
+            parent[ra] = parent[parent[ra]]
+            ra = parent[ra]
+        # inline find with path compression for b
+        rb = b
+        while parent[rb] != rb:
+            parent[rb] = parent[parent[rb]]
+            rb = parent[rb]
+        # union by rank
+        if ra != rb:
+            if rank[ra] < rank[rb]:
+                ra, rb = rb, ra
+            parent[rb] = ra
+            if rank[ra] == rank[rb]:
+                rank[ra] += 1
 
 
-def _find(parent: torch.Tensor, i: int) -> int:
-    """Find root with path compression."""
-    while parent[i].item() != i:
-        parent[i] = parent[parent[i]]
-        i = parent[i].item()
-    return i
-
-
-def _union(parent: torch.Tensor, rank: torch.Tensor, a: int, b: int) -> None:
-    """Union by rank."""
-    ra, rb = _find(parent, a), _find(parent, b)
-    if ra == rb:
-        return
-    if rank[ra] < rank[rb]:
-        ra, rb = rb, ra
-    parent[rb] = ra
-    if rank[ra] == rank[rb]:
-        rank[ra] += 1
+@numba.jit(nopython=True)
+def _flatten_roots(parent):
+    """Flatten all parent pointers to roots in compiled code."""
+    n = len(parent)
+    roots = np.empty(n, dtype=np.int64)
+    for i in range(n):
+        r = i
+        while parent[r] != r:
+            parent[r] = parent[parent[r]]
+            r = parent[r]
+        roots[i] = r
+    return roots
 
 
 def region_grow(
@@ -127,16 +142,17 @@ def region_grow(
     edge_target = edge_target[keep]
     edge_source = edge_source[keep]
 
-    # Union-find connected components on valid points
+    # Union-find connected components (Numba-accelerated)
     n_valid = valid_indices.shape[0]
-    parent = _union_find_init(n_valid)
-    rank = torch.zeros(n_valid, dtype=torch.long)
+    parent = np.arange(n_valid, dtype=np.int64)
+    rank = np.zeros(n_valid, dtype=np.int64)
 
-    for i in range(edge_target.shape[0]):
-        _union(parent, rank, edge_target[i].item(), edge_source[i].item())
+    # Convert to numpy for Numba
+    et = edge_target.numpy().astype(np.int64)
+    es = edge_source.numpy().astype(np.int64)
 
-    # Flatten parent pointers to roots
-    roots = torch.tensor([_find(parent, i) for i in range(n_valid)], dtype=torch.long)
+    _union_find_batch(parent, rank, et, es)
+    roots = torch.from_numpy(_flatten_roots(parent))
 
     # Group points by root, mapping back to original indices
     clusters = []
