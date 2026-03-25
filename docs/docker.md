@@ -37,6 +37,13 @@ See [docker/README.md](../docker/README.md) for additional comparison details.
 git clone https://github.com/tyson-swetnam/SegmentAnyTree.git
 cd SegmentAnyTree
 
+# IMPORTANT: Pull model weights before building
+git lfs install
+git lfs pull --include="model_file/PointGroup-PAPER.pt"
+
+# Verify weights are real (should be ~665 MB, not 134 bytes)
+make verify-weights
+
 # CUDA 12.4 (recommended)
 make build-cuda12
 
@@ -48,10 +55,19 @@ docker build -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
 docker build -f docker/Dockerfile.cuda11 -t segmentanytree:cuda11 .
 ```
 
+!!! warning "Git LFS required"
+    The model weights file (`model_file/PointGroup-PAPER.pt`) is stored with Git LFS. The Dockerfiles now include a build-time check that **fails the build** if the weights are LFS pointers. If you don't have `git-lfs`, you can download the weights directly:
+    ```bash
+    curl -L -o model_file/PointGroup-PAPER.pt \
+      "https://github.com/SmartForest-no/SegmentAnyTree/raw/main/model_file/PointGroup-PAPER.pt"
+    ```
+    The CUDA 12 Dockerfile automatically runs `migrate_weights.py` during the build to generate SpConv-format weights.
+
 ### Build requirements
 
 - Docker 20.10+ with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 - NVIDIA driver 525+ (supports both CUDA 11.8 and 12.4 containers)
+- **Git LFS** (`git-lfs`) for pulling model weights
 - ~15 GB disk space for the final image
 
 ### Build without cache
@@ -148,7 +164,9 @@ Open http://localhost:8888 in your browser.
 
 ## Pre-trained Weights
 
-The CUDA 12.4 image uses SpConv v2.x which has different weight format than MinkowskiEngine. To convert weights:
+The CUDA 12.4 image automatically converts weights to SpConv format during the Docker build — no manual migration needed.
+
+For local (non-Docker) usage with SpConv, convert manually:
 
 ```bash
 python scripts/migrate_weights.py \
@@ -156,7 +174,7 @@ python scripts/migrate_weights.py \
   --output model_file/PointGroup-PAPER-spconv.pt
 ```
 
-The CUDA 11.8 image uses the original weights directly.
+The CUDA 11.8 image uses the original MinkowskiEngine weights directly.
 
 ## Dockerfile Architecture
 
@@ -173,6 +191,16 @@ Both images use a **multi-stage build**:
 ### CUDA 11.8 build highlights
 - MinkowskiEngine, torchsparse, and torch-points-kernels compiled from source
 - Requires `libsparsehash-dev` and `libopenblas-dev` build dependencies
+
+## CyVerse VICE
+
+Both images include `/bin/entry.sh` for use as an entrypoint in CyVerse VICE deployments. The script automatically:
+
+- Configures iRODS for Data Store access (`~/.irods/irods_environment.json`)
+- Copies the user's `.gitconfig` and `.ssh` keys from the Data Store if available
+- Starts JupyterLab
+
+To use it in a VICE app definition, set the entrypoint to `bash /bin/entry.sh`.
 
 ## Local Build (without Docker)
 

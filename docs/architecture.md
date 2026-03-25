@@ -39,7 +39,7 @@ logits    offsets  embeddings
 The backbone is a **Minkowski U-Net** with sparse 3D convolutions:
 - 7 encoder layers, 7 decoder layers with skip connections
 - Feature dimension: 16 (configurable via `feat_size`)
-- Convolution type: SPARSE (via MinkowskiEngine)
+- Convolution type: SPARSE (via SpConv v2.x for CUDA 12.4, or MinkowskiEngine for CUDA 11.8)
 - Stride pattern: `[1, 2, 2, 2, 2, 2, 2]`
 
 ### Clustering

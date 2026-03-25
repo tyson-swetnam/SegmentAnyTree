@@ -2,7 +2,109 @@
 
 Test SegmentAnyTree with publicly available LiDAR point cloud data.
 
-## SWERI LiDAR Examples (recommended)
+## FOR-instance Dataset (recommended for validation)
+
+The [FOR-instance](https://zenodo.org/records/8287792) dataset is the **primary training and test dataset** used in the SegmentAnyTree paper. It contains 1,130 manually segmented trees across 5 sites with full ground-truth annotations (`treeID`, classification labels). This is the best dataset for validating that your installation produces correct results.
+
+| Site | Country | Sensor | Files | Size |
+|------|---------|--------|-------|------|
+| CULS | Czech Republic | UAS | 3 plots | 287 MB |
+| NIBIO | Norway | UAS | 20 plots | 4.2 GB |
+| RMIT | Australia | UAS | train + test | 60 MB |
+| SCION | New Zealand | UAS | 5 plots | 485 MB |
+| TUWIEN | Austria | PLS | train + test | 395 MB |
+
+**Classification labels**: 0=Unclassified, 1=Low-vegetation, 2=Terrain, 3=Out-points, 4=Stem, 5=Live-branches, 6=Woody-branches
+
+### Download FOR-instance
+
+```bash
+mkdir -p $HOME/segmentanytree/for-instance
+cd $HOME/segmentanytree/for-instance
+
+# Download (1.6 GB zip)
+curl -L -o FORinstance_dataset.zip \
+  "https://zenodo.org/records/8287792/files/FORinstance_dataset.zip?download=1"
+
+# Extract
+unzip FORinstance_dataset.zip
+```
+
+### Run inference on FOR-instance
+
+!!! tip "Start with RMIT/test.las"
+    The RMIT test set (60 MB, 357K points) is the smallest file — ideal for validating your setup quickly.
+
+=== "CUDA 12 (SpConv)"
+
+    ```bash
+    # Copy a test file
+    mkdir -p $HOME/segmentanytree/input
+    cp $HOME/segmentanytree/for-instance/RMIT/test.las $HOME/segmentanytree/input/
+
+    docker run --gpus all \
+      -v $HOME/segmentanytree/input:/data/input \
+      -v $HOME/segmentanytree/output:/data/output \
+      segmentanytree:cuda12 \
+      bash scripts/run_inference.sh /data/input /data/output true
+    ```
+
+=== "CUDA 11 (MinkowskiEngine)"
+
+    ```bash
+    mkdir -p $HOME/segmentanytree/input
+    cp $HOME/segmentanytree/for-instance/RMIT/test.las $HOME/segmentanytree/input/
+
+    docker run --gpus all \
+      -v $HOME/segmentanytree/input:/data/input \
+      -v $HOME/segmentanytree/output:/data/output \
+      segmentanytree:cuda11 \
+      bash scripts/run_inference.sh /data/input /data/output true
+    ```
+
+### Validate results against ground truth
+
+The FOR-instance files contain `treeID` fields for ground-truth comparison. After inference, compare `PredInstance` IDs against `treeID` in [CloudCompare](https://www.danielgm.net/cc/) or programmatically:
+
+```python
+import laspy
+import numpy as np
+
+# Load ground truth
+gt = laspy.read("for-instance/RMIT/test.las")
+gt_tree_ids = np.array(gt.treeID)
+
+# Load prediction
+pred = laspy.read("output/final_results/test_out.copc.laz")
+pred_instances = np.array(pred.PredInstance)
+pred_semantic = np.array(pred.PredSemantic)
+
+# Check: PredSemantic should have class 2 (tree) for most forest points
+unique_sem, counts_sem = np.unique(pred_semantic, return_counts=True)
+print(f"Semantic classes: {dict(zip(unique_sem, counts_sem))}")
+
+# Check: PredInstance should have multiple unique tree IDs
+unique_inst = np.unique(pred_instances[pred_instances > 0])
+print(f"Detected {len(unique_inst)} tree instances")
+print(f"Ground truth has {len(np.unique(gt_tree_ids[gt_tree_ids > 0]))} trees")
+```
+
+## NIBIO MLS Dataset
+
+The [NIBIO MLS](https://zenodo.org/records/12754726) dataset was introduced in the SegmentAnyTree paper as a new benchmark. It contains 16 mobile laser scanning plots (~250 m² each) with train/val/test splits.
+
+```bash
+mkdir -p $HOME/segmentanytree/nibio-mls
+cd $HOME/segmentanytree/nibio-mls
+
+# Download (1.3 GB zip)
+curl -L -o NIBIO_MLS.zip \
+  "https://zenodo.org/api/records/12754726/files/NIBIO_MLS.zip?download=1"
+
+unzip NIBIO_MLS.zip
+```
+
+## SWERI LiDAR Examples
 
 Three example datasets from different sensor platforms are available on the CyVerse Data Store, along with their pre-segmented outputs:
 

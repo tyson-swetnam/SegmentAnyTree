@@ -25,26 +25,20 @@ Built on the [torch-points3d](https://github.com/torch-points3d/torch-points3d) 
 ## Quick Start
 
 ```bash
-# 1. Create directories
+# 1. Pull the pre-built image from Harbor
+docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+
+# 2. Create directories and add your .las/.laz/.ply files
 mkdir -p $HOME/segmentanytree/input $HOME/segmentanytree/output
 
-# 2. Copy your .las/.laz/.ply files into the input directory
-
-# 3. Run inference (single GPU)
+# 3. Run inference
 docker run --gpus all \
   -v $HOME/segmentanytree/input:/data/input \
   -v $HOME/segmentanytree/output:/data/output \
-  segmentanytree:cuda12 \
+  harbor.cyverse.org/vice/segmentanytree:cuda12 \
   bash scripts/run_inference.sh /data/input /data/output true
 
-# 4. Multi-GPU inference (distributes files across all GPUs)
-docker run --gpus all \
-  -v $HOME/segmentanytree/input:/data/input \
-  -v $HOME/segmentanytree/output:/data/output \
-  segmentanytree:cuda12 \
-  bash scripts/run_inference_parallel.sh /data/input /data/output
-
-# 5. Results in $HOME/segmentanytree/output/final_results/
+# 4. Results in $HOME/segmentanytree/output/final_results/ (.copc.laz)
 ```
 
 ### Interactive Mode (JupyterLab)
@@ -53,7 +47,7 @@ docker run --gpus all \
 docker run --gpus all -p 8888:8888 \
   -v $HOME/segmentanytree/input:/data/input \
   -v $HOME/segmentanytree/output:/data/output \
-  segmentanytree:cuda12
+  harbor.cyverse.org/vice/segmentanytree:cuda12
 ```
 
 Open http://localhost:8888 and use the starter notebooks.
@@ -116,10 +110,13 @@ make train-ddp GPUS=4
 | Guide | Description |
 |-------|-------------|
 | [docs/quickstart.md](docs/quickstart.md) | Get running in 5 minutes |
-| [docs/inference.md](docs/inference.md) | Inference pipeline, multi-GPU, parameter tuning |
-| [docs/training.md](docs/training.md) | Training, data preparation, DDP |
 | [docs/docker.md](docs/docker.md) | Docker build, run, CUDA 11 vs 12 comparison |
 | [docs/local-build.md](docs/local-build.md) | Local development setup (conda or venv) |
+| [docs/workflow.md](docs/workflow.md) | End-to-end scientific workflow (LAZ → COPC) |
+| [docs/inference.md](docs/inference.md) | Inference pipeline, multi-GPU, parameter tuning |
+| [docs/training.md](docs/training.md) | Training, data preparation, DDP |
+| [docs/notebooks.md](docs/notebooks.md) | Interactive Jupyter notebook examples |
+| [docs/example-data.md](docs/example-data.md) | Download and test with example LiDAR data |
 | [docs/architecture.md](docs/architecture.md) | Model architecture and design |
 | [docs/singularity.md](docs/singularity.md) | HPC / SLURM / Singularity usage |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | Common issues and solutions |
@@ -146,6 +143,7 @@ SegmentAnyTree/
 
 | | CUDA 12.4 (default) | CUDA 11.8 (legacy) |
 |---|---|---|
+| **Registry** | `harbor.cyverse.org/vice/segmentanytree:cuda12` | `harbor.cyverse.org/vice/segmentanytree:cuda11` |
 | **Dockerfile** | `docker/Dockerfile.cuda12` | `docker/Dockerfile.cuda11` |
 | **PyTorch** | 2.5.1 | 2.1.2 |
 | **Sparse Backend** | SpConv v2.x (pip) | MinkowskiEngine (source) |

@@ -39,7 +39,7 @@ Interactive Jupyter notebooks for working with SegmentAnyTree. Available in the 
 
 === "CyVerse VICE"
 
-    Launch the SegmentAnyTree app from the [CyVerse Discovery Environment](https://de.cyverse.org/). The notebooks are pre-loaded in the JupyterLab workspace with your Data Store files accessible at `/home/jovyan/data-store/`.
+    Launch the SegmentAnyTree app from the [CyVerse Discovery Environment](https://de.cyverse.org/). The notebooks are pre-loaded in the JupyterLab workspace with your Data Store files accessible at `/home/sat/data-store/`.
 
 === "Local Install"
 

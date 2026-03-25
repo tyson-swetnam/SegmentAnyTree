@@ -39,16 +39,19 @@
 
 **Solution**: The `sat.io.las_io.pandas_to_las` function clips uint16 fields automatically. If you encounter this with custom code, ensure values are in range before writing.
 
-## Docker Build Fails at MinkowskiEngine
+## Docker Build Fails at MinkowskiEngine (CUDA 11.8 only)
 
 **Symptom**: Compilation errors during `pip install MinkowskiEngine`
 
+!!! note
+    This only applies to the CUDA 11.8 image (`docker/Dockerfile.cuda11`). The CUDA 12.4 image uses SpConv v2.x which installs via pip with no compilation.
+
 **Solutions**:
-- Ensure NVIDIA driver is 525+ (for CUDA 12.4 support)
+- Ensure NVIDIA driver is 525+
 - Check that `TORCH_CUDA_ARCH_LIST` includes your GPU's compute capability
 - Try building with `--no-cache` to avoid stale layers:
   ```bash
-  docker build --no-cache -t segmentanytree:latest .
+  docker build --no-cache -f docker/Dockerfile.cuda11 -t segmentanytree:cuda11 .
   ```
 
 ## Segmentation Fault (exit code 139)
@@ -61,6 +64,43 @@
 - Increase memory allocation (`#SBATCH --mem=128G`)
 - Check that output files were still created — segfaults sometimes occur during cleanup after results are written
 - Ensure the Singularity image was built from the correct Docker image
+
+## Model Weights Are a Git LFS Pointer
+
+**Symptom**: Inference produces garbage results — PredSemantic has no class 2 (tree), PredInstance is empty or has only a handful of tiny clusters. Eval log shows all cluster scores ~0.43 and cluster sizes of 5-15 points.
+
+**Cause**: `model_file/PointGroup-PAPER.pt` is tracked by Git LFS. If you cloned the repo without `git-lfs` installed, the file is a 134-byte text pointer instead of the actual 665 MB model checkpoint. Docker builds will also fail or produce broken images.
+
+**Diagnosis**:
+```bash
+# Check file size — should be ~665 MB, not 134 bytes
+ls -lh model_file/PointGroup-PAPER.pt
+
+# Check if it's a pointer file
+file model_file/PointGroup-PAPER.pt
+# Bad:  "ASCII text" (LFS pointer)
+# Good: "Zip archive data" (PyTorch checkpoint)
+```
+
+**Solution**:
+```bash
+# Option 1: Pull via git-lfs
+git lfs install
+git lfs pull --include="model_file/PointGroup-PAPER.pt"
+
+# Option 2: Download directly from upstream repo
+curl -L -o model_file/PointGroup-PAPER.pt \
+  "https://github.com/SmartForest-no/SegmentAnyTree/raw/main/model_file/PointGroup-PAPER.pt"
+```
+
+After fixing, rebuild Docker images (`make build-cuda12` / `make build-cuda11`). The Dockerfiles now include a build-time check that will fail fast if the weights are LFS pointers.
+
+For CUDA 12 (SpConv), you must also regenerate the migrated weights:
+```bash
+python scripts/migrate_weights.py \
+  --input model_file/PointGroup-PAPER.pt \
+  --output model_file/PointGroup-PAPER-spconv.pt
+```
 
 ## Model File Not Found
 

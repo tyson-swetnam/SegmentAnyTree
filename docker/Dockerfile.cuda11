@@ -201,9 +201,9 @@ RUN curl -fsSL -o /tmp/miniforge.sh https://github.com/conda-forge/miniforge/rel
 ENV LD_LIBRARY_PATH="/opt/miniforge/lib:${LD_LIBRARY_PATH}"
 
 # ---- Create non-root user ----
-RUN useradd -m -s /bin/bash -u 1000 sat
-RUN mkdir -p /data/input /data/output /tmp/sat_cache && \
-    chmod -R 777 /data /tmp/sat_cache
+RUN useradd -m -s /bin/bash -u 1000 sat && \
+    mkdir -p /data/input /data/output /tmp/sat_cache && \
+    chmod -R 777 /data /tmp/sat_cache /home/sat
 
 # ---- Copy project code ----
 ENV SAT_ROOT=/opt/segmentanytree
@@ -212,7 +212,20 @@ ENV SAT_MODEL=/opt/segmentanytree/model_file
 ENV SAT_CACHE=/tmp/sat_cache
 ENV PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
 
-COPY --chown=sat:sat . ${SAT_ROOT}
+COPY . ${SAT_ROOT}
+COPY scripts/entry.sh /bin/entry.sh
+
+# Verify model weights are real files (not Git LFS pointers)
+# If PointGroup-PAPER.pt is <1KB, it's an LFS pointer and the build should fail.
+RUN MODEL_SIZE=$(stat -c%s "${SAT_ROOT}/model_file/PointGroup-PAPER.pt" 2>/dev/null || echo 0) && \
+    if [ "$MODEL_SIZE" -lt 1000 ]; then \
+      echo "ERROR: model_file/PointGroup-PAPER.pt is a Git LFS pointer (${MODEL_SIZE} bytes)." && \
+      echo "Run 'git lfs pull --include=model_file/PointGroup-PAPER.pt' before building." && \
+      exit 1; \
+    fi && \
+    echo "Model weights verified: ${MODEL_SIZE} bytes"
+
+RUN chmod -R 777 ${SAT_ROOT}
 WORKDIR ${SAT_ROOT}
 
 # ---- Expose JupyterLab port ----
@@ -221,7 +234,8 @@ EXPOSE 8888
 USER sat
 
 # Default: start JupyterLab
-# Override with: docker run ... segmentanytree:latest bash
+# Override with: docker run ... segmentanytree:cuda11 bash
+# For CyVerse VICE: use entry.sh as entrypoint (configures iRODS, user configs)
 CMD ["jupyter", "lab", \
      "--ip=0.0.0.0", \
      "--port=8888", \

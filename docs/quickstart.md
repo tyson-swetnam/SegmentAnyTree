@@ -6,10 +6,14 @@ Get tree segmentation results in 5 minutes using the pre-built Docker image.
 
 - Docker with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 - An NVIDIA GPU (Volta or newer: V100, A100, RTX 20xx/30xx/40xx/50xx) with driver 525+
+- **Git LFS** installed (`git lfs install`) — the model weights are stored via Git LFS
 - Point cloud files in `.las`, `.laz`, or `.ply` format
 
+!!! warning "Git LFS required"
+    The pre-trained model (`model_file/PointGroup-PAPER.pt`, 665 MB) is stored with Git LFS. Without `git-lfs` installed, you'll get a 134-byte pointer file instead of real weights, and inference will produce garbage results. See [Troubleshooting](troubleshooting.md#model-weights-are-a-git-lfs-pointer) for details.
+
 !!! tip "No data yet?"
-    See the [Example Data](example-data.md) page for publicly available LiDAR datasets you can use to test.
+    The [FOR-instance dataset](example-data.md#for-instance-dataset-recommended-for-validation) from the paper is the best choice for validating your setup. Also see the [Example Data](example-data.md) page for other options.
 
 ## Steps
 
@@ -51,7 +55,7 @@ Copy your `.las`, `.laz`, or `.ply` files into `$HOME/segmentanytree/input/`.
 
 Segmented files appear in `$HOME/segmentanytree/output/final_results/` as `.copc.laz` files (Cloud-Optimized Point Clouds). Each file contains the original point cloud with two extra dimensions added by the model.
 
-If COPC conversion is not available, output files will be `.las` instead.
+If COPC conversion is not available (PDAL not installed), output files will be `.laz` instead.
 
 ### 5. Interactive mode (JupyterLab)
 

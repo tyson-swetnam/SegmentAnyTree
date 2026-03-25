@@ -23,6 +23,10 @@ Paper: Wielgosz et al. (2024), "SegmentAnyTree: A sensor and platform agnostic d
 
 ### Docker (primary usage)
 ```bash
+# IMPORTANT: Pull model weights before building (requires git-lfs)
+git lfs pull --include="model_file/PointGroup-PAPER.pt"
+make verify-weights  # Should report ~665 MB, not 134 bytes
+
 # Build CUDA 12.4 (recommended) or CUDA 11.8 (legacy)
 make build-cuda12
 make build-cuda11
