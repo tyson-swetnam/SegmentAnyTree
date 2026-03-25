@@ -18,14 +18,14 @@
         <link rel="prev" href="../quickstart/">
       
       
-        <link rel="next" href="../singularity/">
+        <link rel="next" href="../local-build/">
       
       
         
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="zensical-0.0.28">
+      <meta name="generator" content="zensical-0.0.29">
     
     
       
@@ -252,7 +252,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../inference/" class="md-tabs__link">
+        <a href="../workflow/" class="md-tabs__link">
           
   
   User Guide
@@ -507,10 +507,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pre-built-image" class="md-nav__link">
+  <a href="#pulling-pre-built-images" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pre-built Image
+        Pulling Pre-built Images
       
     </span>
   </a>
@@ -518,15 +518,26 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#building-from-source" class="md-nav__link">
+  <a href="#image-variants" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Building From Source
+        Image Variants
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Building From Source">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Locally
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Building Locally">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -601,17 +612,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#helper-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Helper script
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -622,17 +622,6 @@
     <span class="md-ellipsis">
       
         Volume Mounts
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#image-details" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Image Details
       
     </span>
   </a>
@@ -651,10 +640,60 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pre-trained-weights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pre-trained Weights
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#dockerfile-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
         Dockerfile Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dockerfile Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cuda-124-build-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CUDA 12.4 build highlights
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cuda-118-build-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CUDA 11.8 build highlights
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cyverse-vice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CyVerse VICE
       
     </span>
   </a>
@@ -669,56 +708,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Local Build (without Docker)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Prerequisites
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steps
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verify-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verify installation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-inference-locally" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run inference locally
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -737,6 +726,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../local-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -838,6 +855,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../inference/" class="md-nav__link">
         
   
@@ -874,6 +919,34 @@
     
   
     Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
   
 
     
@@ -1067,10 +1140,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pre-built-image" class="md-nav__link">
+  <a href="#pulling-pre-built-images" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pre-built Image
+        Pulling Pre-built Images
       
     </span>
   </a>
@@ -1078,15 +1151,26 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#building-from-source" class="md-nav__link">
+  <a href="#image-variants" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Building From Source
+        Image Variants
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Building From Source">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Locally
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Building Locally">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1161,17 +1245,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#helper-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Helper script
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1182,17 +1255,6 @@
     <span class="md-ellipsis">
       
         Volume Mounts
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#image-details" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Image Details
       
     </span>
   </a>
@@ -1211,10 +1273,60 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pre-trained-weights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pre-trained Weights
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#dockerfile-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
         Dockerfile Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dockerfile Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cuda-124-build-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CUDA 12.4 build highlights
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cuda-118-build-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CUDA 11.8 build highlights
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cyverse-vice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CyVerse VICE
       
     </span>
   </a>
@@ -1229,56 +1341,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Local Build (without Docker)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Prerequisites
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steps
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verify-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verify installation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-inference-locally" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run inference locally
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1312,51 +1374,173 @@
 
 
 <h1 id="docker-guide">Docker Guide<a class="headerlink" href="#docker-guide" title="Permanent link">&para;</a></h1>
-<h2 id="pre-built-image">Pre-built Image<a class="headerlink" href="#pre-built-image" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>segmentanytree:latest
+<h2 id="pulling-pre-built-images">Pulling Pre-built Images<a class="headerlink" href="#pulling-pre-built-images" title="Permanent link">&para;</a></h2>
+<p>Pre-built images are available on the CyVerse Harbor registry:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CUDA 12.4 (recommended)</label><label for="__tabbed_1_2">CUDA 11.8 (legacy)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>harbor.cyverse.org/vice/segmentanytree:cuda12
 </code></pre></div>
-<h2 id="building-from-source">Building From Source<a class="headerlink" href="#building-from-source" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/tyson-swetnam/SegmentAnyTree.git
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>SegmentAnyTree
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>segmentanytree:latest<span class="w"> </span>.
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>harbor.cyverse.org/vice/segmentanytree:cuda11
 </code></pre></div>
-<p>Build takes 30-60 minutes due to GPU library compilation (MinkowskiEngine, torchsparse, torch-points-kernels).</p>
+</div>
+</div>
+</div>
+<h2 id="image-variants">Image Variants<a class="headerlink" href="#image-variants" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>CUDA 12.4 (recommended)</th>
+<th>CUDA 11.8 (legacy)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Registry</strong></td>
+<td><code>harbor.cyverse.org/vice/segmentanytree:cuda12</code></td>
+<td><code>harbor.cyverse.org/vice/segmentanytree:cuda11</code></td>
+</tr>
+<tr>
+<td><strong>Dockerfile</strong></td>
+<td><code>docker/Dockerfile.cuda12</code></td>
+<td><code>docker/Dockerfile.cuda11</code></td>
+</tr>
+<tr>
+<td><strong>PyTorch</strong></td>
+<td>2.5.1</td>
+<td>2.1.2</td>
+</tr>
+<tr>
+<td><strong>Sparse Backend</strong></td>
+<td>SpConv v2.x (pip install)</td>
+<td>MinkowskiEngine + torchsparse (source build)</td>
+</tr>
+<tr>
+<td><strong>Clustering</strong></td>
+<td>Pure PyTorch (<code>sat.clustering</code>)</td>
+<td>torch-points-kernels (C++/CUDA)</td>
+</tr>
+<tr>
+<td><strong>Build Time</strong></td>
+<td>~15 min</td>
+<td>~40 min</td>
+</tr>
+<tr>
+<td><strong>GPU Support</strong></td>
+<td>Volta through Blackwell (sm_70 - sm_100)</td>
+<td>Volta through Hopper (sm_70 - sm_90)</td>
+</tr>
+<tr>
+<td><strong>Driver</strong></td>
+<td>525+</td>
+<td>525+</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../../docker/">docker/README.md</a> for additional comparison details.</p>
+<h2 id="building-locally">Building Locally<a class="headerlink" href="#building-locally" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/tyson-swetnam/SegmentAnyTree.git
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">cd</span><span class="w"> </span>SegmentAnyTree
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># IMPORTANT: Pull model weights before building</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>git<span class="w"> </span>lfs<span class="w"> </span>install
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>git<span class="w"> </span>lfs<span class="w"> </span>pull<span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;model_file/PointGroup-PAPER.pt&quot;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># Verify weights are real (should be ~665 MB, not 134 bytes)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>make<span class="w"> </span>verify-weights
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># CUDA 12.4 (recommended)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>make<span class="w"> </span>build-cuda12
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="c1"># CUDA 11.8 (legacy)</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>make<span class="w"> </span>build-cuda11
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="c1"># Or directly:</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.cuda12<span class="w"> </span>-t<span class="w"> </span>segmentanytree:cuda12<span class="w"> </span>.
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.cuda11<span class="w"> </span>-t<span class="w"> </span>segmentanytree:cuda11<span class="w"> </span>.
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Git LFS required</p>
+<p>The model weights file (<code>model_file/PointGroup-PAPER.pt</code>) is stored with Git LFS. The Dockerfiles now include a build-time check that <strong>fails the build</strong> if the weights are LFS pointers. If you don't have <code>git-lfs</code>, you can download the weights directly:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>model_file/PointGroup-PAPER.pt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="s2">&quot;https://github.com/SmartForest-no/SegmentAnyTree/raw/main/model_file/PointGroup-PAPER.pt&quot;</span>
+</code></pre></div>
+The CUDA 12 Dockerfile automatically runs <code>migrate_weights.py</code> during the build to generate SpConv-format weights.</p>
+</div>
 <h3 id="build-requirements">Build requirements<a class="headerlink" href="#build-requirements" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Docker 20.10+ with <a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">NVIDIA Container Toolkit</a></li>
-<li>NVIDIA driver 525+ (supports CUDA 11.8 containers)</li>
+<li>NVIDIA driver 525+ (supports both CUDA 11.8 and 12.4 containers)</li>
+<li><strong>Git LFS</strong> (<code>git-lfs</code>) for pulling model weights</li>
 <li>~15 GB disk space for the final image</li>
 </ul>
 <h3 id="build-without-cache">Build without cache<a class="headerlink" href="#build-without-cache" title="Permanent link">&para;</a></h3>
-<p>If you encounter stale layer issues:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>segmentanytree:latest<span class="w"> </span>.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.cuda12<span class="w"> </span>-t<span class="w"> </span>segmentanytree:cuda12<span class="w"> </span>.
 </code></pre></div>
 <h2 id="running">Running<a class="headerlink" href="#running" title="Permanent link">&para;</a></h2>
 <h3 id="jupyterlab-default">JupyterLab (default)<a class="headerlink" href="#jupyterlab-default" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-p<span class="w"> </span><span class="m">8888</span>:8888<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>segmentanytree:latest
-</code></pre></div>
-<p>Open http://localhost:8888 in your browser.</p>
-<h3 id="batch-inference">Batch inference<a class="headerlink" href="#batch-inference" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>segmentanytree:latest<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
-</code></pre></div>
-<h3 id="interactive-shell">Interactive shell<a class="headerlink" href="#interactive-shell" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Harbor Registry</label><label for="__tabbed_2_2">Local Build</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-p<span class="w"> </span><span class="m">8888</span>:8888<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>segmentanytree:latest<span class="w"> </span>bash
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>harbor.cyverse.org/vice/segmentanytree:cuda12
 </code></pre></div>
-<h3 id="helper-script">Helper script<a class="headerlink" href="#helper-script" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bash<span class="w"> </span>scripts/run_docker.sh<span class="w"> </span>jupyter<span class="w"> </span>~/data/input<span class="w"> </span>~/data/output<span class="w">  </span><span class="c1"># JupyterLab</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>bash<span class="w"> </span>scripts/run_docker.sh<span class="w"> </span>infer<span class="w"> </span>~/data/input<span class="w"> </span>~/data/output<span class="w">    </span><span class="c1"># Batch inference</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>bash<span class="w"> </span>scripts/run_docker.sh<span class="w"> </span>shell<span class="w"> </span>~/data/input<span class="w"> </span>~/data/output<span class="w">    </span><span class="c1"># Shell</span>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-p<span class="w"> </span><span class="m">8888</span>:8888<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>segmentanytree:cuda12
 </code></pre></div>
+</div>
+</div>
+</div>
+<p>Open http://localhost:8888 in your browser.</p>
+<h3 id="batch-inference">Batch inference<a class="headerlink" href="#batch-inference" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Harbor Registry</label><label for="__tabbed_3_2">Local Build</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>harbor.cyverse.org/vice/segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="interactive-shell">Interactive shell<a class="headerlink" href="#interactive-shell" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Harbor Registry</label><label for="__tabbed_4_2">Local Build</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span>harbor.cyverse.org/vice/segmentanytree:cuda12<span class="w"> </span>bash
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span>segmentanytree:cuda12<span class="w"> </span>bash
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="volume-mounts">Volume Mounts<a class="headerlink" href="#volume-mounts" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1380,57 +1564,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="image-details">Image Details<a class="headerlink" href="#image-details" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Version</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Base</td>
-<td>Ubuntu 22.04</td>
-</tr>
-<tr>
-<td>CUDA</td>
-<td>11.8.0 + cuDNN 8</td>
-</tr>
-<tr>
-<td>Python</td>
-<td>3.10</td>
-</tr>
-<tr>
-<td>PyTorch</td>
-<td>2.1.2</td>
-</tr>
-<tr>
-<td>MinkowskiEngine</td>
-<td>latest (source build)</td>
-</tr>
-<tr>
-<td>torchsparse</td>
-<td>v1.4.0 (source build)</td>
-</tr>
-<tr>
-<td>JupyterLab</td>
-<td>4.x</td>
-</tr>
-<tr>
-<td>PDAL</td>
-<td>via Miniforge/Mamba</td>
-</tr>
-<tr>
-<td>GPU architectures</td>
-<td>Volta (7.0), Turing (7.5), Ampere (8.0/8.6), Hopper (9.0)</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="admonition-title">Why CUDA 11.8 instead of 12.x?</p>
-<p>MinkowskiEngine is incompatible with CUDA 12.x due to unresolved <code>libcu++</code> template conflicts in the sparse convolution kernels. CUDA 11.8 with PyTorch 2.1.2 is the most modern compatible combination. Your NVIDIA driver (525+) supports running CUDA 11.8 containers via backward compatibility.</p>
-</div>
 <h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1461,80 +1594,58 @@
 <td><code>/tmp/sat_cache</code></td>
 <td>Temporary files</td>
 </tr>
+<tr>
+<td><code>SPARSE_BACKEND</code></td>
+<td><code>spconv</code> (CUDA 12) / not set (CUDA 11)</td>
+<td>Sparse convolution backend</td>
+</tr>
+<tr>
+<td><code>SAT_GPU</code></td>
+<td><code>0</code></td>
+<td>GPU device index for single-GPU inference</td>
+</tr>
+<tr>
+<td><code>NUM_GPUS</code></td>
+<td>auto-detect</td>
+<td>Number of GPUs for parallel inference</td>
+</tr>
 </tbody>
 </table>
+<h2 id="pre-trained-weights">Pre-trained Weights<a class="headerlink" href="#pre-trained-weights" title="Permanent link">&para;</a></h2>
+<p>The CUDA 12.4 image automatically converts weights to SpConv format during the Docker build — no manual migration needed.</p>
+<p>For local (non-Docker) usage with SpConv, convert manually:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python<span class="w"> </span>scripts/migrate_weights.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span>--input<span class="w"> </span>model_file/PointGroup-PAPER.pt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span>--output<span class="w"> </span>model_file/PointGroup-PAPER-spconv.pt
+</code></pre></div>
+<p>The CUDA 11.8 image uses the original MinkowskiEngine weights directly.</p>
 <h2 id="dockerfile-architecture">Dockerfile Architecture<a class="headerlink" href="#dockerfile-architecture" title="Permanent link">&para;</a></h2>
-<p>The image uses a <strong>multi-stage build</strong>:</p>
+<p>Both images use a <strong>multi-stage build</strong>:</p>
 <ol>
-<li><strong>Builder stage</strong>: Compiles MinkowskiEngine, torchsparse, and torch-points-kernels from source with CUDA support</li>
+<li><strong>Builder stage</strong>: Installs PyTorch, GPU libraries, and Python dependencies</li>
 <li><strong>Runtime stage</strong>: Copies compiled libraries, adds JupyterLab, PDAL, and project code</li>
 </ol>
-<p>This keeps the final image smaller by excluding build tools (cmake, ninja, etc.).</p>
-<h2 id="local-build-without-docker">Local Build (without Docker)<a class="headerlink" href="#local-build-without-docker" title="Permanent link">&para;</a></h2>
-<p>For development or systems where Docker isn't available, you can build locally:</p>
-<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
+<h3 id="cuda-124-build-highlights">CUDA 12.4 build highlights<a class="headerlink" href="#cuda-124-build-highlights" title="Permanent link">&para;</a></h3>
 <ul>
-<li>NVIDIA GPU with CUDA 11.8 toolkit installed</li>
-<li>Python 3.10</li>
-<li>OpenBLAS (<code>libopenblas-dev</code>)</li>
-<li>sparsehash (<code>libsparsehash-dev</code>)</li>
+<li>SpConv v2.x installed via <code>pip install spconv-cu124</code> (no source compilation)</li>
+<li>Clustering uses pure PyTorch (no C++/CUDA compilation)</li>
+<li>~20-30 min faster builds than CUDA 11.8</li>
 </ul>
-<h3 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Clone the repository</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/tyson-swetnam/SegmentAnyTree.git
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nb">cd</span><span class="w"> </span>SegmentAnyTree
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># Create a virtual environment</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>python3.10<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1"># Install PyTorch with CUDA 11.8</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.16.2<span class="w"> </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu118
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="c1"># Install PyTorch Geometric ecosystem</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>pip<span class="w"> </span>install<span class="w"> </span>torch-scatter<span class="w"> </span>torch-sparse<span class="w"> </span>torch-cluster<span class="w"> </span>torch-spline-conv<span class="w"> </span>torch-geometric<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">    </span>-f<span class="w"> </span>https://data.pyg.org/whl/torch-2.1.2+cu118.html
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="c1"># Build MinkowskiEngine from source</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>https://github.com/NVIDIA/MinkowskiEngine.git<span class="w"> </span>/tmp/MinkowskiEngine
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="nb">cd</span><span class="w"> </span>/tmp/MinkowskiEngine
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="nv">TORCH_CUDA_ARCH_LIST</span><span class="o">=</span><span class="s2">&quot;7.0;7.5;8.0;8.6;9.0&quot;</span><span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>install<span class="w"> </span>--blas<span class="o">=</span>openblas<span class="w"> </span>--force_cuda
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="nb">cd</span><span class="w"> </span>-
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="c1"># Build torchsparse v1.4.0</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="nv">TORCH_CUDA_ARCH_LIST</span><span class="o">=</span><span class="s2">&quot;7.0;7.5;8.0;8.6;9.0&quot;</span><span class="w"> </span><span class="nv">FORCE_CUDA</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">    </span>pip<span class="w"> </span>install<span class="w"> </span>--no-build-isolation<span class="w"> </span>git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="c1"># Build torch-points-kernels</span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>https://github.com/torch-points3d/torch-points-kernels.git<span class="w"> </span>/tmp/torch-points-kernels
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="nb">cd</span><span class="w"> </span>/tmp/torch-points-kernels
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="nv">TORCH_CUDA_ARCH_LIST</span><span class="o">=</span><span class="s2">&quot;7.0;7.5;8.0;8.6;9.0&quot;</span><span class="w"> </span><span class="nv">FORCE_CUDA</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>install
-<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="nb">cd</span><span class="w"> </span>-
-<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>
-<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="c1"># Install remaining Python dependencies</span>
-<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a>pip<span class="w"> </span>install<span class="w"> </span>hydra-core<span class="o">==</span><span class="m">1</span>.3.2<span class="w"> </span><span class="nv">omegaconf</span><span class="o">==</span><span class="m">2</span>.3.0<span class="w"> </span>wandb<span class="w"> </span>tensorboard<span class="w"> </span>tqdm<span class="w"> </span>pandas<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="w">    </span>scikit-learn<span class="w"> </span>scikit-image<span class="w"> </span>matplotlib<span class="w"> </span>seaborn<span class="w"> </span>h5py<span class="w"> </span>plyfile<span class="w"> </span><span class="s2">&quot;laspy[lazrs]&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="w">    </span>open3d<span class="w"> </span>gdown<span class="w"> </span>numba<span class="w"> </span>joblib<span class="w"> </span>dask<span class="w"> </span>pykdtree<span class="w"> </span>jaklas<span class="w"> </span>pytorch-metric-learning<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="w">    </span>addict<span class="w"> </span>python-louvain<span class="w"> </span>hdbscan<span class="w"> </span>jupyterlab<span class="w"> </span>ipywidgets
-<a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a>
-<a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a><span class="c1"># Set environment variables</span>
-<a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_ROOT</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
-<a id="__codelineno-7-41" name="__codelineno-7-41" href="#__codelineno-7-41"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_DATA</span><span class="o">=</span><span class="nv">$SAT_ROOT</span>/data
-<a id="__codelineno-7-42" name="__codelineno-7-42" href="#__codelineno-7-42"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_MODEL</span><span class="o">=</span><span class="nv">$SAT_ROOT</span>/model_file
-<a id="__codelineno-7-43" name="__codelineno-7-43" href="#__codelineno-7-43"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_CACHE</span><span class="o">=</span>/tmp/sat_cache
-<a id="__codelineno-7-44" name="__codelineno-7-44" href="#__codelineno-7-44"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SAT_ROOT</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">PYTHONPATH</span><span class="si">}</span><span class="s2">&quot;</span>
-<a id="__codelineno-7-45" name="__codelineno-7-45" href="#__codelineno-7-45"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$SAT_DATA</span>/input<span class="w"> </span><span class="nv">$SAT_DATA</span>/output<span class="w"> </span><span class="nv">$SAT_CACHE</span>
-</code></pre></div>
-<h3 id="verify-installation">Verify installation<a class="headerlink" href="#verify-installation" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import torch; print(f&#39;PyTorch {torch.__version__}, CUDA {torch.cuda.is_available()}&#39;)&quot;</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import MinkowskiEngine; print(f&#39;MinkowskiEngine {MinkowskiEngine.__version__}&#39;)&quot;</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import torchsparse; print(&#39;torchsparse OK&#39;)&quot;</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import torch_points_kernels; print(&#39;torch-points-kernels OK&#39;)&quot;</span>
-</code></pre></div>
-<h3 id="run-inference-locally">Run inference locally<a class="headerlink" href="#run-inference-locally" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span><span class="nv">$SAT_DATA</span>/input<span class="w"> </span><span class="nv">$SAT_DATA</span>/output<span class="w"> </span><span class="nb">true</span>
-</code></pre></div>
+<h3 id="cuda-118-build-highlights">CUDA 11.8 build highlights<a class="headerlink" href="#cuda-118-build-highlights" title="Permanent link">&para;</a></h3>
+<ul>
+<li>MinkowskiEngine, torchsparse, and torch-points-kernels compiled from source</li>
+<li>Requires <code>libsparsehash-dev</code> and <code>libopenblas-dev</code> build dependencies</li>
+</ul>
+<h2 id="cyverse-vice">CyVerse VICE<a class="headerlink" href="#cyverse-vice" title="Permanent link">&para;</a></h2>
+<p>Both images include <code>/bin/entry.sh</code> for use as an entrypoint in CyVerse VICE deployments. The script automatically:</p>
+<ul>
+<li>Configures iRODS for Data Store access (<code>~/.irods/irods_environment.json</code>)</li>
+<li>Copies the user's <code>.gitconfig</code> and <code>.ssh</code> keys from the Data Store if available</li>
+<li>Starts JupyterLab</li>
+</ul>
+<p>To use it in a VICE app definition, set the entrypoint to <code>bash /bin/entry.sh</code>.</p>
+<h2 id="local-build-without-docker">Local Build (without Docker)<a class="headerlink" href="#local-build-without-docker" title="Permanent link">&para;</a></h2>
+<p>See <a href="../local-build/">local-build.md</a> for the full local build guide.</p>
 <h2 id="singularity-apptainer">Singularity / Apptainer<a class="headerlink" href="#singularity-apptainer" title="Permanent link">&para;</a></h2>
 <p>See <a href="../singularity/">singularity.md</a> for HPC usage.</p>
 

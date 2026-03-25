@@ -10,13 +10,22 @@
         <loc>https://tyson-swetnam.github.io/SegmentAnyTree/docker/</loc>
       </url>
       <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/local-build/</loc>
+      </url>
+      <url>
         <loc>https://tyson-swetnam.github.io/SegmentAnyTree/singularity/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/workflow/</loc>
       </url>
       <url>
         <loc>https://tyson-swetnam.github.io/SegmentAnyTree/inference/</loc>
       </url>
       <url>
         <loc>https://tyson-swetnam.github.io/SegmentAnyTree/training/</loc>
+      </url>
+      <url>
+        <loc>https://tyson-swetnam.github.io/SegmentAnyTree/notebooks/</loc>
       </url>
       <url>
         <loc>https://tyson-swetnam.github.io/SegmentAnyTree/example-data/</loc>

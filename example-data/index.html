@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://tyson-swetnam.github.io/SegmentAnyTree/example-data/">
       
       
-        <link rel="prev" href="../training/">
+        <link rel="prev" href="../notebooks/">
       
       
         <link rel="next" href="../architecture/">
@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="zensical-0.0.28">
+      <meta name="generator" content="zensical-0.0.29">
     
     
       
@@ -252,7 +252,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../inference/" class="md-tabs__link">
+        <a href="../workflow/" class="md-tabs__link">
           
   
   User Guide
@@ -471,6 +471,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../local-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../singularity/" class="md-nav__link">
         
   
@@ -563,6 +591,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../inference/" class="md-nav__link">
         
   
@@ -599,6 +655,34 @@
     
   
     Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
   
 
     
@@ -680,15 +764,76 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sweri-lidar-examples-recommended" class="md-nav__link">
+  <a href="#for-instance-dataset-recommended-for-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SWERI LiDAR Examples (recommended)
+        FOR-instance Dataset (recommended for validation)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="SWERI LiDAR Examples (recommended)">
+    <nav class="md-nav" aria-label="FOR-instance Dataset (recommended for validation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download-for-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download FOR-instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-inference-on-for-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run inference on FOR-instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-results-against-ground-truth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validate results against ground truth
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nibio-mls-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NIBIO MLS Dataset
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sweri-lidar-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SWERI LiDAR Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SWERI LiDAR Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -990,15 +1135,76 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sweri-lidar-examples-recommended" class="md-nav__link">
+  <a href="#for-instance-dataset-recommended-for-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SWERI LiDAR Examples (recommended)
+        FOR-instance Dataset (recommended for validation)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="SWERI LiDAR Examples (recommended)">
+    <nav class="md-nav" aria-label="FOR-instance Dataset (recommended for validation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download-for-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download FOR-instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-inference-on-for-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run inference on FOR-instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-results-against-ground-truth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validate results against ground truth
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nibio-mls-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NIBIO MLS Dataset
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sweri-lidar-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SWERI LiDAR Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SWERI LiDAR Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1159,7 +1365,135 @@
 
 <h1 id="example-data">Example Data<a class="headerlink" href="#example-data" title="Permanent link">&para;</a></h1>
 <p>Test SegmentAnyTree with publicly available LiDAR point cloud data.</p>
-<h2 id="sweri-lidar-examples-recommended">SWERI LiDAR Examples (recommended)<a class="headerlink" href="#sweri-lidar-examples-recommended" title="Permanent link">&para;</a></h2>
+<h2 id="for-instance-dataset-recommended-for-validation">FOR-instance Dataset (recommended for validation)<a class="headerlink" href="#for-instance-dataset-recommended-for-validation" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://zenodo.org/records/8287792">FOR-instance</a> dataset is the <strong>primary training and test dataset</strong> used in the SegmentAnyTree paper. It contains 1,130 manually segmented trees across 5 sites with full ground-truth annotations (<code>treeID</code>, classification labels). This is the best dataset for validating that your installation produces correct results.</p>
+<table>
+<thead>
+<tr>
+<th>Site</th>
+<th>Country</th>
+<th>Sensor</th>
+<th>Files</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CULS</td>
+<td>Czech Republic</td>
+<td>UAS</td>
+<td>3 plots</td>
+<td>287 MB</td>
+</tr>
+<tr>
+<td>NIBIO</td>
+<td>Norway</td>
+<td>UAS</td>
+<td>20 plots</td>
+<td>4.2 GB</td>
+</tr>
+<tr>
+<td>RMIT</td>
+<td>Australia</td>
+<td>UAS</td>
+<td>train + test</td>
+<td>60 MB</td>
+</tr>
+<tr>
+<td>SCION</td>
+<td>New Zealand</td>
+<td>UAS</td>
+<td>5 plots</td>
+<td>485 MB</td>
+</tr>
+<tr>
+<td>TUWIEN</td>
+<td>Austria</td>
+<td>PLS</td>
+<td>train + test</td>
+<td>395 MB</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Classification labels</strong>: 0=Unclassified, 1=Low-vegetation, 2=Terrain, 3=Out-points, 4=Stem, 5=Live-branches, 6=Woody-branches</p>
+<h3 id="download-for-instance">Download FOR-instance<a class="headerlink" href="#download-for-instance" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/for-instance
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/for-instance
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Download (1.6 GB zip)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>FORinstance_dataset.zip<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="s2">&quot;https://zenodo.org/records/8287792/files/FORinstance_dataset.zip?download=1&quot;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Extract</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>unzip<span class="w"> </span>FORinstance_dataset.zip
+</code></pre></div>
+<h3 id="run-inference-on-for-instance">Run inference on FOR-instance<a class="headerlink" href="#run-inference-on-for-instance" title="Permanent link">&para;</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Start with RMIT/test.las</p>
+<p>The RMIT test set (60 MB, 357K points) is the smallest file — ideal for validating your setup quickly.</p>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CUDA 12 (SpConv)</label><label for="__tabbed_1_2">CUDA 11 (MinkowskiEngine)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Copy a test file</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>cp<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/for-instance/RMIT/test.las<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span>segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>cp<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/for-instance/RMIT/test.las<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span>segmentanytree:cuda11<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="validate-results-against-ground-truth">Validate results against ground truth<a class="headerlink" href="#validate-results-against-ground-truth" title="Permanent link">&para;</a></h3>
+<p>The FOR-instance files contain <code>treeID</code> fields for ground-truth comparison. After inference, compare <code>PredInstance</code> IDs against <code>treeID</code> in <a href="https://www.danielgm.net/cc/">CloudCompare</a> or programmatically:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">laspy</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Load ground truth</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">gt</span> <span class="o">=</span> <span class="n">laspy</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;for-instance/RMIT/test.las&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">gt_tree_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gt</span><span class="o">.</span><span class="n">treeID</span><span class="p">)</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># Load prediction</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">pred</span> <span class="o">=</span> <span class="n">laspy</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;output/final_results/test_out.copc.laz&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">pred_instances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">PredInstance</span><span class="p">)</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">pred_semantic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">PredSemantic</span><span class="p">)</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1"># Check: PredSemantic should have class 2 (tree) for most forest points</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="n">unique_sem</span><span class="p">,</span> <span class="n">counts_sem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">pred_semantic</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Semantic classes: </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">unique_sem</span><span class="p">,</span><span class="w"> </span><span class="n">counts_sem</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="c1"># Check: PredInstance should have multiple unique tree IDs</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="n">unique_inst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">pred_instances</span><span class="p">[</span><span class="n">pred_instances</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_inst</span><span class="p">)</span><span class="si">}</span><span class="s2"> tree instances&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ground truth has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">gt_tree_ids</span><span class="p">[</span><span class="n">gt_tree_ids</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">]))</span><span class="si">}</span><span class="s2"> trees&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="nibio-mls-dataset">NIBIO MLS Dataset<a class="headerlink" href="#nibio-mls-dataset" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://zenodo.org/records/12754726">NIBIO MLS</a> dataset was introduced in the SegmentAnyTree paper as a new benchmark. It contains 16 mobile laser scanning plots (~250 m² each) with train/val/test splits.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/nibio-mls
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/nibio-mls
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Download (1.3 GB zip)</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>NIBIO_MLS.zip<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="s2">&quot;https://zenodo.org/api/records/12754726/files/NIBIO_MLS.zip?download=1&quot;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>unzip<span class="w"> </span>NIBIO_MLS.zip
+</code></pre></div>
+<h2 id="sweri-lidar-examples">SWERI LiDAR Examples<a class="headerlink" href="#sweri-lidar-examples" title="Permanent link">&para;</a></h2>
 <p>Three example datasets from different sensor platforms are available on the CyVerse Data Store, along with their pre-segmented outputs:</p>
 <table>
 <thead>
@@ -1193,73 +1527,82 @@
 </table>
 <p>Pre-segmented results (in <code>segmented/</code> subdirectory) are available as COPC LAZ files for comparison.</p>
 <h3 id="download-via-webdav-no-login-required">Download via WebDAV (no login required)<a class="headerlink" href="#download-via-webdav-no-login-required" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Download ALS example (smallest, good for quick testing)</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/2020-07-04_09-46-07_ALS_Clip.laz<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Download UAS example</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/2020-07-04_09-46-07_UAS_Clip.laz<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Download MLS example (largest — 682 MB)</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/2020-07-04_09-46-07_MLS_Clip.laz<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Download ALS example (smallest, good for quick testing)</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/2020-07-04_09-46-07_ALS_Clip.laz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Download UAS example</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/2020-07-04_09-46-07_UAS_Clip.laz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1"># Download MLS example (largest — 682 MB)</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/2020-07-04_09-46-07_MLS_Clip.laz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
 </code></pre></div>
 <h3 id="download-pre-segmented-results-for-comparison">Download pre-segmented results for comparison<a class="headerlink" href="#download-pre-segmented-results-for-comparison" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/expected
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/segmented/2020-07-04_09-46-07_ALS_Clip_segmented.copc.laz<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/expected/
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/segmented/2020-07-04_09-46-07_UAS_Clip_segmented.copc.laz<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/expected/
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/segmented/2020-07-04_09-46-07_MLS_Clip_segmented.copc.laz<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/expected/
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/expected
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/segmented/2020-07-04_09-46-07_ALS_Clip_segmented.copc.laz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/expected/
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/segmented/2020-07-04_09-46-07_UAS_Clip_segmented.copc.laz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/expected/
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>curl<span class="w"> </span>-O<span class="w"> </span>-L<span class="w"> </span>https://data.cyverse.org/dav-anon/iplant/projects/sweri/lidar_examples/segmented/2020-07-04_09-46-07_MLS_Clip_segmented.copc.laz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span>--output-dir<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/expected/
 </code></pre></div>
 <h3 id="download-with-gocommands">Download with GoCommands<a class="headerlink" href="#download-with-gocommands" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Install GoCommands (if not already installed)</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">cd</span><span class="w"> </span>/usr/local/bin<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nv">GOCMD_VER</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-L<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/cyverse/gocommands/main/VERSION.txt<span class="k">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>curl<span class="w"> </span>-L<span class="w"> </span>-s<span class="w"> </span>https://github.com/cyverse/gocommands/releases/download/<span class="si">${</span><span class="nv">GOCMD_VER</span><span class="si">}</span>/gocmd-<span class="si">${</span><span class="nv">GOCMD_VER</span><span class="si">}</span>-linux-amd64.tar.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>tar<span class="w"> </span>zxvf<span class="w"> </span>-
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># Initialize GoCommands with CyVerse credentials</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>gocmd<span class="w"> </span>init
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># Download all example data</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>gocmd<span class="w"> </span>get<span class="w"> </span>--progress<span class="w"> </span>/iplant/projects/sweri/lidar_examples/<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Install GoCommands (if not already installed)</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>/usr/local/bin<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">GOCMD_VER</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-L<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/cyverse/gocommands/main/VERSION.txt<span class="k">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>curl<span class="w"> </span>-L<span class="w"> </span>-s<span class="w"> </span>https://github.com/cyverse/gocommands/releases/download/<span class="si">${</span><span class="nv">GOCMD_VER</span><span class="si">}</span>/gocmd-<span class="si">${</span><span class="nv">GOCMD_VER</span><span class="si">}</span>-linux-amd64.tar.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>tar<span class="w"> </span>zxvf<span class="w"> </span>-
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># Initialize GoCommands with CyVerse credentials</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>gocmd<span class="w"> </span>init
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1"># Download all example data</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>gocmd<span class="w"> </span>get<span class="w"> </span>--progress<span class="w"> </span>/iplant/projects/sweri/lidar_examples/<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
 </code></pre></div>
 <h3 id="download-with-icommands">Download with iCommands<a class="headerlink" href="#download-with-icommands" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>iinit
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>ils<span class="w"> </span>/iplant/projects/sweri/lidar_examples/
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>iget<span class="w"> </span>-r<span class="w"> </span>/iplant/projects/sweri/lidar_examples/<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>iinit
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>ils<span class="w"> </span>/iplant/projects/sweri/lidar_examples/
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>iget<span class="w"> </span>-r<span class="w"> </span>/iplant/projects/sweri/lidar_examples/<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input/
 </code></pre></div>
 <h2 id="running-with-example-data">Running with example data<a class="headerlink" href="#running-with-example-data" title="Permanent link">&para;</a></h2>
 <p>Once you have data downloaded:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Docker</label><label for="__tabbed_1_2">Singularity</label><label for="__tabbed_1_3">Local</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:4"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><input id="__tabbed_2_4" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Docker (Harbor)</label><label for="__tabbed_2_2">Docker (Local Build)</label><label for="__tabbed_2_3">Singularity</label><label for="__tabbed_2_4">Local</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>segmentanytree:latest<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>harbor.cyverse.org/vice/segmentanytree:cuda12
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span>harbor.cyverse.org/vice/segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>singularity<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--nv<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>--bind<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>--bind<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>segmentanytree.sif<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>bash<span class="w"> </span>/opt/segmentanytree/scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span>segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_ROOT</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_DATA</span><span class="o">=</span><span class="nv">$HOME</span>/segmentanytree
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span><span class="nv">$SAT_DATA</span>/input<span class="w"> </span><span class="nv">$SAT_DATA</span>/output<span class="w"> </span><span class="nb">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>singularity<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--nv<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span>--bind<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span>--bind<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span>segmentanytree-cuda12.sif<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span>bash<span class="w"> </span>/opt/segmentanytree/scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_ROOT</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_DATA</span><span class="o">=</span><span class="nv">$HOME</span>/segmentanytree
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span><span class="nv">$SAT_DATA</span>/input<span class="w"> </span><span class="nv">$SAT_DATA</span>/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
 </div>
 </div>
@@ -1270,11 +1613,11 @@
 </div>
 <h2 id="verifying-results">Verifying results<a class="headerlink" href="#verifying-results" title="Permanent link">&para;</a></h2>
 <p>After inference, check the output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># List output files</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>ls<span class="w"> </span>-la<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output/final_results/
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Quick validation with PDAL</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>pdal<span class="w"> </span>info<span class="w"> </span>--summary<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output/final_results/*.las
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># List output files</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>ls<span class="w"> </span>-la<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output/final_results/
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># Quick validation with PDAL</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>pdal<span class="w"> </span>info<span class="w"> </span>--summary<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output/final_results/*.las
 </code></pre></div>
 <h3 id="compare-with-pre-segmented-reference">Compare with pre-segmented reference<a class="headerlink" href="#compare-with-pre-segmented-reference" title="Permanent link">&para;</a></h3>
 <p>If you downloaded the pre-segmented COPC files, you can compare your results visually in <a href="https://www.danielgm.net/cc/">CloudCompare</a> by loading both your output and the reference file, coloring by <code>PredInstance</code>.</p>
@@ -1287,9 +1630,9 @@
 <h2 id="other-public-lidar-sources">Other public LiDAR sources<a class="headerlink" href="#other-public-lidar-sources" title="Permanent link">&para;</a></h2>
 <h3 id="neon-aop-data">NEON AOP Data<a class="headerlink" href="#neon-aop-data" title="Permanent link">&para;</a></h3>
 <p>The <a href="https://www.neonscience.org/">National Ecological Observatory Network (NEON)</a> provides free airborne LiDAR data across ecological sites in the US.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Example: Download a single LAZ tile from NEON</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1"># Replace SITE and YEAR with your site of interest</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>curl<span class="w"> </span>-O<span class="w"> </span>https://data.neonscience.org/api/v0/data/DP1.30003.001/SITE/YEAR
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Example: Download a single LAZ tile from NEON</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># Replace SITE and YEAR with your site of interest</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>curl<span class="w"> </span>-O<span class="w"> </span>https://data.neonscience.org/api/v0/data/DP1.30003.001/SITE/YEAR
 </code></pre></div>
 <p>NEON data is classified but requires re-labeling for SegmentAnyTree's expected format. See the <a href="../training/">Training guide</a> for classification label mapping.</p>
 <h3 id="opentopography">OpenTopography<a class="headerlink" href="#opentopography" title="Permanent link">&para;</a></h3>
@@ -1328,7 +1671,7 @@
 <div class="admonition warning">
 <p class="admonition-title">CUDA memory</p>
 <p>Large point clouds may exceed GPU memory. Use the sparsification tool to reduce density:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>python<span class="w"> </span>-m<span class="w"> </span>sat.preprocessing.sparsify<span class="w"> </span>-i<span class="w"> </span>input/<span class="w"> </span>-o<span class="w"> </span>sparse_input/<span class="w"> </span>-d<span class="w"> </span><span class="m">100</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>python<span class="w"> </span>-m<span class="w"> </span>sat.preprocessing.sparsify<span class="w"> </span>-i<span class="w"> </span>input/<span class="w"> </span>-o<span class="w"> </span>sparse_input/<span class="w"> </span>-d<span class="w"> </span><span class="m">100</span>
 </code></pre></div>
 See <a href="../troubleshooting/">Troubleshooting</a> for more memory management tips.</p>
 </div>

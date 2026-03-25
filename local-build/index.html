@@ -15,13 +15,17 @@
         <link rel="canonical" href="https://tyson-swetnam.github.io/SegmentAnyTree/local-build/">
       
       
+        <link rel="prev" href="../docker/">
+      
+      
+        <link rel="next" href="../singularity/">
       
       
         
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="zensical-0.0.28">
+      <meta name="generator" content="zensical-0.0.29">
     
     
       
@@ -223,10 +227,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../quickstart/" class="md-tabs__link">
           
   
@@ -246,7 +252,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../inference/" class="md-tabs__link">
+        <a href="../workflow/" class="md-tabs__link">
           
   
   User Guide
@@ -352,28 +358,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -391,7 +400,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -453,6 +462,270 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Build
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-a-cuda-124-with-spconv-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option A: CUDA 12.4 with SpConv (Recommended)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option A: CUDA 12.4 with SpConv (Recommended)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-condamamba-easiest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using conda/mamba (easiest)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-venv-no-conda-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using venv (no conda required)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-b-cuda-118-with-minkowskiengine-legacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option B: CUDA 11.8 with MinkowskiEngine (Legacy)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option B: CUDA 11.8 with MinkowskiEngine (Legacy)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b1-install-miniforge-conda-mamba" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.1. Install Miniforge (conda + mamba)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b2-install-cuda-118-toolkit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.2. Install CUDA 11.8 Toolkit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b3-create-conda-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.3. Create Conda Environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b4-install-python-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.4. Install Python Dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b5-install-gpu-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.5. Install GPU Libraries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-a-copy-from-docker-image-fastest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option A: Copy from Docker image (fastest)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-build-from-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option B: Build from source
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b6-verify-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.6. Verify Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b7-run-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.7. Run Inference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-jupyterlab-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running JupyterLab Locally
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shell-setup-add-to-bashrc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shell Setup (add to ~/.bashrc)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -554,6 +827,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../inference/" class="md-nav__link">
         
   
@@ -590,6 +891,34 @@
     
   
     Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
   
 
     
@@ -794,60 +1123,110 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-install-miniforge-conda-mamba" class="md-nav__link">
+  <a href="#option-a-cuda-124-with-spconv-recommended" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Install Miniforge (conda + mamba)
+        Option A: CUDA 12.4 with SpConv (Recommended)
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-install-cuda-118-toolkit" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Install CUDA 11.8 Toolkit
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-create-conda-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Create Conda Environment
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-install-python-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Install Python Dependencies
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-install-gpu-libraries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Install GPU Libraries
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5. Install GPU Libraries">
+    <nav class="md-nav" aria-label="Option A: CUDA 12.4 with SpConv (Recommended)">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-condamamba-easiest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using conda/mamba (easiest)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-venv-no-conda-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using venv (no conda required)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-b-cuda-118-with-minkowskiengine-legacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option B: CUDA 11.8 with MinkowskiEngine (Legacy)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option B: CUDA 11.8 with MinkowskiEngine (Legacy)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b1-install-miniforge-conda-mamba" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.1. Install Miniforge (conda + mamba)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b2-install-cuda-118-toolkit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.2. Install CUDA 11.8 Toolkit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b3-create-conda-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.3. Create Conda Environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b4-install-python-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.4. Install Python Dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b5-install-gpu-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.5. Install GPU Libraries
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#option-a-copy-from-docker-image-fastest" class="md-nav__link">
@@ -871,27 +1250,38 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#b6-verify-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.6. Verify Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b7-run-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.7. Run Inference
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-verify-installation" class="md-nav__link">
+  <a href="#running-jupyterlab-locally" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6. Verify Installation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-run-inference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Run Inference
+        Running JupyterLab Locally
       
     </span>
   </a>
@@ -929,130 +1319,224 @@
 
 <h1 id="local-build-without-docker">Local Build (without Docker)<a class="headerlink" href="#local-build-without-docker" title="Permanent link">&para;</a></h1>
 <p>This guide sets up SegmentAnyTree for development and inference directly on a Linux machine with an NVIDIA GPU, without Docker.</p>
+<div class="admonition warning">
+<p class="admonition-title">Linux with NVIDIA GPU required</p>
+<p>Local GPU inference requires <strong>Linux</strong> with an NVIDIA GPU and CUDA drivers installed.
+Windows and macOS users should use <a href="../docker/">Docker</a> or connect to a remote Linux machine.
+WSL2 and Apple MPS are not supported.</p>
+</div>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Linux (Ubuntu 20.04/22.04 recommended)</li>
+<li>Linux (Ubuntu 20.04/22.04/24.04)</li>
 <li>NVIDIA GPU with CUDA support (Compute Capability 7.0+)</li>
 <li>NVIDIA driver installed (<code>nvidia-smi</code> works)</li>
-<li>~20 GB disk for CUDA toolkit + conda env</li>
 </ul>
-<h2 id="1-install-miniforge-conda-mamba">1. Install Miniforge (conda + mamba)<a class="headerlink" href="#1-install-miniforge-conda-mamba" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span>/tmp/miniforge.sh<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>bash<span class="w"> </span>/tmp/miniforge.sh<span class="w"> </span>-b<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/miniforge
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>rm<span class="w"> </span>/tmp/miniforge.sh
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/miniforge/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+<h2 id="option-a-cuda-124-with-spconv-recommended">Option A: CUDA 12.4 with SpConv (Recommended)<a class="headerlink" href="#option-a-cuda-124-with-spconv-recommended" title="Permanent link">&para;</a></h2>
+<p>The fastest setup — no source compilation needed.</p>
+<h3 id="using-condamamba-easiest">Using conda/mamba (easiest)<a class="headerlink" href="#using-condamamba-easiest" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mamba<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yml
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>conda<span class="w"> </span>activate<span class="w"> </span>sat
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_ROOT</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="w"> </span><span class="nv">SPARSE_BACKEND</span><span class="o">=</span>spconv<span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SAT_ROOT</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">PYTHONPATH</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Register Jupyter kernel for this environment</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>python<span class="w"> </span>-m<span class="w"> </span>ipykernel<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>--name<span class="w"> </span>sat<span class="w"> </span>--display-name<span class="w"> </span><span class="s2">&quot;Python 3 (sat)&quot;</span>
 </code></pre></div>
-<h2 id="2-install-cuda-118-toolkit">2. Install CUDA 11.8 Toolkit<a class="headerlink" href="#2-install-cuda-118-toolkit" title="Permanent link">&para;</a></h2>
+<h3 id="using-venv-no-conda-required">Using venv (no conda required)<a class="headerlink" href="#using-venv-no-conda-required" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Create venv</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv-cuda12
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">source</span><span class="w"> </span>.venv-cuda12/bin/activate
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># PyTorch + CUDA 12.4</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.5.1<span class="w"> </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.20.1<span class="w"> </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.5.1<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu124
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1"># PyG ecosystem</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>pip<span class="w"> </span>install<span class="w"> </span>torch-scatter<span class="w"> </span>torch-sparse<span class="w"> </span>torch-cluster<span class="w"> </span>torch-spline-conv<span class="w"> </span>torch-geometric<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span>-f<span class="w"> </span>https://data.pyg.org/whl/torch-2.5.1+cu124.html
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># SpConv v2.x (pip install, no compilation!)</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>pip<span class="w"> </span>install<span class="w"> </span>spconv-cu124
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c1"># Python dependencies</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>pip<span class="w"> </span>install<span class="w"> </span>hydra-core<span class="o">==</span><span class="m">1</span>.3.2<span class="w"> </span><span class="nv">omegaconf</span><span class="o">==</span><span class="m">2</span>.3.0<span class="w"> </span>wandb<span class="w"> </span>tensorboard<span class="w"> </span>tqdm<span class="w"> </span>pandas<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span>scikit-learn<span class="w"> </span>matplotlib<span class="w"> </span>h5py<span class="w"> </span>plyfile<span class="w"> </span><span class="s2">&quot;laspy[lazrs]&quot;</span><span class="w"> </span>gdown<span class="w"> </span>numba<span class="w"> </span>joblib<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span>pykdtree<span class="w"> </span>jaklas<span class="w"> </span>pytorch-metric-learning<span class="w"> </span>addict<span class="w"> </span>torchnet<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span>jupyterlab<span class="w"> </span>ipykernel<span class="w"> </span>ipywidgets
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1"># Environment setup</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_ROOT</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_DATA</span><span class="o">=</span><span class="nv">$SAT_ROOT</span>/data
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SPARSE_BACKEND</span><span class="o">=</span>spconv
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SAT_ROOT</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">PYTHONPATH</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$SAT_DATA</span>/input<span class="w"> </span><span class="nv">$SAT_DATA</span>/output
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="c1"># Verify</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="s2">import torch; print(&#39;torch:&#39;, torch.__version__, &#39;cuda:&#39;, torch.cuda.is_available())</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="s2">import spconv; print(&#39;spconv:&#39;, spconv.__version__)</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="s2">from sat.clustering.region_grow import region_grow; print(&#39;region_grow: OK&#39;)</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="s2">&quot;</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="c1"># Register Jupyter kernel</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>python<span class="w"> </span>-m<span class="w"> </span>ipykernel<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>--name<span class="w"> </span>sat<span class="w"> </span>--display-name<span class="w"> </span><span class="s2">&quot;Python 3 (sat)&quot;</span>
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="c1"># Run inference</span>
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span><span class="nv">$SAT_DATA</span>/input<span class="w"> </span><span class="nv">$SAT_DATA</span>/output<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+<h2 id="option-b-cuda-118-with-minkowskiengine-legacy">Option B: CUDA 11.8 with MinkowskiEngine (Legacy)<a class="headerlink" href="#option-b-cuda-118-with-minkowskiengine-legacy" title="Permanent link">&para;</a></h2>
+<p>Requires source compilation of GPU libraries (~30 min).</p>
+<h3 id="b1-install-miniforge-conda-mamba">B.1. Install Miniforge (conda + mamba)<a class="headerlink" href="#b1-install-miniforge-conda-mamba" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span>/tmp/miniforge.sh<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>bash<span class="w"> </span>/tmp/miniforge.sh<span class="w"> </span>-b<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/miniforge
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>rm<span class="w"> </span>/tmp/miniforge.sh
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/miniforge/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+</code></pre></div>
+<h3 id="b2-install-cuda-118-toolkit">B.2. Install CUDA 11.8 Toolkit<a class="headerlink" href="#b2-install-cuda-118-toolkit" title="Permanent link">&para;</a></h3>
 <p>The GPU libraries (MinkowskiEngine, torchsparse, torch-points-kernels) require CUDA 11.8 to match the PyTorch build. Install it to a user directory (no sudo needed):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>wget<span class="w"> </span>-q<span class="w"> </span>https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>-O<span class="w"> </span>/tmp/cuda_11.8.run
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>sh<span class="w"> </span>/tmp/cuda_11.8.run<span class="w"> </span>--toolkit<span class="w"> </span>--silent<span class="w"> </span>--override<span class="w"> </span>--installpath<span class="o">=</span><span class="nv">$HOME</span>/cuda-11.8<span class="w"> </span>--no-man-page
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>rm<span class="w"> </span>/tmp/cuda_11.8.run
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>wget<span class="w"> </span>-q<span class="w"> </span>https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>-O<span class="w"> </span>/tmp/cuda_11.8.run
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>sh<span class="w"> </span>/tmp/cuda_11.8.run<span class="w"> </span>--toolkit<span class="w"> </span>--silent<span class="w"> </span>--override<span class="w"> </span>--installpath<span class="o">=</span><span class="nv">$HOME</span>/cuda-11.8<span class="w"> </span>--no-man-page
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>rm<span class="w"> </span>/tmp/cuda_11.8.run
 </code></pre></div>
 <p>Verify: <code>$HOME/cuda-11.8/bin/nvcc --version</code> should show <code>release 11.8</code>.</p>
-<h2 id="3-create-conda-environment">3. Create Conda Environment<a class="headerlink" href="#3-create-conda-environment" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mamba<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sat<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10<span class="w"> </span>pdal<span class="w"> </span>cmake<span class="w"> </span>ninja<span class="w"> </span>git<span class="w"> </span>-y<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<h3 id="b3-create-conda-environment">B.3. Create Conda Environment<a class="headerlink" href="#b3-create-conda-environment" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mamba<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sat<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10<span class="w"> </span>pdal<span class="w"> </span>cmake<span class="w"> </span>ninja<span class="w"> </span>git<span class="w"> </span>-y<span class="w"> </span>-c<span class="w"> </span>conda-forge
 </code></pre></div>
-<h2 id="4-install-python-dependencies">4. Install Python Dependencies<a class="headerlink" href="#4-install-python-dependencies" title="Permanent link">&para;</a></h2>
+<h3 id="b4-install-python-dependencies">B.4. Install Python Dependencies<a class="headerlink" href="#b4-install-python-dependencies" title="Permanent link">&para;</a></h3>
 <p>Activate the env and set CUDA paths:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/miniforge/envs/sat/bin:</span><span class="nv">$HOME</span><span class="s2">/cuda-11.8/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/cuda-11.8/lib64:</span><span class="nv">$LD_LIBRARY_PATH</span><span class="s2">&quot;</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CUDA_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/cuda-11.8
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/miniforge/envs/sat/bin:</span><span class="nv">$HOME</span><span class="s2">/cuda-11.8/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/cuda-11.8/lib64:</span><span class="nv">$LD_LIBRARY_PATH</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CUDA_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/cuda-11.8
 </code></pre></div>
 <p>Install PyTorch 2.1.2 + CUDA 11.8:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span><span class="s2">&quot;setuptools&lt;70&quot;</span><span class="w"> </span>wheel<span class="w"> </span>ninja
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="s2">&quot;numpy&lt;2&quot;</span><span class="w"> </span>scipy<span class="w"> </span>cython
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.16.2<span class="w"> </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu118
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span><span class="s2">&quot;setuptools&lt;70&quot;</span><span class="w"> </span>wheel<span class="w"> </span>ninja
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="s2">&quot;numpy&lt;2&quot;</span><span class="w"> </span>scipy<span class="w"> </span>cython
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.16.2<span class="w"> </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu118
 </code></pre></div>
 <p>Install PyTorch Geometric (pre-built wheels):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>torch-scatter<span class="w"> </span>torch-sparse<span class="w"> </span>torch-cluster<span class="w"> </span>torch-spline-conv<span class="w"> </span>torch-geometric<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>-f<span class="w"> </span>https://data.pyg.org/whl/torch-2.1.2+cu118.html
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>torch-scatter<span class="w"> </span>torch-sparse<span class="w"> </span>torch-cluster<span class="w"> </span>torch-spline-conv<span class="w"> </span>torch-geometric<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>-f<span class="w"> </span>https://data.pyg.org/whl/torch-2.1.2+cu118.html
 </code></pre></div>
 <p>Install remaining Python packages:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>hydra-core<span class="o">==</span><span class="m">1</span>.3.2<span class="w"> </span><span class="nv">omegaconf</span><span class="o">==</span><span class="m">2</span>.3.0<span class="w"> </span>wandb<span class="w"> </span>tensorboard<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>tqdm<span class="w"> </span>pandas<span class="w"> </span>scikit-learn<span class="w"> </span>scikit-image<span class="w"> </span>matplotlib<span class="w"> </span>seaborn<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>h5py<span class="w"> </span>plyfile<span class="w"> </span><span class="s2">&quot;laspy[lazrs]&quot;</span><span class="w"> </span>open3d<span class="w"> </span>gdown<span class="w"> </span>numba<span class="w"> </span>joblib<span class="w"> </span>dask<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>pykdtree<span class="w"> </span>jaklas<span class="w"> </span>pytorch-metric-learning<span class="w"> </span>addict<span class="w"> </span>python-louvain<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span>hdbscan<span class="w"> </span>jupyterlab<span class="w"> </span>ipywidgets<span class="w"> </span>absl-py<span class="w"> </span>protobuf<span class="s2">&quot;&lt;7&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span>pydantic<span class="w"> </span>gitpython<span class="w"> </span>sentry-sdk<span class="w"> </span>markdown
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>hydra-core<span class="o">==</span><span class="m">1</span>.3.2<span class="w"> </span><span class="nv">omegaconf</span><span class="o">==</span><span class="m">2</span>.3.0<span class="w"> </span>wandb<span class="w"> </span>tensorboard<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span>tqdm<span class="w"> </span>pandas<span class="w"> </span>scikit-learn<span class="w"> </span>scikit-image<span class="w"> </span>matplotlib<span class="w"> </span>seaborn<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>h5py<span class="w"> </span>plyfile<span class="w"> </span><span class="s2">&quot;laspy[lazrs]&quot;</span><span class="w"> </span>open3d<span class="w"> </span>gdown<span class="w"> </span>numba<span class="w"> </span>joblib<span class="w"> </span>dask<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>pykdtree<span class="w"> </span>jaklas<span class="w"> </span>pytorch-metric-learning<span class="w"> </span>addict<span class="w"> </span>python-louvain<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>hdbscan<span class="w"> </span>jupyterlab<span class="w"> </span>ipywidgets<span class="w"> </span>absl-py<span class="w"> </span>protobuf<span class="s2">&quot;&lt;7&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>pydantic<span class="w"> </span>gitpython<span class="w"> </span>sentry-sdk<span class="w"> </span>markdown
 </code></pre></div>
 <p>Install torchnet and patch the visdom import:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--no-deps<span class="w"> </span>torchnet
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nv">SITE</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import site; print(site.getsitepackages()[0])&quot;</span><span class="k">)</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>cat<span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$SITE</span>/torchnet/logger/__init__.py<span class="w"> </span><span class="s">&lt;&lt; &#39;PATCH&#39;</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="s">try:</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="s">    from .visdomlogger import *</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="s">except ImportError:</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="s">    pass</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="s">PATCH</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--no-deps<span class="w"> </span>torchnet
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nv">SITE</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import site; print(site.getsitepackages()[0])&quot;</span><span class="k">)</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>cat<span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$SITE</span>/torchnet/logger/__init__.py<span class="w"> </span><span class="s">&lt;&lt; &#39;PATCH&#39;</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="s">try:</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="s">    from .visdomlogger import *</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="s">except ImportError:</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="s">    pass</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="s">PATCH</span>
 </code></pre></div>
-<h2 id="5-install-gpu-libraries">5. Install GPU Libraries<a class="headerlink" href="#5-install-gpu-libraries" title="Permanent link">&para;</a></h2>
+<h3 id="b5-install-gpu-libraries">B.5. Install GPU Libraries<a class="headerlink" href="#b5-install-gpu-libraries" title="Permanent link">&para;</a></h3>
 <p>These must be compiled from source with matching CUDA 11.8 and GCC &lt;= 11.</p>
 <h3 id="option-a-copy-from-docker-image-fastest">Option A: Copy from Docker image (fastest)<a class="headerlink" href="#option-a-copy-from-docker-image-fastest" title="Permanent link">&para;</a></h3>
 <p>If you have the Docker image built:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">CONDA_SITE</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import site; print(site.getsitepackages()[0])&quot;</span><span class="k">)</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nv">DOCKER_SITE</span><span class="o">=</span>/usr/local/lib/python3.10/dist-packages
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>docker<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>sat_extract<span class="w"> </span>segmentanytree:latest<span class="w"> </span><span class="nb">true</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">for</span><span class="w"> </span>pkg<span class="w"> </span><span class="k">in</span><span class="w"> </span>MinkowskiEngine<span class="w"> </span>MinkowskiEngineBackend<span class="w"> </span>torchsparse<span class="w"> </span>torch_points_kernels<span class="w"> </span>torchnet<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>docker<span class="w"> </span>cp<span class="w"> </span>sat_extract:<span class="nv">$DOCKER_SITE</span>/<span class="nv">$pkg</span><span class="w"> </span><span class="nv">$CONDA_SITE</span>/<span class="nv">$pkg</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">done</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>docker<span class="w"> </span>rm<span class="w"> </span>sat_extract
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nv">CONDA_SITE</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import site; print(site.getsitepackages()[0])&quot;</span><span class="k">)</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nv">DOCKER_SITE</span><span class="o">=</span>/usr/local/lib/python3.10/dist-packages
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>docker<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>sat_extract<span class="w"> </span>segmentanytree:cuda11<span class="w"> </span><span class="nb">true</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">for</span><span class="w"> </span>pkg<span class="w"> </span><span class="k">in</span><span class="w"> </span>MinkowskiEngine<span class="w"> </span>MinkowskiEngineBackend<span class="w"> </span>torchsparse<span class="w"> </span>torch_points_kernels<span class="w"> </span>torchnet<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span>docker<span class="w"> </span>cp<span class="w"> </span>sat_extract:<span class="nv">$DOCKER_SITE</span>/<span class="nv">$pkg</span><span class="w"> </span><span class="nv">$CONDA_SITE</span>/<span class="nv">$pkg</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="k">done</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>docker<span class="w"> </span>rm<span class="w"> </span>sat_extract
 </code></pre></div>
 <h3 id="option-b-build-from-source">Option B: Build from source<a class="headerlink" href="#option-b-build-from-source" title="Permanent link">&para;</a></h3>
 <p>Install GCC 11 (required for CUDA 11.8):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mamba<span class="w"> </span>install<span class="w"> </span>-n<span class="w"> </span>sat<span class="w"> </span>-y<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>gcc_linux-64<span class="o">=</span><span class="m">11</span><span class="w"> </span>gxx_linux-64<span class="o">=</span><span class="m">11</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="k">$(</span>which<span class="w"> </span>x86_64-conda-linux-gnu-gcc<span class="k">)</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CXX</span><span class="o">=</span><span class="k">$(</span>which<span class="w"> </span>x86_64-conda-linux-gnu-g++<span class="k">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>mamba<span class="w"> </span>install<span class="w"> </span>-n<span class="w"> </span>sat<span class="w"> </span>-y<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>gcc_linux-64<span class="o">=</span><span class="m">11</span><span class="w"> </span>gxx_linux-64<span class="o">=</span><span class="m">11</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="k">$(</span>which<span class="w"> </span>x86_64-conda-linux-gnu-gcc<span class="k">)</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CXX</span><span class="o">=</span><span class="k">$(</span>which<span class="w"> </span>x86_64-conda-linux-gnu-g++<span class="k">)</span>
 </code></pre></div>
 <p>Build each library:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TORCH_CUDA_ARCH_LIST</span><span class="o">=</span><span class="s2">&quot;7.0;7.5;8.0;8.6;9.0&quot;</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">FORCE_CUDA</span><span class="o">=</span><span class="m">1</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># torch-points-kernels</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>https://github.com/torch-points3d/torch-points-kernels.git<span class="w"> </span>/tmp/tpk
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="nb">cd</span><span class="w"> </span>/tmp/tpk<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>install
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="c1"># torchsparse v1.4.0</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--no-build-isolation<span class="w"> </span>git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="c1"># MinkowskiEngine</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>https://github.com/NVIDIA/MinkowskiEngine.git<span class="w"> </span>/tmp/ME
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="nb">cd</span><span class="w"> </span>/tmp/ME<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>install<span class="w"> </span>--blas<span class="o">=</span>openblas<span class="w"> </span>--force_cuda
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TORCH_CUDA_ARCH_LIST</span><span class="o">=</span><span class="s2">&quot;7.0;7.5;8.0;8.6;9.0&quot;</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">FORCE_CUDA</span><span class="o">=</span><span class="m">1</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># torch-points-kernels</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>https://github.com/torch-points3d/torch-points-kernels.git<span class="w"> </span>/tmp/tpk
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="nb">cd</span><span class="w"> </span>/tmp/tpk<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>install
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="c1"># torchsparse v1.4.0</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--no-build-isolation<span class="w"> </span>git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="c1"># MinkowskiEngine</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>https://github.com/NVIDIA/MinkowskiEngine.git<span class="w"> </span>/tmp/ME
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="nb">cd</span><span class="w"> </span>/tmp/ME<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>install<span class="w"> </span>--blas<span class="o">=</span>openblas<span class="w"> </span>--force_cuda
 </code></pre></div>
-<h2 id="6-verify-installation">6. Verify Installation<a class="headerlink" href="#6-verify-installation" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="s2">import torch; print(&#39;torch:&#39;, torch.__version__, &#39;cuda:&#39;, torch.cuda.is_available())</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="s2">from torch_points_kernels import region_grow; print(&#39;torch-points-kernels: OK&#39;)</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="s2">import MinkowskiEngine; print(&#39;MinkowskiEngine:&#39;, MinkowskiEngine.__version__)</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s2">import torchsparse; print(&#39;torchsparse: OK&#39;)</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="s2">import laspy; print(&#39;laspy: OK&#39;)</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="s2">import subprocess; subprocess.run([&#39;pdal&#39;, &#39;--version&#39;])</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="s2">&quot;</span>
+<h3 id="b6-verify-installation">B.6. Verify Installation<a class="headerlink" href="#b6-verify-installation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="s2">import torch; print(&#39;torch:&#39;, torch.__version__, &#39;cuda:&#39;, torch.cuda.is_available())</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="s2">import MinkowskiEngine as ME; print(&#39;MinkowskiEngine:&#39;, ME.__version__)</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="s2">import laspy; print(&#39;laspy: OK&#39;)</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s2">import subprocess; subprocess.run([&#39;pdal&#39;, &#39;--version&#39;])</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s2">&quot;</span>
 </code></pre></div>
-<h2 id="7-run-inference">7. Run Inference<a class="headerlink" href="#7-run-inference" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/miniforge/envs/sat/bin:</span><span class="nv">$HOME</span><span class="s2">/cuda-11.8/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/cuda-11.8/lib64:</span><span class="nv">$LD_LIBRARY_PATH</span><span class="s2">&quot;</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;/path/to/SegmentAnyTree:</span><span class="nv">$PYTHONPATH</span><span class="s2">&quot;</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_ROOT</span><span class="o">=</span><span class="s2">&quot;/path/to/SegmentAnyTree&quot;</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$SAT_ROOT</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/path/to/input<span class="w"> </span>/path/to/output<span class="w"> </span><span class="nb">true</span>
+<h3 id="b7-run-inference">B.7. Run Inference<a class="headerlink" href="#b7-run-inference" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/miniforge/envs/sat/bin:</span><span class="nv">$HOME</span><span class="s2">/cuda-11.8/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/cuda-11.8/lib64:</span><span class="nv">$LD_LIBRARY_PATH</span><span class="s2">&quot;</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;/path/to/SegmentAnyTree:</span><span class="nv">$PYTHONPATH</span><span class="s2">&quot;</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_ROOT</span><span class="o">=</span><span class="s2">&quot;/path/to/SegmentAnyTree&quot;</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$SAT_ROOT</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/path/to/input<span class="w"> </span>/path/to/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
+<h2 id="running-jupyterlab-locally">Running JupyterLab Locally<a class="headerlink" href="#running-jupyterlab-locally" title="Permanent link">&para;</a></h2>
+<p>After setting up either Option A or B:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Activate your environment</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>conda<span class="w"> </span>activate<span class="w"> </span>sat<span class="w">  </span><span class="c1"># or source your venv</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Set environment variables</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SAT_ROOT</span><span class="o">=</span>/path/to/SegmentAnyTree
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SPARSE_BACKEND</span><span class="o">=</span>spconv<span class="w">  </span><span class="c1"># CUDA 12.4 only</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SAT_ROOT</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">PYTHONPATH</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="c1"># Launch JupyterLab</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$SAT_ROOT</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>jupyter<span class="w"> </span>lab
+</code></pre></div>
+<p>Open the URL shown in the terminal. The notebooks in <code>notebooks/</code> auto-detect whether they are running in Docker or locally via <code>sat.utils.paths</code> — no path editing needed.</p>
+<div class="admonition note">
+<p class="admonition-title">Kernel registration</p>
+<p>If the notebooks show "Kernel not found", register the kernel manually:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>conda<span class="w"> </span>activate<span class="w"> </span>sat
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>python<span class="w"> </span>-m<span class="w"> </span>ipykernel<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>--name<span class="w"> </span>sat<span class="w"> </span>--display-name<span class="w"> </span><span class="s2">&quot;Python 3 (sat)&quot;</span>
+</code></pre></div></p>
+</div>
 <h2 id="shell-setup-add-to-bashrc">Shell Setup (add to ~/.bashrc)<a class="headerlink" href="#shell-setup-add-to-bashrc" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># SegmentAnyTree environment</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nb">alias</span><span class="w"> </span>sat-env<span class="o">=</span><span class="s1">&#39;</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="s1">  export PATH=&quot;$HOME/miniforge/envs/sat/bin:$HOME/cuda-11.8/bin:$PATH&quot;</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="s1">  export LD_LIBRARY_PATH=&quot;$HOME/cuda-11.8/lib64:$LD_LIBRARY_PATH&quot;</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s1">  export PYTHONPATH=&quot;$HOME/github/SegmentAnyTree:$PYTHONPATH&quot;</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s1">  export SAT_ROOT=&quot;$HOME/github/SegmentAnyTree&quot;</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s1">  echo &quot;SegmentAnyTree env activated&quot;</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s1">&#39;</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CUDA 12.4</label><label for="__tabbed_1_2">CUDA 11.8</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">alias</span><span class="w"> </span>sat-env<span class="o">=</span><span class="s1">&#39;</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="s1">  conda activate sat</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="s1">  export PYTHONPATH=&quot;$HOME/github/SegmentAnyTree:$PYTHONPATH&quot;</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="s1">  export SAT_ROOT=&quot;$HOME/github/SegmentAnyTree&quot;</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="s1">  export SPARSE_BACKEND=spconv</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="s1">  echo &quot;SegmentAnyTree env activated (CUDA 12.4 + SpConv)&quot;</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s1">&#39;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">alias</span><span class="w"> </span>sat-env<span class="o">=</span><span class="s1">&#39;</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="s1">  export PATH=&quot;$HOME/miniforge/envs/sat/bin:$HOME/cuda-11.8/bin:$PATH&quot;</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="s1">  export LD_LIBRARY_PATH=&quot;$HOME/cuda-11.8/lib64:$LD_LIBRARY_PATH&quot;</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="s1">  export PYTHONPATH=&quot;$HOME/github/SegmentAnyTree:$PYTHONPATH&quot;</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="s1">  export SAT_ROOT=&quot;$HOME/github/SegmentAnyTree&quot;</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="s1">  echo &quot;SegmentAnyTree env activated (CUDA 11.8 + MinkowskiEngine)&quot;</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="s1">&#39;</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>Then just run <code>sat-env</code> before working with SegmentAnyTree.</p>
 
 

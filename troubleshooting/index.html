@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="zensical-0.0.28">
+      <meta name="generator" content="zensical-0.0.29">
     
     
       
@@ -248,7 +248,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../inference/" class="md-tabs__link">
+        <a href="../workflow/" class="md-tabs__link">
           
   
   User Guide
@@ -469,6 +469,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../local-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../singularity/" class="md-nav__link">
         
   
@@ -558,6 +586,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../inference/" class="md-nav__link">
         
   
@@ -594,6 +650,34 @@
     
   
     Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
   
 
     
@@ -839,10 +923,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-build-fails-at-minkowskiengine" class="md-nav__link">
+  <a href="#docker-build-fails-at-minkowskiengine-cuda-118-only" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docker Build Fails at MinkowskiEngine
+        Docker Build Fails at MinkowskiEngine (CUDA 11.8 only)
       
     </span>
   </a>
@@ -854,6 +938,17 @@
     <span class="md-ellipsis">
       
         Segmentation Fault (exit code 139)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-weights-are-a-git-lfs-pointer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model Weights Are a Git LFS Pointer
       
     </span>
   </a>
@@ -959,10 +1054,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-build-fails-at-minkowskiengine" class="md-nav__link">
+  <a href="#docker-build-fails-at-minkowskiengine-cuda-118-only" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docker Build Fails at MinkowskiEngine
+        Docker Build Fails at MinkowskiEngine (CUDA 11.8 only)
       
     </span>
   </a>
@@ -974,6 +1069,17 @@
     <span class="md-ellipsis">
       
         Segmentation Fault (exit code 139)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-weights-are-a-git-lfs-pointer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model Weights Are a Git LFS Pointer
       
     </span>
   </a>
@@ -1033,13 +1139,17 @@
 <p><strong>Symptom</strong>: <code>OverflowError</code> or corrupted PredInstance values</p>
 <p><strong>Cause</strong>: Instance IDs or other fields contain values outside uint16 range (0-65535).</p>
 <p><strong>Solution</strong>: The <code>sat.io.las_io.pandas_to_las</code> function clips uint16 fields automatically. If you encounter this with custom code, ensure values are in range before writing.</p>
-<h2 id="docker-build-fails-at-minkowskiengine">Docker Build Fails at MinkowskiEngine<a class="headerlink" href="#docker-build-fails-at-minkowskiengine" title="Permanent link">&para;</a></h2>
+<h2 id="docker-build-fails-at-minkowskiengine-cuda-118-only">Docker Build Fails at MinkowskiEngine (CUDA 11.8 only)<a class="headerlink" href="#docker-build-fails-at-minkowskiengine-cuda-118-only" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom</strong>: Compilation errors during <code>pip install MinkowskiEngine</code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This only applies to the CUDA 11.8 image (<code>docker/Dockerfile.cuda11</code>). The CUDA 12.4 image uses SpConv v2.x which installs via pip with no compilation.</p>
+</div>
 <p><strong>Solutions</strong>:
-- Ensure NVIDIA driver is 525+ (for CUDA 12.4 support)
+- Ensure NVIDIA driver is 525+
 - Check that <code>TORCH_CUDA_ARCH_LIST</code> includes your GPU's compute capability
 - Try building with <code>--no-cache</code> to avoid stale layers:
-  <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>segmentanytree:latest<span class="w"> </span>.
+  <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.cuda11<span class="w"> </span>-t<span class="w"> </span>segmentanytree:cuda11<span class="w"> </span>.
 </code></pre></div></p>
 <h2 id="segmentation-fault-exit-code-139">Segmentation Fault (exit code 139)<a class="headerlink" href="#segmentation-fault-exit-code-139" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom</strong>: Process exits with code 139 (common in Singularity environments)</p>
@@ -1048,6 +1158,33 @@
 - Increase memory allocation (<code>#SBATCH --mem=128G</code>)
 - Check that output files were still created — segfaults sometimes occur during cleanup after results are written
 - Ensure the Singularity image was built from the correct Docker image</p>
+<h2 id="model-weights-are-a-git-lfs-pointer">Model Weights Are a Git LFS Pointer<a class="headerlink" href="#model-weights-are-a-git-lfs-pointer" title="Permanent link">&para;</a></h2>
+<p><strong>Symptom</strong>: Inference produces garbage results — PredSemantic has no class 2 (tree), PredInstance is empty or has only a handful of tiny clusters. Eval log shows all cluster scores ~0.43 and cluster sizes of 5-15 points.</p>
+<p><strong>Cause</strong>: <code>model_file/PointGroup-PAPER.pt</code> is tracked by Git LFS. If you cloned the repo without <code>git-lfs</code> installed, the file is a 134-byte text pointer instead of the actual 665 MB model checkpoint. Docker builds will also fail or produce broken images.</p>
+<p><strong>Diagnosis</strong>:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Check file size — should be ~665 MB, not 134 bytes</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>ls<span class="w"> </span>-lh<span class="w"> </span>model_file/PointGroup-PAPER.pt
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Check if it&#39;s a pointer file</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>file<span class="w"> </span>model_file/PointGroup-PAPER.pt
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># Bad:  &quot;ASCII text&quot; (LFS pointer)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Good: &quot;Zip archive data&quot; (PyTorch checkpoint)</span>
+</code></pre></div></p>
+<p><strong>Solution</strong>:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Option 1: Pull via git-lfs</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>git<span class="w"> </span>lfs<span class="w"> </span>install
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>git<span class="w"> </span>lfs<span class="w"> </span>pull<span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;model_file/PointGroup-PAPER.pt&quot;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Option 2: Download directly from upstream repo</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>model_file/PointGroup-PAPER.pt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="s2">&quot;https://github.com/SmartForest-no/SegmentAnyTree/raw/main/model_file/PointGroup-PAPER.pt&quot;</span>
+</code></pre></div></p>
+<p>After fixing, rebuild Docker images (<code>make build-cuda12</code> / <code>make build-cuda11</code>). The Dockerfiles now include a build-time check that will fail fast if the weights are LFS pointers.</p>
+<p>For CUDA 12 (SpConv), you must also regenerate the migrated weights:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>scripts/migrate_weights.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>--input<span class="w"> </span>model_file/PointGroup-PAPER.pt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>--output<span class="w"> </span>model_file/PointGroup-PAPER-spconv.pt
+</code></pre></div></p>
 <h2 id="model-file-not-found">Model File Not Found<a class="headerlink" href="#model-file-not-found" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom</strong>: <code>FileNotFoundError: model_file/PointGroup-PAPER.pt</code></p>
 <p><strong>Solution</strong>: The pre-trained model must be in <code>$SAT_ROOT/model_file/</code>. In Docker, this is bundled in the image. For local usage, ensure <code>model_file/PointGroup-PAPER.pt</code> exists in the repository root.</p>

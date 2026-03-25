@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="zensical-0.0.28">
+      <meta name="generator" content="zensical-0.0.29">
     
     
       
@@ -252,7 +252,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../inference/" class="md-tabs__link">
+        <a href="../workflow/" class="md-tabs__link">
           
   
   User Guide
@@ -616,6 +616,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../local-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../singularity/" class="md-nav__link">
         
   
@@ -705,6 +733,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../inference/" class="md-nav__link">
         
   
@@ -741,6 +797,34 @@
     
   
     Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
   
 
     
@@ -1050,12 +1134,17 @@
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Docker with <a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">NVIDIA Container Toolkit</a></li>
-<li>An NVIDIA GPU (Volta or newer: V100, A100, RTX 20xx/30xx/40xx) with driver 525+</li>
+<li>An NVIDIA GPU (Volta or newer: V100, A100, RTX 20xx/30xx/40xx/50xx) with driver 525+</li>
+<li><strong>Git LFS</strong> installed (<code>git lfs install</code>) — the model weights are stored via Git LFS</li>
 <li>Point cloud files in <code>.las</code>, <code>.laz</code>, or <code>.ply</code> format</li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Git LFS required</p>
+<p>The pre-trained model (<code>model_file/PointGroup-PAPER.pt</code>, 665 MB) is stored with Git LFS. Without <code>git-lfs</code> installed, you'll get a 134-byte pointer file instead of real weights, and inference will produce garbage results. See <a href="../troubleshooting/#model-weights-are-a-git-lfs-pointer">Troubleshooting</a> for details.</p>
+</div>
 <div class="admonition tip">
 <p class="admonition-title">No data yet?</p>
-<p>See the <a href="../example-data/">Example Data</a> page for publicly available LiDAR datasets you can use to test.</p>
+<p>The <a href="../example-data/#for-instance-dataset-recommended-for-validation">FOR-instance dataset</a> from the paper is the best choice for validating your setup. Also see the <a href="../example-data/">Example Data</a> page for other options.</p>
 </div>
 <h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h2>
 <h3 id="1-prepare-directories">1. Prepare directories<a class="headerlink" href="#1-prepare-directories" title="Permanent link">&para;</a></h3>
@@ -1065,28 +1154,56 @@
 <h3 id="2-add-your-point-cloud-files">2. Add your point cloud files<a class="headerlink" href="#2-add-your-point-cloud-files" title="Permanent link">&para;</a></h3>
 <p>Copy your <code>.las</code>, <code>.laz</code>, or <code>.ply</code> files into <code>$HOME/segmentanytree/input/</code>.</p>
 <h3 id="3-run-inference">3. Run inference<a class="headerlink" href="#3-run-inference" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>segmentanytree:latest<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Harbor Registry</label><label for="__tabbed_1_2">Local Build</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>harbor.cyverse.org/vice/segmentanytree:cuda12
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span>harbor.cyverse.org/vice/segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
-<h3 id="4-check-results">4. Check results<a class="headerlink" href="#4-check-results" title="Permanent link">&para;</a></h3>
-<p>Segmented files appear in <code>$HOME/segmentanytree/output/final_results/</code>:
-- <code>*_instance_segmentation.las</code> — each tree gets a unique instance ID
-- <code>*_semantic_segmentation.las</code> — per-point tree/non-tree classification</p>
-<h3 id="5-interactive-mode-jupyterlab">5. Interactive mode (JupyterLab)<a class="headerlink" href="#5-interactive-mode-jupyterlab" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-p<span class="w"> </span><span class="m">8888</span>:8888<span class="w"> </span><span class="se">\</span>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span>segmentanytree:latest
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span>segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
-<p>Open http://localhost:8888 and use the notebooks in <code>notebooks/</code>.</p>
+</div>
+</div>
+</div>
+<h3 id="4-check-results">4. Check results<a class="headerlink" href="#4-check-results" title="Permanent link">&para;</a></h3>
+<p>Segmented files appear in <code>$HOME/segmentanytree/output/final_results/</code> as <code>.copc.laz</code> files (Cloud-Optimized Point Clouds). Each file contains the original point cloud with two extra dimensions added by the model.</p>
+<p>If COPC conversion is not available (PDAL not installed), output files will be <code>.laz</code> instead.</p>
+<h3 id="5-interactive-mode-jupyterlab">5. Interactive mode (JupyterLab)<a class="headerlink" href="#5-interactive-mode-jupyterlab" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Harbor Registry</label><label for="__tabbed_2_2">Local Build</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-p<span class="w"> </span><span class="m">8888</span>:8888<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>harbor.cyverse.org/vice/segmentanytree:cuda12
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-p<span class="w"> </span><span class="m">8888</span>:8888<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/segmentanytree/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>segmentanytree:cuda12
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Open http://localhost:8888 and use the notebooks in <code>notebooks/</code>. See the <a href="../notebooks/">Notebooks</a> page for descriptions of each notebook.</p>
 <h2 id="output-format">Output format<a class="headerlink" href="#output-format" title="Permanent link">&para;</a></h2>
-<p>The output LAS files contain two extra dimensions:
+<p>The output files contain two extra dimensions:
 - <strong>PredSemantic</strong>: <code>0</code> = unclassified, <code>1</code> = non-tree, <code>2</code> = tree
 - <strong>PredInstance</strong>: unique integer ID per detected tree (0 = unassigned)</p>
-<p>These files preserve all original point attributes (coordinates, intensity, return number, etc.) with UTM coordinates restored.</p>
+<p>These files preserve all original point attributes (coordinates, intensity, return number, etc.) with UTM coordinates restored. Output is in <a href="https://copc.io/">COPC</a> format (<code>.copc.laz</code>) for efficient streaming and visualization in tools like <a href="https://www.danielgm.net/cc/">CloudCompare</a>, <a href="https://qgis.org/">QGIS</a>, and <a href="https://potree.github.io/">Potree</a>.</p>
+<p>See the <a href="../workflow/">Scientific Workflow</a> guide for the full end-to-end process including visualization.</p>
 
 
 

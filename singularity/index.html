@@ -15,17 +15,17 @@
         <link rel="canonical" href="https://tyson-swetnam.github.io/SegmentAnyTree/singularity/">
       
       
-        <link rel="prev" href="../docker/">
+        <link rel="prev" href="../local-build/">
       
       
-        <link rel="next" href="../inference/">
+        <link rel="next" href="../workflow/">
       
       
         
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="zensical-0.0.28">
+      <meta name="generator" content="zensical-0.0.29">
     
     
       
@@ -252,7 +252,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../inference/" class="md-tabs__link">
+        <a href="../workflow/" class="md-tabs__link">
           
   
   User Guide
@@ -471,6 +471,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../local-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -666,6 +694,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../inference/" class="md-nav__link">
         
   
@@ -702,6 +758,34 @@
     
   
     Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
   
 
     
@@ -969,86 +1053,102 @@
 
 <h1 id="singularity-apptainer-hpc-usage">Singularity / Apptainer (HPC Usage)<a class="headerlink" href="#singularity-apptainer-hpc-usage" title="Permanent link">&para;</a></h1>
 <h2 id="convert-docker-image-to-sif">Convert Docker Image to SIF<a class="headerlink" href="#convert-docker-image-to-sif" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>singularity<span class="w"> </span>pull<span class="w"> </span>segmentanytree.sif<span class="w"> </span>docker://segmentanytree:latest
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CUDA 12.4 (recommended)</label><label for="__tabbed_1_2">CUDA 11.8 (legacy)</label><label for="__tabbed_1_3">From Local Build</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>singularity<span class="w"> </span>pull<span class="w"> </span>segmentanytree-cuda12.sif<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>docker://harbor.cyverse.org/vice/segmentanytree:cuda12
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>singularity<span class="w"> </span>pull<span class="w"> </span>segmentanytree-cuda11.sif<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>docker://harbor.cyverse.org/vice/segmentanytree:cuda11
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>singularity<span class="w"> </span>pull<span class="w"> </span>segmentanytree-cuda12.sif<span class="w"> </span>docker://segmentanytree:cuda12
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="basic-inference">Basic Inference<a class="headerlink" href="#basic-inference" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>singularity<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--nv<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>--bind<span class="w"> </span>/path/to/input:/data/input<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span>--bind<span class="w"> </span>/path/to/output:/data/output<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span>segmentanytree.sif<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span>bash<span class="w"> </span>/opt/segmentanytree/scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>singularity<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--nv<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span>--bind<span class="w"> </span>/path/to/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span>--bind<span class="w"> </span>/path/to/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span>segmentanytree-cuda12.sif<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span>bash<span class="w"> </span>/opt/segmentanytree/scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
 <h2 id="slurm-script">SLURM Script<a class="headerlink" href="#slurm-script" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="ch">#!/bin/bash</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">#SBATCH --job-name=segmentanytree</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">#SBATCH --output=sat_%j.log</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">#SBATCH --time=04:00:00</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1">#SBATCH --mem=64G</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1">#SBATCH --gres=gpu:1</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1">#SBATCH --cpus-per-task=8</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>module<span class="w"> </span>load<span class="w"> </span>singularity<span class="w">  </span><span class="c1"># or apptainer</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nv">SIF</span><span class="o">=</span><span class="s2">&quot;/path/to/segmentanytree.sif&quot;</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="nv">INPUT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/input&quot;</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="nv">OUTPUT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/output&quot;</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="nv">TEMP</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/sat_temp&quot;</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">&quot;</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>singularity<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--nv<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$INPUT</span><span class="s2">:/data/input&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">    </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">:/data/output&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">    </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">:/tmp/sat_cache&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">    </span><span class="s2">&quot;</span><span class="nv">$SIF</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">    </span>bash<span class="w"> </span>/opt/segmentanytree/scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="ch">#!/bin/bash</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">#SBATCH --job-name=segmentanytree</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1">#SBATCH --output=sat_%j.log</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">#SBATCH --time=04:00:00</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1">#SBATCH --mem=64G</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">#SBATCH --gres=gpu:1</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1">#SBATCH --cpus-per-task=8</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>module<span class="w"> </span>load<span class="w"> </span>singularity<span class="w">  </span><span class="c1"># or apptainer</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="nv">SIF</span><span class="o">=</span><span class="s2">&quot;/path/to/segmentanytree-cuda12.sif&quot;</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="nv">INPUT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/input&quot;</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="nv">OUTPUT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/output&quot;</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="nv">TEMP</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/sat_temp&quot;</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">&quot;</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>singularity<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--nv<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$INPUT</span><span class="s2">:/data/input&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">:/data/output&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">:/tmp/sat_cache&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">    </span><span class="s2">&quot;</span><span class="nv">$SIF</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">    </span>bash<span class="w"> </span>/opt/segmentanytree/scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
 <h2 id="checkpointed-processing-large-datasets">Checkpointed Processing (Large Datasets)<a class="headerlink" href="#checkpointed-processing-large-datasets" title="Permanent link">&para;</a></h2>
 <p>For processing many files with potential job time limits, process one file at a time with checkpointing:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="ch">#!/bin/bash</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1">#SBATCH --job-name=sat_batch</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1">#SBATCH --output=sat_batch_%j.log</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">#SBATCH --time=24:00:00</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">#SBATCH --mem=128G</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1">#SBATCH --gres=gpu:1</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">#SBATCH --cpus-per-task=8</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="nv">SIF</span><span class="o">=</span><span class="s2">&quot;/path/to/segmentanytree.sif&quot;</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="nv">INPUT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/input&quot;</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="nv">OUTPUT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/output&quot;</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="nv">CHECKPOINT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/checkpoints&quot;</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="nv">TEMP</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/sat_temp&quot;</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CHECKPOINT</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">&quot;</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="k">for</span><span class="w"> </span>laz<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$INPUT</span><span class="s2">&quot;</span>/*.laz<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="nv">fname</span><span class="o">=</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$laz</span><span class="s2">&quot;</span><span class="k">)</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span><span class="nv">marker</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$CHECKPOINT</span><span class="s2">/</span><span class="nv">$fname</span><span class="s2">.done&quot;</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">    </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$marker</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Skip (done): </span><span class="nv">$fname</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">continue</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing: </span><span class="nv">$fname</span><span class="s2">&quot;</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">    </span><span class="nv">TEMP_IN</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">/in_</span><span class="nv">$$</span><span class="s2">&quot;</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">    </span><span class="nv">TEMP_OUT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">/out_</span><span class="nv">$$</span><span class="s2">&quot;</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">    </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_IN</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">&quot;</span>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">    </span>cp<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$laz</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_IN</span><span class="s2">/&quot;</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">    </span>singularity<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--nv<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="w">        </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_IN</span><span class="s2">:/data/input&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w">        </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">:/data/output&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">        </span><span class="s2">&quot;</span><span class="nv">$SIF</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">        </span>bash<span class="w"> </span>/opt/segmentanytree/scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">        </span><span class="o">&amp;&amp;</span><span class="w"> </span>touch<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$marker</span><span class="s2">&quot;</span>
-<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>
-<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">    </span><span class="c1"># Copy results</span>
-<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="w">    </span><span class="o">[</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">/final_results&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">/final_results&quot;</span>/*<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">/&quot;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null
-<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>
-<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">    </span><span class="c1"># Clean temp to free storage</span>
-<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="w">    </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_IN</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">&quot;</span>
-<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="k">done</span>
-<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>
-<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Done: </span><span class="k">$(</span>ls<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l<span class="k">)</span><span class="s2"> output files&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="ch">#!/bin/bash</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1">#SBATCH --job-name=sat_batch</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1">#SBATCH --output=sat_batch_%j.log</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">#SBATCH --time=24:00:00</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1">#SBATCH --mem=128G</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1">#SBATCH --gres=gpu:1</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1">#SBATCH --cpus-per-task=8</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="nv">SIF</span><span class="o">=</span><span class="s2">&quot;/path/to/segmentanytree-cuda12.sif&quot;</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="nv">INPUT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/input&quot;</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="nv">OUTPUT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/output&quot;</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="nv">CHECKPOINT</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/checkpoints&quot;</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="nv">TEMP</span><span class="o">=</span><span class="s2">&quot;/scratch/</span><span class="nv">$USER</span><span class="s2">/sat_temp&quot;</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CHECKPOINT</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="k">for</span><span class="w"> </span>laz<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$INPUT</span><span class="s2">&quot;</span>/*.laz<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">    </span><span class="nv">fname</span><span class="o">=</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$laz</span><span class="s2">&quot;</span><span class="k">)</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">    </span><span class="nv">marker</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$CHECKPOINT</span><span class="s2">/</span><span class="nv">$fname</span><span class="s2">.done&quot;</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$marker</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Skip (done): </span><span class="nv">$fname</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">continue</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing: </span><span class="nv">$fname</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">    </span><span class="nv">TEMP_IN</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">/in_</span><span class="nv">$$</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">    </span><span class="nv">TEMP_OUT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TEMP</span><span class="s2">/out_</span><span class="nv">$$</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">    </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_IN</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">    </span>cp<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$laz</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_IN</span><span class="s2">/&quot;</span>
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">    </span>singularity<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--nv<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">        </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_IN</span><span class="s2">:/data/input&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">        </span>--bind<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">:/data/output&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">        </span><span class="s2">&quot;</span><span class="nv">$SIF</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="w">        </span>bash<span class="w"> </span>/opt/segmentanytree/scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">        </span><span class="o">&amp;&amp;</span><span class="w"> </span>touch<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$marker</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>
+<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="w">    </span><span class="c1"># Copy results</span>
+<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="w">    </span><span class="o">[</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">/final_results&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">/final_results&quot;</span>/*<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">/&quot;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null
+<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a>
+<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a><span class="w">    </span><span class="c1"># Clean temp to free storage</span>
+<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="w">    </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_IN</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$TEMP_OUT</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a><span class="k">done</span>
+<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a>
+<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Done: </span><span class="k">$(</span>ls<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l<span class="k">)</span><span class="s2"> output files&quot;</span>
 </code></pre></div>
 <h2 id="storage-tips">Storage Tips<a class="headerlink" href="#storage-tips" title="Permanent link">&para;</a></h2>
 <ul>

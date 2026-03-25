@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://tyson-swetnam.github.io/SegmentAnyTree/inference/">
       
       
-        <link rel="prev" href="../singularity/">
+        <link rel="prev" href="../workflow/">
       
       
         <link rel="next" href="../training/">
@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="zensical-0.0.28">
+      <meta name="generator" content="zensical-0.0.29">
     
     
       
@@ -252,7 +252,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="././" class="md-tabs__link">
+        <a href="../workflow/" class="md-tabs__link">
           
   
   User Guide
@@ -471,6 +471,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../local-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../singularity/" class="md-nav__link">
         
   
@@ -560,6 +588,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -622,6 +678,17 @@
       On this page
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scientific-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scientific Context
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#pipeline-overview" class="md-nav__link">
@@ -718,6 +785,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#copc-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        COPC Output
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="COPC Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standalone-copc-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standalone COPC conversion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -725,6 +820,111 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-gpu-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-GPU Inference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#copc-octant-parallel-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        COPC Octant-Parallel Inference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weight-migration-cuda-12-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weight Migration (CUDA 12 only)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customizing Parameters
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Customizing Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-hydra-overrides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Hydra overrides
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customizing-via-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customizing via Docker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuning-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tuning guidance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -763,6 +963,34 @@
     
   
     Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
   
 
     
@@ -956,6 +1184,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#scientific-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scientific Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pipeline-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1050,6 +1289,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#copc-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        COPC Output
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="COPC Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standalone-copc-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standalone COPC conversion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1057,6 +1324,111 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-gpu-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-GPU Inference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#copc-octant-parallel-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        COPC Octant-Parallel Inference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weight-migration-cuda-12-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weight Migration (CUDA 12 only)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customizing Parameters
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Customizing Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-hydra-overrides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Hydra overrides
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customizing-via-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customizing via Docker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuning-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tuning guidance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1090,19 +1462,35 @@
 
 
 <h1 id="inference-guide">Inference Guide<a class="headerlink" href="#inference-guide" title="Permanent link">&para;</a></h1>
+<h2 id="scientific-context">Scientific Context<a class="headerlink" href="#scientific-context" title="Permanent link">&para;</a></h2>
+<p>SegmentAnyTree performs <strong>panoptic segmentation</strong> on 3D LiDAR point clouds, combining two complementary tasks:</p>
+<ul>
+<li><strong>Semantic segmentation</strong>: classifies each point as tree, non-tree, or unclassified</li>
+<li><strong>Instance segmentation</strong>: assigns a unique ID to each individual tree</li>
+</ul>
+<p>This enables downstream forestry analysis including per-tree height estimation, crown diameter measurement, stem position mapping, and biomass estimation. The model works across sensor types (ALS, UAS, TLS, MLS) without retraining.</p>
+<p>See the <a href="../workflow/">Scientific Workflow</a> guide for the full end-to-end process.</p>
 <h2 id="pipeline-overview">Pipeline Overview<a class="headerlink" href="#pipeline-overview" title="Permanent link">&para;</a></h2>
 <p>The inference pipeline transforms input point clouds through several stages:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Input (.las/.laz/.ply)
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  → File preparation (sanitize filenames)
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  → UTM → local coordinates (subtract min x/y/z, save offsets)
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  → Model inference (PointGroup-PAPER, panoptic segmentation)
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  → Result renaming (index → descriptive names)
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  → Result merging (combine predictions with original point cloud, restore UTM)
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  → Output (.las with PredSemantic + PredInstance fields)
-</code></pre></div>
+<pre class="mermaid"><code>graph LR
+    A[Input .las/.laz/.ply] --&gt; B[Sanitize filenames]
+    B --&gt; C[UTM → local coords]
+    C --&gt; D[Model inference]
+    D --&gt; E[Rename &amp; merge results]
+    E --&gt; F[Restore UTM coords]
+    F --&gt; G[Convert to COPC]
+    G --&gt; H[Output .copc.laz]</code></pre>
+<ol>
+<li><strong>File preparation</strong> — sanitize filenames (replace spaces/dashes)</li>
+<li><strong>UTM → local coordinates</strong> — subtract min x/y/z, save offsets to JSON</li>
+<li><strong>Model inference</strong> — PointGroup-PAPER panoptic segmentation</li>
+<li><strong>Result renaming</strong> — map generic indices to descriptive filenames</li>
+<li><strong>Result merging</strong> — combine predictions with original point cloud, restore UTM</li>
+<li><strong>COPC conversion</strong> — convert LAZ to Cloud-Optimized Point Cloud format via PDAL</li>
+</ol>
 <h2 id="running-inference">Running Inference<a class="headerlink" href="#running-inference" title="Permanent link">&para;</a></h2>
 <h3 id="single-run">Single run<a class="headerlink" href="#single-run" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/path/to/input<span class="w"> </span>/path/to/output<span class="w"> </span><span class="nb">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/path/to/input<span class="w"> </span>/path/to/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
 <p>Arguments:
 - <code>input_dir</code>: Directory containing point cloud files
@@ -1110,27 +1498,27 @@
 - <code>clean</code>: <code>true</code> to clear output directory first, <code>false</code> to keep existing files</p>
 <h3 id="batch-mode">Batch mode<a class="headerlink" href="#batch-mode" title="Permanent link">&para;</a></h3>
 <p>For large collections, batch mode processes files in configurable chunks:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>scripts/run_batch_inference.sh<span class="w"> </span>/path/to/input<span class="w"> </span>/path/to/output<span class="w"> </span><span class="m">10</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash<span class="w"> </span>scripts/run_batch_inference.sh<span class="w"> </span>/path/to/input<span class="w"> </span>/path/to/output<span class="w"> </span><span class="m">10</span>
 </code></pre></div>
 <p>The third argument is the batch size (default: 10 files per batch).</p>
 <h3 id="python-api">Python API<a class="headerlink" href="#python-api" title="Permanent link">&para;</a></h3>
 <p>You can also run individual pipeline steps from Python:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.pipeline.coordinate_transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">utm_to_local_folder</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.pipeline.file_preparation</span><span class="w"> </span><span class="kn">import</span> <span class="n">sanitize_filenames</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.pipeline.config_update</span><span class="w"> </span><span class="kn">import</span> <span class="n">modify_eval_yaml</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.pipeline.result_merge</span><span class="w"> </span><span class="kn">import</span> <span class="n">FolderMerger</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Step 1: Prepare files</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">sanitize_filenames</span><span class="p">(</span><span class="s2">&quot;input_data/&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># Step 2: Coordinate transform</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">utm_to_local_folder</span><span class="p">(</span><span class="s2">&quot;input_data/&quot;</span><span class="p">,</span> <span class="s2">&quot;utm2local/&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># Step 3: Configure and run eval.py</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">modify_eval_yaml</span><span class="p">(</span><span class="s2">&quot;eval.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;utm2local/&quot;</span><span class="p">,</span> <span class="s2">&quot;output/&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1"># Step 4: Merge results</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="n">FolderMerger</span><span class="p">(</span><span class="s2">&quot;utm2local/&quot;</span><span class="p">,</span> <span class="s2">&quot;output/&quot;</span><span class="p">,</span> <span class="s2">&quot;final_results/&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.pipeline.coordinate_transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">utm_to_local_folder</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.pipeline.file_preparation</span><span class="w"> </span><span class="kn">import</span> <span class="n">sanitize_filenames</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.pipeline.config_update</span><span class="w"> </span><span class="kn">import</span> <span class="n">modify_eval_yaml</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.pipeline.result_merge</span><span class="w"> </span><span class="kn">import</span> <span class="n">FolderMerger</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># Step 1: Prepare files</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">sanitize_filenames</span><span class="p">(</span><span class="s2">&quot;input_data/&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># Step 2: Coordinate transform</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">utm_to_local_folder</span><span class="p">(</span><span class="s2">&quot;input_data/&quot;</span><span class="p">,</span> <span class="s2">&quot;utm2local/&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># Step 3: Configure and run eval.py</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">modify_eval_yaml</span><span class="p">(</span><span class="s2">&quot;eval.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;utm2local/&quot;</span><span class="p">,</span> <span class="s2">&quot;output/&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1"># Step 4: Merge results</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="n">FolderMerger</span><span class="p">(</span><span class="s2">&quot;utm2local/&quot;</span><span class="p">,</span> <span class="s2">&quot;output/&quot;</span><span class="p">,</span> <span class="s2">&quot;final_results/&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="coordinate-systems">Coordinate Systems<a class="headerlink" href="#coordinate-systems" title="Permanent link">&para;</a></h2>
 <p>The model expects points in a <strong>local coordinate system</strong> near the origin. The pipeline handles this automatically:</p>
@@ -1189,6 +1577,25 @@
 </tbody>
 </table>
 <p>All original point attributes are preserved in the output.</p>
+<h2 id="copc-output">COPC Output<a class="headerlink" href="#copc-output" title="Permanent link">&para;</a></h2>
+<p>The pipeline automatically converts output files to <strong>COPC</strong> (Cloud-Optimized Point Cloud) format using <a href="https://pdal.io/">PDAL</a>. COPC is a LAZ 1.4 file with an embedded spatial octree index that enables:</p>
+<ul>
+<li>Efficient HTTP range-request streaming for web viewers</li>
+<li>Fast partial reads — load only the spatial region you need</li>
+<li>Native support in QGIS 3.26+, CloudCompare, Potree, and <a href="https://viewer.copc.io/">copc.io</a></li>
+</ul>
+<p>Output files have the <code>.copc.laz</code> extension. If PDAL is not available, the pipeline falls back to standard <code>.laz</code> output.</p>
+<h3 id="standalone-copc-conversion">Standalone COPC conversion<a class="headerlink" href="#standalone-copc-conversion" title="Permanent link">&para;</a></h3>
+<p>To convert existing LAZ files to COPC format outside the inference pipeline:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.io.las_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">laz_to_copc</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Single file</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">laz_to_copc</span><span class="p">(</span><span class="s2">&quot;segmented.laz&quot;</span><span class="p">,</span> <span class="s2">&quot;segmented.copc.laz&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Or via PDAL directly</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>pdal<span class="w"> </span>translate<span class="w"> </span>input.laz<span class="w"> </span>output.copc.laz<span class="w"> </span>--writer<span class="w"> </span>copc
+</code></pre></div>
+<p>See the <a href="../notebooks/">COPC Conversion notebook</a> for batch conversion examples.</p>
 <h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1219,8 +1626,218 @@
 <td><code>/tmp/sat_cache</code></td>
 <td>Temporary files</td>
 </tr>
+<tr>
+<td><code>SAT_GPU</code></td>
+<td><code>0</code></td>
+<td>GPU device index for single-GPU inference</td>
+</tr>
+<tr>
+<td><code>NUM_GPUS</code></td>
+<td>Auto-detect all</td>
+<td>Number of GPUs for parallel inference</td>
+</tr>
 </tbody>
 </table>
+<h2 id="multi-gpu-inference">Multi-GPU Inference<a class="headerlink" href="#multi-gpu-inference" title="Permanent link">&para;</a></h2>
+<p>Distribute files across all available GPUs for parallel processing:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Auto-detect all GPUs</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>bash<span class="w"> </span>scripts/run_inference_parallel.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Specify GPU count</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>bash<span class="w"> </span>scripts/run_inference_parallel.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="m">4</span>
+</code></pre></div>
+<p>Files are assigned round-robin across GPUs. Each GPU runs an independent inference pipeline. Results are merged into <code>output/final_results/</code>.</p>
+<p>For Docker:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Harbor Registry</label><label for="__tabbed_1_2">Local Build</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>harbor.cyverse.org/vice/segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference_parallel.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference_parallel.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="copc-octant-parallel-inference">COPC Octant-Parallel Inference<a class="headerlink" href="#copc-octant-parallel-inference" title="Permanent link">&para;</a></h2>
+<p>For a single large COPC file, split it into spatial tiles and process each tile on a separate GPU:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Split a COPC file into 4 tiles (one per GPU) with 2m overlap buffer</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>bash<span class="w"> </span>scripts/run_inference_copc.sh<span class="w"> </span>input.copc.laz<span class="w"> </span>/path/to/output<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">2</span>.0
+</code></pre></div>
+<p>This uses the COPC octree index to extract spatial tiles efficiently, processes each independently, and collects results. The overlap buffer ensures trees at tile boundaries are segmented correctly.</p>
+<p>You can also use the Python API directly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sat.pipeline.copc_parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_copc_to_tiles</span><span class="p">,</span> <span class="n">merge_tile_results</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># Split into tiles</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">tiles</span> <span class="o">=</span> <span class="n">split_copc_to_tiles</span><span class="p">(</span><span class="s2">&quot;input.copc.laz&quot;</span><span class="p">,</span> <span class="s2">&quot;workdir/&quot;</span><span class="p">,</span> <span class="n">num_tiles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># Process each tile (e.g., on different GPUs)</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># ... run inference on each tile.file_path ...</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="c1"># Merge results (deduplicates overlap zones)</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">merge_tile_results</span><span class="p">(</span><span class="n">tiles</span><span class="p">,</span> <span class="s2">&quot;workdir/&quot;</span><span class="p">,</span> <span class="s2">&quot;output.laz&quot;</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="weight-migration-cuda-12-only">Weight Migration (CUDA 12 only)<a class="headerlink" href="#weight-migration-cuda-12-only" title="Permanent link">&para;</a></h2>
+<p>When using the CUDA 12.4 image with pre-trained weights from the original MinkowskiEngine model, the weights must be converted to SpConv format:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>python<span class="w"> </span>scripts/migrate_weights.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span>--input<span class="w"> </span>model_file/PointGroup-PAPER.pt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>--output<span class="w"> </span>model_file/PointGroup-PAPER-spconv.pt
+</code></pre></div>
+<p>This converts 118 convolution kernels from ME's <code>(K³, C_in, C_out)</code> layout to SpConv's <code>(C_out, kD, kH, kW, C_in)</code> format. All other parameters (BatchNorm, MLP heads) transfer unchanged. The CUDA 11.8 image uses the original weights directly.</p>
+<h2 id="customizing-parameters">Customizing Parameters<a class="headerlink" href="#customizing-parameters" title="Permanent link">&para;</a></h2>
+<p>The inference pipeline uses <a href="https://hydra.cc/">Hydra</a> for configuration. Parameters can be customized by editing <code>conf/eval.yaml</code> or passing overrides on the command line.</p>
+<h3 id="key-parameters">Key parameters<a class="headerlink" href="#key-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Location</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>batch_size</code></td>
+<td><code>1</code></td>
+<td><code>conf/eval.yaml</code></td>
+<td>Batch size for inference. Increase for faster processing if GPU memory allows</td>
+</tr>
+<tr>
+<td><code>data.first_subsampling</code></td>
+<td><code>0.2</code></td>
+<td><code>conf/data/panoptic/treeins_rad8.yaml</code></td>
+<td>Grid voxel size in meters. Smaller = more detail but more memory</td>
+</tr>
+<tr>
+<td><code>data.radius</code></td>
+<td><code>8</code></td>
+<td><code>conf/data/panoptic/treeins_rad8.yaml</code></td>
+<td>Cylinder sampling radius in meters</td>
+</tr>
+<tr>
+<td><code>tracker_options.min_score</code></td>
+<td><code>0.0</code></td>
+<td><code>conf/eval.yaml</code></td>
+<td>Minimum cluster score for instance acceptance (0.0–1.0). Higher = fewer but more confident trees</td>
+</tr>
+<tr>
+<td><code>checkpoint_dir</code></td>
+<td><code>model_file</code></td>
+<td><code>conf/eval.yaml</code></td>
+<td>Path to model checkpoint directory</td>
+</tr>
+<tr>
+<td><code>cuda</code></td>
+<td><code>0</code></td>
+<td><code>conf/eval.yaml</code></td>
+<td>GPU device index</td>
+</tr>
+</tbody>
+</table>
+<h3 id="using-hydra-overrides">Using Hydra overrides<a class="headerlink" href="#using-hydra-overrides" title="Permanent link">&para;</a></h3>
+<p>When running <code>eval.py</code> directly, pass overrides on the command line:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Increase batch size for faster inference</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>python<span class="w"> </span>eval.py<span class="w"> </span><span class="nv">batch_size</span><span class="o">=</span><span class="m">2</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># Use stricter cluster filtering (fewer, more confident tree detections)</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>python<span class="w"> </span>eval.py<span class="w"> </span>tracker_options.min_score<span class="o">=</span><span class="m">0</span>.5
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># Change grid sampling size (smaller = finer detail, more memory)</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>python<span class="w"> </span>eval.py<span class="w"> </span>data.first_subsampling<span class="o">=</span><span class="m">0</span>.1
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># Use a different model checkpoint</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>python<span class="w"> </span>eval.py<span class="w"> </span><span class="nv">checkpoint_dir</span><span class="o">=</span>/path/to/my_trained_model
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="c1"># Combine multiple overrides</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>python<span class="w"> </span>eval.py<span class="w"> </span><span class="nv">batch_size</span><span class="o">=</span><span class="m">2</span><span class="w"> </span>tracker_options.min_score<span class="o">=</span><span class="m">0</span>.5<span class="w"> </span>data.first_subsampling<span class="o">=</span><span class="m">0</span>.15
+</code></pre></div>
+<h3 id="customizing-via-docker">Customizing via Docker<a class="headerlink" href="#customizing-via-docker" title="Permanent link">&para;</a></h3>
+<p>Pass overrides through the inference script by running <code>eval.py</code> directly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Run with custom parameters in Docker</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span>harbor.cyverse.org/vice/segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;cd /opt/segmentanytree &amp;&amp; \</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="s2">    python eval.py batch_size=2 tracker_options.min_score=0.5&quot;</span>
+</code></pre></div>
+<p>Or mount a modified <code>eval.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Edit eval.yaml locally, then mount it</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/input:/data/input<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/data/output:/data/output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span>-v<span class="w"> </span><span class="nv">$HOME</span>/my_eval.yaml:/opt/segmentanytree/conf/eval.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">  </span>harbor.cyverse.org/vice/segmentanytree:cuda12<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span>/data/input<span class="w"> </span>/data/output<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+<h3 id="tuning-guidance">Tuning guidance<a class="headerlink" href="#tuning-guidance" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Parameter to adjust</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPU out of memory</td>
+<td><code>data.first_subsampling</code></td>
+<td>Increase to 0.3 or 0.4 (coarser voxels)</td>
+</tr>
+<tr>
+<td>GPU out of memory</td>
+<td><code>batch_size</code></td>
+<td>Keep at 1 (already minimal)</td>
+</tr>
+<tr>
+<td>Too many small/spurious trees</td>
+<td><code>tracker_options.min_score</code></td>
+<td>Increase to 0.3–0.7</td>
+</tr>
+<tr>
+<td>Missing small trees</td>
+<td><code>tracker_options.min_score</code></td>
+<td>Decrease toward 0.0</td>
+</tr>
+<tr>
+<td>Very dense point cloud (UAS/TLS)</td>
+<td><code>data.first_subsampling</code></td>
+<td>Increase to 0.3+ or pre-sparsify</td>
+</tr>
+<tr>
+<td>Very sparse point cloud (ALS)</td>
+<td><code>data.first_subsampling</code></td>
+<td>Keep at 0.2 or decrease to 0.15</td>
+</tr>
+<tr>
+<td>Custom-trained model</td>
+<td><code>checkpoint_dir</code></td>
+<td>Point to your training output directory</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuration-files">Configuration files<a class="headerlink" href="#configuration-files" title="Permanent link">&para;</a></h3>
+<p>All configuration lives in <code>conf/</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>conf/
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>├── eval.yaml                          # Main inference config
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>├── config.yaml                        # Main training config
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>├── data/panoptic/treeins_rad8.yaml    # Data loading &amp; transforms
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>├── models/panoptic/                   # Model architecture configs
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>├── training/                          # Training hyperparameters
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>└── lr_scheduler/                      # Learning rate schedules
+</code></pre></div>
+<p>See <a href="../architecture/">Architecture</a> for details on the Hydra configuration system.</p>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <p>See <a href="../troubleshooting/">troubleshooting.md</a> for common issues.</p>
 
