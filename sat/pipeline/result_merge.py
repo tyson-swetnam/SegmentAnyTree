@@ -13,6 +13,8 @@ import sys
 
 import time
 
+from joblib import Parallel, delayed
+
 import numpy as np
 import pandas as pd
 from scipy.spatial import cKDTree
@@ -151,6 +153,11 @@ class ResultMerger:
         return merged_df
 
 
+def _merge_triplet(pc, sem, inst, output_path, verbose):
+    """Module-level function so joblib can serialize it for parallel execution."""
+    ResultMerger(pc, sem, inst, output_path, verbose=verbose).run()
+
+
 class FolderMerger:
     """Match and merge all point cloud + segmentation file triplets in folders."""
 
@@ -179,12 +186,23 @@ class FolderMerger:
         if self.verbose:
             print(f'Found {len(matched)} matched triplets to merge')
 
-        for pc, sem, inst in tqdm(matched, desc='Merging'):
-            output_path = os.path.join(
-                self.output_folder,
-                os.path.basename(pc).split('.')[0] + '.las'
+        n_jobs = min(len(matched), os.cpu_count() or 4)
+        if n_jobs > 1 and len(matched) > 1:
+            Parallel(n_jobs=n_jobs)(
+                delayed(_merge_triplet)(
+                    pc, sem, inst,
+                    os.path.join(self.output_folder, os.path.basename(pc).split('.')[0] + '.las'),
+                    self.verbose,
+                )
+                for pc, sem, inst in matched
             )
-            ResultMerger(pc, sem, inst, output_path, verbose=self.verbose).run()
+        else:
+            for pc, sem, inst in tqdm(matched, desc='Merging'):
+                output_path = os.path.join(
+                    self.output_folder,
+                    os.path.basename(pc).split('.')[0] + '.las'
+                )
+                ResultMerger(pc, sem, inst, output_path, verbose=self.verbose).run()
 
 
 if __name__ == '__main__':

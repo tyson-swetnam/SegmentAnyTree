@@ -5,7 +5,7 @@ defaults:
   - training: treeins
   - lr_scheduler: exponential
 
-num_workers: 0
+num_workers: 0  # Auto-tuned by GPU profile at runtime (0 = will be overridden)
 batch_size: 1
 cuda: 0
 weight_name: "latest" # Used during resume, select with model to load from [miou, macc, acc..., latest]

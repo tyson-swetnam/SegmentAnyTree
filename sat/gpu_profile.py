@@ -5,6 +5,7 @@ available VRAM. Higher VRAM allows more neighbors in region_grow clustering
 and larger batch sizes for training.
 """
 
+import os
 import torch
 import logging
 
@@ -64,7 +65,11 @@ def select_profile(gpu_memory_gb: float = None) -> dict:
         if gpu_memory_gb >= min_gb:
             profile = PROFILES[min_gb]
             log.info(f"GPU profile: {profile['name']} ({gpu_memory_gb:.0f} GB detected)")
-            return dict(profile)
+            profile = dict(profile)
+            # Scale num_workers by available CPUs (don't exceed CPU count / 2)
+            max_workers = max((os.cpu_count() or 4) // 2, 2)
+            profile["num_workers"] = min(profile["num_workers"], max_workers)
+            return profile
 
     return dict(PROFILES[0])
 
@@ -82,8 +87,7 @@ def apply_profile_to_config(cfg, profile: dict = None):
                 model_cfg.cluster_nsample = profile["cluster_nsample"]
                 log.info(f"  cluster_nsample -> {profile['cluster_nsample']}")
 
-        if cfg.get("num_workers", 0) == 0:
-            cfg.num_workers = profile["num_workers"]
-            log.info(f"  num_workers -> {profile['num_workers']}")
+        cfg.num_workers = profile["num_workers"]
+        log.info(f"  num_workers -> {profile['num_workers']}")
 
     return cfg
