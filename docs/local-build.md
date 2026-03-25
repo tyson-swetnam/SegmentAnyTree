@@ -23,6 +23,9 @@ The fastest setup — no source compilation needed.
 mamba env create -f environment.yml
 conda activate sat
 export SAT_ROOT=$(pwd) SPARSE_BACKEND=spconv PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
+
+# Register Jupyter kernel for this environment
+python -m ipykernel install --user --name sat --display-name "Python 3 (sat)"
 ```
 
 ### Using venv (no conda required)
@@ -46,7 +49,8 @@ pip install spconv-cu124
 # Python dependencies
 pip install hydra-core==1.3.2 omegaconf==2.3.0 wandb tensorboard tqdm pandas \
     scikit-learn matplotlib h5py plyfile "laspy[lazrs]" gdown numba joblib \
-    pykdtree jaklas pytorch-metric-learning addict torchnet
+    pykdtree jaklas pytorch-metric-learning addict torchnet \
+    jupyterlab ipykernel ipywidgets
 
 # Environment setup
 export SAT_ROOT=$(pwd)
@@ -61,6 +65,9 @@ import torch; print('torch:', torch.__version__, 'cuda:', torch.cuda.is_availabl
 import spconv; print('spconv:', spconv.__version__)
 from sat.clustering.region_grow import region_grow; print('region_grow: OK')
 "
+
+# Register Jupyter kernel
+python -m ipykernel install --user --name sat --display-name "Python 3 (sat)"
 
 # Run inference
 bash scripts/run_inference.sh $SAT_DATA/input $SAT_DATA/output true
@@ -220,6 +227,33 @@ export SAT_ROOT="/path/to/SegmentAnyTree"
 cd $SAT_ROOT
 bash scripts/run_inference.sh /path/to/input /path/to/output true
 ```
+
+## Running JupyterLab Locally
+
+After setting up either Option A or B:
+
+```bash
+# Activate your environment
+conda activate sat  # or source your venv
+
+# Set environment variables
+export SAT_ROOT=/path/to/SegmentAnyTree
+export SPARSE_BACKEND=spconv  # CUDA 12.4 only
+export PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
+
+# Launch JupyterLab
+cd $SAT_ROOT
+jupyter lab
+```
+
+Open the URL shown in the terminal. The notebooks in `notebooks/` auto-detect whether they are running in Docker or locally via `sat.utils.paths` — no path editing needed.
+
+!!! note "Kernel registration"
+    If the notebooks show "Kernel not found", register the kernel manually:
+    ```bash
+    conda activate sat
+    python -m ipykernel install --user --name sat --display-name "Python 3 (sat)"
+    ```
 
 ## Shell Setup (add to ~/.bashrc)
 

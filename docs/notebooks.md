@@ -53,6 +53,15 @@ Interactive Jupyter notebooks for working with SegmentAnyTree. Available in the 
 
     Open the URL shown in the terminal and navigate to `notebooks/`.
 
+    !!! note "Kernel registration"
+        If the notebooks show "Kernel not found", register the kernel:
+        ```bash
+        conda activate sat
+        python -m ipykernel install --user --name sat --display-name "Python 3 (sat)"
+        ```
+
+All notebooks auto-detect whether they are running in Docker or locally using `sat.utils.paths`. Input/output directories are resolved automatically — no path editing needed.
+
 ## Notebook Details
 
 ### 01 — Quick Start

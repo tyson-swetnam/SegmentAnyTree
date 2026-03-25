@@ -60,4 +60,5 @@ dependencies:
     - hdbscan
     - torchnet
     - jupyterlab>=4.0
+    - ipykernel
     - ipywidgets
