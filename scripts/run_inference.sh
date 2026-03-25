@@ -61,8 +61,9 @@ python3 -m sat.pipeline.file_preparation "$DEST_DIR/input_data"
 python3 -m sat.pipeline.coordinate_transform -i "$DEST_DIR/input_data" -o "$DEST_DIR/utm2local"
 
 # Step 3: Update eval.yaml with file paths
-# Write a run-specific eval config into conf/ so Hydra can resolve all defaults
-EVAL_CONFIG="$SAT_ROOT/conf/eval_run.yaml"
+# Use a unique config name per worker to avoid race conditions in parallel mode
+EVAL_RUN_NAME="eval_run_$$"
+EVAL_CONFIG="$SAT_ROOT/conf/${EVAL_RUN_NAME}.yaml"
 cp "$SAT_ROOT/conf/eval.yaml" "$EVAL_CONFIG"
 python3 -m sat.pipeline.config_update "$EVAL_CONFIG" "$DEST_DIR/utm2local" "$DEST_DIR"
 
@@ -71,7 +72,7 @@ python3 -m sat.pipeline.cache --eval_yaml "$EVAL_CONFIG"
 
 # Step 5: Run model inference
 cd "$SAT_ROOT"
-python3 eval.py --config-name eval_run
+python3 eval.py --config-name "$EVAL_RUN_NAME"
 echo "Inference complete."
 
 # Step 6: Rename output files
