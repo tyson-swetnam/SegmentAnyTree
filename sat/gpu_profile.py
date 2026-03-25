@@ -17,7 +17,7 @@ PROFILES = {
         "cluster_nsample": 200,
         "cluster_type": 1,
         "num_workers": 8,
-        "batch_size_train": 8,
+        "batch_size_train": 12,
         "batch_size_eval": 1,
     },
     40: {
@@ -89,5 +89,13 @@ def apply_profile_to_config(cfg, profile: dict = None):
 
         cfg.num_workers = profile["num_workers"]
         log.info(f"  num_workers -> {profile['num_workers']}")
+
+        # Apply batch_size if present in profile and config
+        if hasattr(cfg, "batch_size"):
+            if hasattr(cfg, "training") or "train" in str(cfg.get("job_name", "")):
+                cfg.batch_size = profile.get("batch_size_train", cfg.batch_size)
+            else:
+                cfg.batch_size = profile.get("batch_size_eval", cfg.batch_size)
+            log.info(f"  batch_size -> {cfg.batch_size}")
 
     return cfg
