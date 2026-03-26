@@ -189,9 +189,18 @@ class PointGroup3heads(BaseModel):
         #with torch.no_grad():
         #    self._dump_visuals(epoch)
 
+    def _apply_tree_bias(self, semantic_logits):
+        """ Apply optional bias to tree class logits before argmax """
+        bias = self.opt.get("semantic_tree_bias", 0.0)
+        if bias != 0.0:
+            biased = semantic_logits.clone()
+            biased[:, 1] += bias  # class 1 = tree
+            return biased
+        return semantic_logits
+
     def _cluster(self, semantic_logits, offset_logits):
         """ Compute clusters from positions and votes """
-        predicted_labels = torch.max(semantic_logits, 1)[1] # [N]
+        predicted_labels = torch.max(self._apply_tree_bias(semantic_logits), 1)[1] # [N]
         clusters_votes = region_grow(
             (self.raw_pos + offset_logits).cpu(),
             predicted_labels.cpu(),
@@ -209,7 +218,7 @@ class PointGroup3heads(BaseModel):
     
     def _cluster2(self, semantic_logits, offset_logits):
         """ Compute clusters from positions and votes """
-        predicted_labels = torch.max(semantic_logits, 1)[1] # [N]
+        predicted_labels = torch.max(self._apply_tree_bias(semantic_logits), 1)[1] # [N]
         clusters_pos = region_grow(
             self.raw_pos.cpu(),
             predicted_labels.cpu(),

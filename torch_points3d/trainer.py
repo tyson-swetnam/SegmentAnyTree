@@ -21,8 +21,8 @@ from torch_points3d.datasets.base_dataset import BaseDataset
 
 # Import from metrics
 from torch_points3d.metrics.base_tracker import BaseTracker
-from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 from torch_points3d.metrics.model_checkpoint import ModelCheckpoint
+from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 
 # Utils import
 from torch_points3d.utils.colors import COLORS
@@ -86,6 +86,7 @@ class Trainer:
         )
 
         # Create model and datasets
+        log.info(f"Checkpoint is_empty={self._checkpoint.is_empty}, path={self._checkpoint.checkpoint_path}")
         if not self._checkpoint.is_empty:
             self._dataset: BaseDataset = instantiate_dataset(self._checkpoint.data_config)
             self._model: BaseModel = self._checkpoint.create_model(
@@ -97,7 +98,22 @@ class Trainer:
             self._dataset: BaseDataset = instantiate_dataset(self._cfg.data)
             self._model: BaseModel = instantiate_model(copy.deepcopy(self._cfg), self._dataset)
             self._model.instantiate_optimizers(self._cfg, "cuda" in device)
-            self._model.set_pretrained_weights()
+            # Load pretrained weights from checkpoint_dir if available
+            ckpt_dir = getattr(self._cfg, 'checkpoint_dir', '')
+            model_name = getattr(self._cfg, 'model_name', 'PointGroup-PAPER')
+            weight_name = getattr(self._cfg, 'weight_name', 'latest')
+            ckpt_file = os.path.join(ckpt_dir, model_name + ".pt") if ckpt_dir else ''
+            if ckpt_file and os.path.exists(ckpt_file):
+                log.info(f"Loading weights from {ckpt_file}")
+                ckpt_data = torch.load(ckpt_file, map_location="cpu", weights_only=False)
+                if isinstance(ckpt_data, dict) and 'models' in ckpt_data:
+                    state_dict = ckpt_data['models'].get(weight_name, ckpt_data['models'].get('latest'))
+                    state_dict = ModelCheckpoint._maybe_convert_me_to_spconv(state_dict, self._model)
+                    self._model.load_state_dict_with_same_shape(state_dict, strict=False)
+                else:
+                    log.warning(f"Unexpected checkpoint format in {ckpt_file}")
+            else:
+                self._model.set_pretrained_weights()
             #if not self._checkpoint.validate(self._dataset.used_properties):
             #    log.warning(
             #        "The model will not be able to be used from pretrained weights without the corresponding dataset. Current properties are {}".format(

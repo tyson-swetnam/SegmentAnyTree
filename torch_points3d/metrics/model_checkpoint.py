@@ -230,9 +230,62 @@ class ModelCheckpoint(object):
     def get_starting_epoch(self):
         return len(self._checkpoint.stats["train"]) + 1
 
+    @staticmethod
+    def _maybe_convert_me_to_spconv(state_dict, model):
+        """Auto-convert MinkowskiEngine weights to SpConv format if needed.
+
+        ME uses key suffix '.kernel' with shape (K^3, C_in, C_out).
+        SpConv uses key suffix '.conv.weight' with shape (C_out, kD, kH, kW, C_in).
+        If the checkpoint has ME keys but the model expects SpConv keys, convert on the fly.
+        """
+        has_me_keys = any(k.endswith(".kernel") for k in state_dict)
+        model_keys = set(model.state_dict().keys())
+        has_spconv_keys = any(k.endswith(".conv.weight") for k in model_keys)
+
+        if not (has_me_keys and has_spconv_keys):
+            return state_dict
+
+        log.warning("Checkpoint has MinkowskiEngine keys but model expects SpConv keys. "
+                     "Auto-converting weights at load time.")
+        import math
+        from collections import OrderedDict
+        new_sd = OrderedDict()
+        converted = 0
+        for key, value in state_dict.items():
+            if key.endswith(".kernel"):
+                new_key = key[:-len(".kernel")] + ".conv.weight"
+                if value.dim() == 2:
+                    c_in, c_out = value.shape
+                    new_value = value.t().reshape(c_out, 1, 1, 1, c_in)
+                elif value.dim() == 3:
+                    k3, c_in, c_out = value.shape
+                    k = round(k3 ** (1.0 / 3.0))
+                    # ME kernel iteration: x fastest (stride 1), y (stride 3), z slowest (stride 9)
+                    # reshape(k,k,k) in C-order gives (z, y, x) since last dim varies fastest
+                    # SpConv weight is (Cout, kD, kH, kW, Cin) where kD/kH/kW match index dims
+                    # Since we pass indices as [batch, x, y, z], kD=x, kH=y, kW=z
+                    # So we need (Cout, x, y, z, Cin) = permute(4, 2, 1, 0, 3) from (z, y, x, Cin, Cout)
+                    new_value = value.reshape(k, k, k, c_in, c_out).permute(4, 2, 1, 0, 3).contiguous()
+                else:
+                    log.warning(f"Unexpected kernel shape {value.shape} for {key}, skipping")
+                    new_sd[key] = value
+                    continue
+                new_sd[new_key] = new_value
+                converted += 1
+            else:
+                new_sd[key] = value
+
+        log.info(f"Converted {converted} ME kernel parameters to SpConv format")
+        return new_sd
+
     def _initialize_model(self, model: model_interface.CheckpointInterface, weight_name):
         if not self._checkpoint.is_empty:
             state_dict = self._checkpoint.get_state_dict(weight_name)
+            state_dict = self._maybe_convert_me_to_spconv(state_dict, model)
+            n_loaded = sum(1 for k in state_dict if k in model.state_dict())
+            n_total = len(model.state_dict())
+            if n_loaded < n_total * 0.5:
+                log.warning(f"Only {n_loaded}/{n_total} weights matched — model may not work correctly")
             model.load_state_dict(state_dict, strict=False)
             self._checkpoint.load_optim_sched(model, load_state=self._resume)
 

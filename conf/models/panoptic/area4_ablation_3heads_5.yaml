@@ -167,11 +167,12 @@ PointGroup-PAPER:
       nn: [ 4*in_feat, in_feat ]
 
   prepare_epoch: 30
-  cluster_radius_search: 1.5 * ${data.grid_size}
-  cluster_nsample: 32  # Auto-scaled by GPU profile (32=default, 200=A100 80GB)
+  cluster_radius_search: 2.5 * ${data.grid_size}
+  cluster_nsample: 200  # Increased from 32 for better tree detection
 
   min_iou_threshold: 0.25
   max_iou_threshold: 0.75
 
-  cluster_type: 1  # 1=region_grow only (fast), 5=region_grow+meanshift (paper, slow)
+  semantic_tree_bias: 0.0  # Bias tree class logit before argmax (0=no bias, higher=more tree points)
+  cluster_type: 1  # 1=region_grow only (fast)
   vizual_ratio: 0

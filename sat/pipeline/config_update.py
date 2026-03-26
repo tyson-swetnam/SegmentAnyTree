@@ -36,6 +36,13 @@ def modify_eval_yaml(yaml_path, ply_folder, output_dir=None):
     if output_dir:
         data['hydra']['run']['dir'] = output_dir
 
+    # Resolve checkpoint_dir to absolute path so it works regardless of
+    # Hydra's working directory change during eval.py execution.
+    sat_root = os.environ.get('SAT_ROOT', os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    ckpt_dir = data.get('checkpoint_dir', 'model_file')
+    if not os.path.isabs(ckpt_dir):
+        data['checkpoint_dir'] = os.path.join(sat_root, ckpt_dir)
+
     def ordered_dump(data, stream=None, Dumper=yaml.Dumper, **kwds):
         class OrderedDumper(Dumper):
             pass

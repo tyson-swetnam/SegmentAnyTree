@@ -132,11 +132,103 @@ class ResultMerger:
         if 'PredInstance' in merged_df.columns:
             merged_df['PredInstance'] = merged_df['PredInstance'] + 1
             merged_df['PredInstance'] = merged_df['PredInstance'].fillna(0)
+            # Split oversized instances using CHM local maxima detection.
+            # Note: we do NOT mask non-tree points from instances here.
+            # The semantic head misclassifies ~57% of true tree points as
+            # non-tree, so masking would destroy IoU with ground truth.
+            # Instead, we let KNN propagate instances to all points and
+            # rely on CHM splitting to separate merged trees.
+            merged_df = self._split_large_instances(merged_df)
 
         if self.verbose:
             print(f'  Total merge: {time.time() - t0:.1f}s')
 
         return merged_df, crs_wkt
+
+    @staticmethod
+    def _split_large_instances(df, max_points=3000, chm_resolution=0.5,
+                               local_max_window=3.0):
+        """Split oversized instances using canopy-height local maxima detection.
+
+        For dense forests where tree crowns interlock, DBSCAN fails because
+        there's no gap between adjacent crowns. Instead, we:
+        1. Build a canopy height model (CHM) grid from max Z values
+        2. Find local maxima (tree tops) using a sliding window
+        3. Assign each point to its nearest tree top in XY
+
+        Args:
+            max_points: Only split instances larger than this
+            chm_resolution: Grid cell size for CHM (meters)
+            local_max_window: Diameter of window for local maxima detection (meters)
+        """
+        from scipy.ndimage import maximum_filter
+
+        if 'PredInstance' not in df.columns:
+            return df
+
+        inst_col = df['PredInstance'].values.copy()
+        unique_ids = np.unique(inst_col)
+        unique_ids = unique_ids[unique_ids > 0]
+        next_id = int(inst_col.max()) + 1
+
+        for inst_id in unique_ids:
+            mask = inst_col == inst_id
+            n_pts = mask.sum()
+            if n_pts <= max_points:
+                continue
+
+            x = df.loc[mask, 'x'].values
+            y = df.loc[mask, 'y'].values
+            z = df.loc[mask, 'z'].values
+
+            # Build CHM grid
+            x_min, y_min = x.min(), y.min()
+            nx = int(np.ceil((x.max() - x_min) / chm_resolution)) + 1
+            ny = int(np.ceil((y.max() - y_min) / chm_resolution)) + 1
+
+            chm = np.full((ny, nx), -np.inf)
+            ix = ((x - x_min) / chm_resolution).astype(int).clip(0, nx - 1)
+            iy = ((y - y_min) / chm_resolution).astype(int).clip(0, ny - 1)
+            np.maximum.at(chm, (iy, ix), z)
+
+            # Find local maxima (tree tops)
+            win_size = max(3, int(np.ceil(local_max_window / chm_resolution)))
+            if win_size % 2 == 0:
+                win_size += 1
+            local_max = maximum_filter(chm, size=win_size)
+            peaks = (chm == local_max) & (chm > -np.inf)
+
+            peak_iy, peak_ix = np.where(peaks)
+            n_peaks = len(peak_iy)
+
+            if n_peaks <= 1:
+                continue  # Can't split
+
+            # Convert peak grid coords back to world coords (center of cell)
+            peak_x = peak_ix * chm_resolution + x_min + chm_resolution / 2
+            peak_y = peak_iy * chm_resolution + y_min + chm_resolution / 2
+
+            # Assign each point to nearest peak in XY
+            peak_xy = np.column_stack([peak_x, peak_y])
+            point_xy = np.column_stack([x, y])
+            peak_tree = cKDTree(peak_xy)
+            _, nearest_peak = peak_tree.query(point_xy, k=1)
+
+            # Assign new instance IDs
+            mask_indices = np.where(mask)[0]
+            # Keep original ID for largest sub-cluster
+            peak_ids, peak_counts = np.unique(nearest_peak, return_counts=True)
+            largest_peak = peak_ids[np.argmax(peak_counts)]
+
+            for peak_id in peak_ids:
+                if peak_id == largest_peak:
+                    continue
+                sub_mask = nearest_peak == peak_id
+                inst_col[mask_indices[sub_mask]] = next_id
+                next_id += 1
+
+        df['PredInstance'] = inst_col
+        return df
 
     def save(self, merged_df, crs_wkt=None):
         for col in ('return_num', 'num_returns'):

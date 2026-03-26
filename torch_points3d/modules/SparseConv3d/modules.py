@@ -168,11 +168,9 @@ class ResNetUp(ResNetDown):
 
         out = super().forward(inp)
 
-        # For SpConv: SparseConvTranspose3d creates many new voxels beyond those in
-        # the skip connection. Filter output to only keep coordinates present in skip.
-        # This prevents exponential coordinate growth across decoder layers and matches
-        # MinkowskiEngine's behavior where transposed conv output stays within the
-        # encoder's coordinate set.
+        # For SpConv: filter decoder output to match encoder coordinate set.
+        # Even with SparseInverseConv3d, the output may have extra coordinates from
+        # the cat(x, skip) concatenation that need pruning for consistent feature dims.
         backend = snn.get_backend() if hasattr(snn, "get_backend") else None
         if backend == "spconv" and skip is not None:
             from torch_points3d.modules.SparseConv3d.nn.spconv import _filter_to_coords

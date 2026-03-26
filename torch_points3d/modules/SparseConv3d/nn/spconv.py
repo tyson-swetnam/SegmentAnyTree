@@ -22,10 +22,9 @@ class _SparseTensorWrapper:
 
     @property
     def C(self):
-        # Return coordinates in [batch, x, y, z] order to match MinkowskiEngine convention.
-        # SpConv stores indices as [batch, z, y, x], so we reorder columns.
-        idx = self._sct.indices  # [N, 4] int32: [batch, z, y, x]
-        return idx[:, [0, 3, 2, 1]]  # -> [batch, x, y, z]
+        # Coordinates are stored in [batch, x, y, z] order (matching MinkowskiEngine).
+        # No reordering needed since we pass [x, y, z] directly in SparseTensor().
+        return self._sct.indices  # [N, 4] int32: [batch, x, y, z]
 
     def __add__(self, other):
         """Element-wise feature addition for matching sparsity patterns."""
@@ -80,10 +79,11 @@ class Conv3d(nn.Module):
             # doesn't reduce spatial dimensions beyond the stride factor.
             # Without padding, kernel_size=3 + stride=2 collapses small dimensions to 0.
             padding = kernel_size // 2
+            self._indice_key = _next_indice_key()
             self.conv = spconv.SparseConv3d(
                 in_channels, out_channels,
                 kernel_size=kernel_size, stride=stride, dilation=dilation, bias=bias,
-                padding=padding,
+                padding=padding, indice_key=self._indice_key,
             )
 
     @property
@@ -100,9 +100,9 @@ class Conv3d(nn.Module):
 class Conv3dTranspose(nn.Module):
     """Sparse 3D transposed convolution.
 
-    Uses SparseConvTranspose3d for stride>1. The ResNetUp.forward filters the
-    output to only keep coordinates present in the skip connection, preventing
-    exponential voxel growth across decoder layers.
+    Uses SparseInverseConv3d for stride>1 to invert a paired encoder SparseConv3d.
+    SpConv requires SparseInverseConv3d (not SparseConvTranspose3d) when reusing
+    indice_keys from strided encoder convolutions.
     """
 
     def __init__(
@@ -195,11 +195,10 @@ def pair_encoder_decoder(down_modules, up_modules):
             if isinstance(m, Conv3dTranspose) and m.stride > 1:
                 dec_convs.append(m)
 
-    # Pair them: decoder[0] pairs with encoder[-1], decoder[1] with encoder[-2], etc.
-    for i, dec_conv in enumerate(dec_convs):
-        if i < len(enc_keys):
-            key = enc_keys[-(i + 1)]
-            dec_conv.conv.indice_key = key
+    # With SparseConvTranspose3d (no indice_key pairing), skip connection filtering
+    # handles coordinate alignment between encoder and decoder.
+    # No rebuild needed.
+    pass
 
     # Also pair ResNetUp modules that use lazy SpConv building
     from torch_points3d.modules.SparseConv3d.modules import ResNetUp
@@ -333,21 +332,23 @@ def SparseTensor(feats, coordinates, batch, device=torch.device("cpu")):
     """
     if batch.dim() == 1:
         batch = batch.unsqueeze(-1)
-    # SpConv expects indices as [batch, z, y, x] (int32)
-    # Input coordinates are [x, y, z], so we reorder to [z, y, x]
-    coords_zyx = coordinates[:, [2, 1, 0]].int()
+    # Keep coordinates in [x, y, z] order to match MinkowskiEngine's convention.
+    # SpConv's internal dimension labels (z, y, x) are arbitrary — what matters is
+    # that the kernel weights and coordinates use the same spatial ordering as training.
+    # ME trains with [x, y, z], so we pass [x, y, z] directly.
+    coords_xyz = coordinates.int()
 
     # Shift all coordinates away from boundaries by a margin.
     # SpConv's strided conv validation rejects points that would fall outside
     # the output spatial volume. A margin ensures no point is near any edge.
     margin = 32
-    coords_zyx = coords_zyx + margin
+    coords_xyz = coords_xyz + margin
 
-    indices = torch.cat([batch.int(), coords_zyx], dim=-1).contiguous()
+    indices = torch.cat([batch.int(), coords_xyz], dim=-1).contiguous()
 
-    # Spatial shape: max coord + margin, rounded to next power of 2 (min 512).
+    # Spatial shape: max coord + 1 (margin already added above), rounded to next power of 2 (min 512).
     import math
-    max_coords = (coords_zyx.max(0).values + margin + 1).tolist()
+    max_coords = (coords_xyz.max(0).values + 1).tolist()
     spatial_shape = [max(2 ** math.ceil(math.log2(max(s, 1))), 512) for s in max_coords]
 
     batch_size = int(batch.max().item()) + 1

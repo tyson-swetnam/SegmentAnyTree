@@ -156,6 +156,8 @@ class BaseModel(torch.nn.Module, TrackerInterface, DatasetInterface, CheckpointI
             else:
                 log.info("load pretrained weights from {}".format(path_pretrained))
                 m = torch.load(path_pretrained, map_location="cpu")["models"][weight_name]
+                from torch_points3d.metrics.model_checkpoint import ModelCheckpoint
+                m = ModelCheckpoint._maybe_convert_me_to_spconv(m, self)
                 self.load_state_dict_with_same_shape(m, strict=False)
 
     def get_labels(self):
