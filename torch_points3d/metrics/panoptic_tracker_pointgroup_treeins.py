@@ -492,7 +492,7 @@ class PanopticTracker(SegmentationTracker):
                                 max_iou_ii = iou
                                 max_iou_ii_oldlabel = g
 
-                        if max_iou_ii > 0.1:  # th_merge:
+                        if max_iou_ii > th_merge:
                             all_pre_ins[new_not_old_idx] = max_iou_ii_oldlabel
                         else:
                             all_pre_ins[new_not_old_idx] = max_instance
