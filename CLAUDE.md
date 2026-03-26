@@ -19,6 +19,12 @@ Paper: Wielgosz et al. (2024), "SegmentAnyTree: A sensor and platform agnostic d
 - Branch `cuda12-spconv` replaces MinkowskiEngine with SpConv v2.x for CUDA 12.4+ support
 - When making changes, consider whether they should be contributed back upstream via PR
 
+### Backend Status
+- **MinkowskiEngine (CUDA 11)**: Production-ready. Validated at 47/64 GT trees matched on FOR-instance RMIT benchmark. Use `segmentanytree:cuda11`.
+- **SpConv v2.x (CUDA 12)**: Experimental. Auto-converts ME weights at load time. Semantic segmentation biased (~100% tree). Instance clusters don't match ground truth. Needs retraining with SpConv for correct results.
+- Model weights (665 MB) stored via Git LFS — `git lfs pull` required before Docker builds. Dockerfiles fail-fast if weights are LFS pointers.
+- Local conda env: `/opt/tswetnam/miniforge/envs/sat` (CUDA 12.4 + SpConv)
+
 ## Build & Run Commands
 
 ### Docker (primary usage)

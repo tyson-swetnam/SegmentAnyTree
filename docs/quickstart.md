@@ -33,11 +33,11 @@ Copy your `.las`, `.laz`, or `.ply` files into `$HOME/segmentanytree/input/`.
 === "Harbor Registry"
 
     ```bash
-    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda11
     docker run --gpus all \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      harbor.cyverse.org/vice/segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
     ```
 
@@ -47,7 +47,7 @@ Copy your `.las`, `.laz`, or `.ply` files into `$HOME/segmentanytree/input/`.
     docker run --gpus all \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      segmentanytree:cuda12 \
+      segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
     ```
 
@@ -65,7 +65,7 @@ If COPC conversion is not available (PDAL not installed), output files will be `
     docker run --gpus all -p 8888:8888 \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12
+      harbor.cyverse.org/vice/segmentanytree:cuda11
     ```
 
 === "Local Build"
@@ -74,7 +74,7 @@ If COPC conversion is not available (PDAL not installed), output files will be `
     docker run --gpus all -p 8888:8888 \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      segmentanytree:cuda12
+      segmentanytree:cuda11
     ```
 
 Open http://localhost:8888 and use the notebooks in `notebooks/`. See the [Notebooks](notebooks.md) page for descriptions of each notebook.

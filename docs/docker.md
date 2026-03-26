@@ -4,30 +4,34 @@
 
 Pre-built images are available on the CyVerse Harbor registry:
 
-=== "CUDA 12.4 (recommended)"
-
-    ```bash
-    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
-    ```
-
-=== "CUDA 11.8 (legacy)"
+=== "CUDA 11.8 (recommended)"
 
     ```bash
     docker pull harbor.cyverse.org/vice/segmentanytree:cuda11
     ```
 
+=== "CUDA 12.4 (experimental)"
+
+    ```bash
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    ```
+
 ## Image Variants
 
-| | CUDA 12.4 (recommended) | CUDA 11.8 (legacy) |
+| | CUDA 11.8 (recommended) | CUDA 12.4 (experimental) |
 |---|---|---|
-| **Registry** | `harbor.cyverse.org/vice/segmentanytree:cuda12` | `harbor.cyverse.org/vice/segmentanytree:cuda11` |
-| **Dockerfile** | `docker/Dockerfile.cuda12` | `docker/Dockerfile.cuda11` |
-| **PyTorch** | 2.5.1 | 2.1.2 |
-| **Sparse Backend** | SpConv v2.x (pip install) | MinkowskiEngine + torchsparse (source build) |
-| **Clustering** | Pure PyTorch (`sat.clustering`) | torch-points-kernels (C++/CUDA) |
-| **Build Time** | ~15 min | ~40 min |
-| **GPU Support** | Volta through Blackwell (sm_70 - sm_100) | Volta through Hopper (sm_70 - sm_90) |
+| **Registry** | `harbor.cyverse.org/vice/segmentanytree:cuda11` | `harbor.cyverse.org/vice/segmentanytree:cuda12` |
+| **Dockerfile** | `docker/Dockerfile.cuda11` | `docker/Dockerfile.cuda12` |
+| **PyTorch** | 2.1.2 | 2.5.1 |
+| **Sparse Backend** | MinkowskiEngine + torchsparse (source build) | SpConv v2.x (pip install) |
+| **Clustering** | torch-points-kernels (C++/CUDA) | Pure PyTorch (`sat.clustering`) |
+| **Build Time** | ~40 min | ~15 min |
+| **GPU Support** | Volta through Hopper (sm_70 - sm_90) | Volta through Blackwell (sm_70 - sm_100) |
 | **Driver** | 525+ | 525+ |
+| **Inference Quality** | Validated (47/64 GT match) | Experimental (semantic bias) |
+
+!!! warning "CUDA 12 is experimental"
+    The SpConv backend auto-converts MinkowskiEngine weights at load time, but produces biased semantic segmentation (~100% tree classification). Instance segmentation produces clusters but they don't match ground truth. Use CUDA 11 for production inference.
 
 See [docker/README.md](../docker/README.md) for additional comparison details.
 

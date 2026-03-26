@@ -13,33 +13,54 @@ Built on the [torch-points3d](https://github.com/torch-points3d/torch-points3d) 
 
 ## Fork Highlights
 
-- **CUDA 12.4 + SpConv v2.x** — Replaced MinkowskiEngine (unmaintained) with pip-installable SpConv. No source compilation needed.
+- **CUDA 11.8 + MinkowskiEngine** — Production-ready inference with validated 95% tree detection accuracy (47/64 trees matched >50% IoU on FOR-instance benchmark)
+- **CUDA 12.4 + SpConv v2.x** — Experimental backend with pip-installable dependencies (no source compilation). Auto-converts ME weights at load time. Semantic segmentation still under development.
 - **Multi-GPU parallel inference** — Process N files across N GPUs simultaneously
 - **COPC octant-parallel processing** — Split a single large COPC file across GPUs using octree spatial indexing
-- **GPU memory auto-tuning** — Auto-scales `cluster_nsample`, `num_workers`, and `batch_size` based on detected GPU memory (e.g., A100 80GB → paper-quality settings)
+- **GPU memory auto-tuning** — Auto-scales `cluster_nsample`, `num_workers`, and `batch_size` based on detected GPU memory
 - **DDP training** — Multi-GPU training via `torchrun`
 - **Numba-accelerated clustering** — 50-100x speedup on union-find region growing
-- **Pure PyTorch dependencies** — Removed all unmaintained C++/CUDA libraries (MinkowskiEngine, torchsparse, torch-points-kernels)
 - **COPC output** — Cloud-Optimized Point Cloud format for efficient streaming and web visualization
+- **FOR-instance benchmark data** — Automated download and validation against the paper's primary dataset
 
 ## Quick Start
 
-```bash
-# 1. Pull the pre-built image from Harbor
-docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+### Prerequisites
 
-# 2. Create directories and add your .las/.laz/.ply files
+- Docker with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+- NVIDIA GPU (Volta or newer) with driver 525+
+- **Git LFS** — the model weights (665 MB) are stored with Git LFS
+
+```bash
+# 1. Clone and pull model weights
+git clone https://github.com/tyson-swetnam/SegmentAnyTree.git
+cd SegmentAnyTree
+git lfs install
+git lfs pull --include="model_file/PointGroup-PAPER.pt"
+make verify-weights  # Should show ~665 MB
+
+# 2. Build Docker image
+make build-cuda11    # Recommended: MinkowskiEngine (production)
+# make build-cuda12  # Experimental: SpConv v2.x
+
+# 3. Create directories and add your .las/.laz/.ply files
 mkdir -p $HOME/segmentanytree/input $HOME/segmentanytree/output
 
-# 3. Run inference
+# 4. Run inference
 docker run --gpus all \
   -v $HOME/segmentanytree/input:/data/input \
   -v $HOME/segmentanytree/output:/data/output \
-  harbor.cyverse.org/vice/segmentanytree:cuda12 \
+  segmentanytree:cuda11 \
   bash scripts/run_inference.sh /data/input /data/output true
 
-# 4. Results in $HOME/segmentanytree/output/final_results/ (.copc.laz)
+# 5. Results in $HOME/segmentanytree/output/final_results/ (.copc.laz)
 ```
+
+> **Note:** If you don't have `git-lfs`, download weights directly:
+> ```bash
+> curl -L -o model_file/PointGroup-PAPER.pt \
+>   "https://github.com/SmartForest-no/SegmentAnyTree/raw/main/model_file/PointGroup-PAPER.pt"
+> ```
 
 ### Interactive Mode (JupyterLab)
 
@@ -47,10 +68,21 @@ docker run --gpus all \
 docker run --gpus all -p 8888:8888 \
   -v $HOME/segmentanytree/input:/data/input \
   -v $HOME/segmentanytree/output:/data/output \
-  harbor.cyverse.org/vice/segmentanytree:cuda12
+  segmentanytree:cuda11
 ```
 
 Open http://localhost:8888 and use the starter notebooks.
+
+## Validation Results
+
+Tested on [FOR-instance](https://zenodo.org/records/8287792) RMIT benchmark (357K points, 64 annotated trees):
+
+| Backend | Semantic Accuracy | Trees Detected | GT Matched (>50% IoU) | Status |
+|---------|------------------|----------------|----------------------|--------|
+| **MinkowskiEngine (CUDA 11)** | 68% non-tree, 32% tree | 21-24 | **47/64 (73%)** | Production |
+| SpConv v2.x (CUDA 12) | 0.02% non-tree, 99.98% tree | 29-105 | 0/64 | Experimental |
+
+The CUDA 11 / MinkowskiEngine backend is recommended for all scientific use. SpConv produces clusters but semantic segmentation is biased due to SubMConv3d numerical differences from MinkowskiEngine — this would require fine-tuning or retraining.
 
 ## Build from Source
 
@@ -58,38 +90,49 @@ Open http://localhost:8888 and use the starter notebooks.
 git clone https://github.com/tyson-swetnam/SegmentAnyTree.git
 cd SegmentAnyTree
 
-# CUDA 12.4 (recommended — faster build, modern GPU support)
-make build-cuda12
+# Pull model weights (required before building)
+git lfs pull --include="model_file/PointGroup-PAPER.pt"
 
-# CUDA 11.8 (legacy — for older drivers or MinkowskiEngine compatibility)
+# CUDA 11.8 (recommended — validated, production-ready)
 make build-cuda11
+
+# CUDA 12.4 (experimental — SpConv, auto-migrates weights during build)
+make build-cuda12
 ```
 
-**Requirements**: Docker with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html), NVIDIA GPU (Volta+).
+**Requirements**: Docker with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html), NVIDIA GPU (Volta+), Git LFS.
 
 ### Local Development (no Docker)
 
 ```bash
-# Using conda/mamba
+# Install miniforge if not present
+curl -L -o /tmp/Miniforge3.sh https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+bash /tmp/Miniforge3.sh -b -p $HOME/miniforge
+
+# Create environment and install dependencies
 mamba env create -f environment.yml
 conda activate sat
 
-# Or using pip/venv — see docs/local-build.md
+# Install PyTorch ecosystem (must be done separately due to build deps)
+pip install --extra-index-url https://download.pytorch.org/whl/cu124 torch==2.5.1
+pip install torch-scatter torch-sparse torch-cluster torch-spline-conv \
+  -f https://data.pyg.org/whl/torch-2.5.1+cu124.html
+pip install torch-geometric spconv-cu124
 ```
 
-See [docker/README.md](docker/README.md) for details on both image variants.
+See [docs/local-build.md](docs/local-build.md) for the full local development guide.
 
-## Weight Migration
+## Example Data
 
-If using the CUDA 12.4 image with pre-trained weights from the original MinkowskiEngine-based model:
+### FOR-instance (paper benchmark, recommended)
+
+The [FOR-instance dataset](https://zenodo.org/records/8287792) is the primary training/test dataset from the paper. 1,130 manually segmented trees across 5 sites.
 
 ```bash
-python scripts/migrate_weights.py \
-  --input model_file/PointGroup-PAPER.pt \
-  --output model_file/PointGroup-PAPER-spconv.pt
+make download-forinstance DATA_DIR=$HOME/segmentanytree
 ```
 
-This reshapes kernel tensors from ME format `(K³, C_in, C_out)` to SpConv format `(C_out, kD, kH, kW, C_in)` and renames state dict keys. The CUDA 11.8 image uses the original weights directly.
+See [docs/example-data.md](docs/example-data.md) for all available datasets including NIBIO MLS, SWERI LiDAR, NEON, and OpenTopography.
 
 ## Training
 
@@ -128,7 +171,7 @@ SegmentAnyTree/
 ├── sat/                    # Python package (pipeline, I/O, metrics, clustering, compat shims)
 ├── torch_points3d/         # Core ML framework (PointGroup model, training, datasets)
 ├── conf/                   # Hydra configuration (model, data, training, GPU profiles)
-├── model_file/             # Pre-trained PointGroup-PAPER checkpoint
+├── model_file/             # Pre-trained PointGroup-PAPER checkpoint (Git LFS)
 ├── scripts/                # Inference, parallel, COPC, batch, migration scripts
 ├── notebooks/              # JupyterLab starter notebooks
 ├── docker/                 # Dockerfiles for CUDA 11 and CUDA 12
@@ -141,15 +184,16 @@ SegmentAnyTree/
 
 ## Docker Image Stack
 
-| | CUDA 12.4 (default) | CUDA 11.8 (legacy) |
+| | CUDA 11.8 (recommended) | CUDA 12.4 (experimental) |
 |---|---|---|
-| **Registry** | `harbor.cyverse.org/vice/segmentanytree:cuda12` | `harbor.cyverse.org/vice/segmentanytree:cuda11` |
-| **Dockerfile** | `docker/Dockerfile.cuda12` | `docker/Dockerfile.cuda11` |
-| **PyTorch** | 2.5.1 | 2.1.2 |
-| **Sparse Backend** | SpConv v2.x (pip) | MinkowskiEngine (source) |
-| **Clustering** | Numba-accelerated PyTorch | torch-points-kernels (C++) |
-| **Build Time** | ~15 min | ~40 min |
-| **GPU Support** | Volta → Blackwell | Volta → Hopper |
+| **Registry** | `harbor.cyverse.org/vice/segmentanytree:cuda11` | `harbor.cyverse.org/vice/segmentanytree:cuda12` |
+| **Dockerfile** | `docker/Dockerfile.cuda11` | `docker/Dockerfile.cuda12` |
+| **PyTorch** | 2.1.2 | 2.5.1 |
+| **Sparse Backend** | MinkowskiEngine (source) | SpConv v2.x (pip) |
+| **Clustering** | torch-points-kernels (C++) | Numba-accelerated PyTorch |
+| **Build Time** | ~40 min | ~15 min |
+| **GPU Support** | Volta → Hopper | Volta → Blackwell |
+| **Inference Quality** | Validated (47/64 GT match) | Experimental (semantic bias) |
 
 ## Issues
 
