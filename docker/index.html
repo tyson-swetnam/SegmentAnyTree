@@ -1376,14 +1376,14 @@
 <h1 id="docker-guide">Docker Guide<a class="headerlink" href="#docker-guide" title="Permanent link">&para;</a></h1>
 <h2 id="pulling-pre-built-images">Pulling Pre-built Images<a class="headerlink" href="#pulling-pre-built-images" title="Permanent link">&para;</a></h2>
 <p>Pre-built images are available on the CyVerse Harbor registry:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CUDA 12.4 (recommended)</label><label for="__tabbed_1_2">CUDA 11.8 (legacy)</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CUDA 11.8 (recommended)</label><label for="__tabbed_1_2">CUDA 12.4 (experimental)</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>harbor.cyverse.org/vice/segmentanytree:cuda12
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>harbor.cyverse.org/vice/segmentanytree:cuda11
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>harbor.cyverse.org/vice/segmentanytree:cuda11
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>harbor.cyverse.org/vice/segmentanytree:cuda12
 </code></pre></div>
 </div>
 </div>
@@ -1393,53 +1393,62 @@
 <thead>
 <tr>
 <th></th>
-<th>CUDA 12.4 (recommended)</th>
-<th>CUDA 11.8 (legacy)</th>
+<th>CUDA 11.8 (recommended)</th>
+<th>CUDA 12.4 (experimental)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>Registry</strong></td>
-<td><code>harbor.cyverse.org/vice/segmentanytree:cuda12</code></td>
 <td><code>harbor.cyverse.org/vice/segmentanytree:cuda11</code></td>
+<td><code>harbor.cyverse.org/vice/segmentanytree:cuda12</code></td>
 </tr>
 <tr>
 <td><strong>Dockerfile</strong></td>
-<td><code>docker/Dockerfile.cuda12</code></td>
 <td><code>docker/Dockerfile.cuda11</code></td>
+<td><code>docker/Dockerfile.cuda12</code></td>
 </tr>
 <tr>
 <td><strong>PyTorch</strong></td>
-<td>2.5.1</td>
 <td>2.1.2</td>
+<td>2.5.1</td>
 </tr>
 <tr>
 <td><strong>Sparse Backend</strong></td>
-<td>SpConv v2.x (pip install)</td>
 <td>MinkowskiEngine + torchsparse (source build)</td>
+<td>SpConv v2.x (pip install)</td>
 </tr>
 <tr>
 <td><strong>Clustering</strong></td>
-<td>Pure PyTorch (<code>sat.clustering</code>)</td>
 <td>torch-points-kernels (C++/CUDA)</td>
+<td>Pure PyTorch (<code>sat.clustering</code>)</td>
 </tr>
 <tr>
 <td><strong>Build Time</strong></td>
-<td>~15 min</td>
 <td>~40 min</td>
+<td>~15 min</td>
 </tr>
 <tr>
 <td><strong>GPU Support</strong></td>
-<td>Volta through Blackwell (sm_70 - sm_100)</td>
 <td>Volta through Hopper (sm_70 - sm_90)</td>
+<td>Volta through Blackwell (sm_70 - sm_100)</td>
 </tr>
 <tr>
 <td><strong>Driver</strong></td>
 <td>525+</td>
 <td>525+</td>
 </tr>
+<tr>
+<td><strong>Inference Quality</strong></td>
+<td>Validated (47/64 GT match)</td>
+<td>Experimental (semantic bias)</td>
+</tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="admonition-title">CUDA 12 is experimental</p>
+<p>The SpConv backend auto-converts MinkowskiEngine weights at load time, but produces biased semantic segmentation (~100% tree classification). Instance segmentation produces clusters but they don't match ground truth. Use CUDA 11 for production inference.</p>
+</div>
 <p>See <a href="../../docker/">docker/README.md</a> for additional comparison details.</p>
 <h2 id="building-locally">Building Locally<a class="headerlink" href="#building-locally" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/tyson-swetnam/SegmentAnyTree.git
