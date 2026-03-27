@@ -212,21 +212,14 @@ RUN cd ${SAT_ROOT} && \
       --output model_file/PointGroup-PAPER-spconv.pt && \
     echo "SpConv weights generated successfully"
 
-RUN chmod -R 777 ${SAT_ROOT}
+RUN chmod -R 777 ${SAT_ROOT} && \
+    chmod +x /bin/entry.sh
 WORKDIR ${SAT_ROOT}
 
 # ---- Expose JupyterLab port ----
 EXPOSE 8888
 
-USER sat
-
-# Default: start JupyterLab
-# Override with: docker run ... segmentanytree:cuda12 bash
-# For CyVerse VICE: use entry.sh as entrypoint (configures iRODS, user configs)
-CMD ["jupyter", "lab", \
-     "--ip=0.0.0.0", \
-     "--port=8888", \
-     "--no-browser", \
-     "--NotebookApp.token=''", \
-     "--NotebookApp.password=''", \
-     "--notebook-dir=/opt/segmentanytree"]
+# Use entry.sh as entrypoint — it fixes permissions for whatever UID
+# CyVerse VICE runs the container as, then starts JupyterLab.
+# Override CMD with: docker run ... segmentanytree:cuda12 bash
+ENTRYPOINT ["/bin/entry.sh"]

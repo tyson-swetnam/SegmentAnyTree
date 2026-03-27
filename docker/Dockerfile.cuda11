@@ -225,21 +225,14 @@ RUN MODEL_SIZE=$(stat -c%s "${SAT_ROOT}/model_file/PointGroup-PAPER.pt" 2>/dev/n
     fi && \
     echo "Model weights verified: ${MODEL_SIZE} bytes"
 
-RUN chmod -R 777 ${SAT_ROOT}
+RUN chmod -R 777 ${SAT_ROOT} && \
+    chmod +x /bin/entry.sh
 WORKDIR ${SAT_ROOT}
 
 # ---- Expose JupyterLab port ----
 EXPOSE 8888
 
-USER sat
-
-# Default: start JupyterLab
-# Override with: docker run ... segmentanytree:cuda11 bash
-# For CyVerse VICE: use entry.sh as entrypoint (configures iRODS, user configs)
-CMD ["jupyter", "lab", \
-     "--ip=0.0.0.0", \
-     "--port=8888", \
-     "--no-browser", \
-     "--NotebookApp.token=''", \
-     "--NotebookApp.password=''", \
-     "--notebook-dir=/opt/segmentanytree"]
+# Use entry.sh as entrypoint — it fixes permissions for whatever UID
+# CyVerse VICE runs the container as, then starts JupyterLab.
+# Override CMD with: docker run ... segmentanytree:cuda11 bash
+ENTRYPOINT ["/bin/entry.sh"]
