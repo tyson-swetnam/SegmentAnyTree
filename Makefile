@@ -14,7 +14,7 @@ test-paths:
 test-gpu:
 	python -m pytest tests/ -v
 
-build: build-cuda12
+build: build-cuda11
 
 build-cuda12:
 	docker build -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 -t segmentanytree:latest .

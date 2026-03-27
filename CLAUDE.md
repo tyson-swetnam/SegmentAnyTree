@@ -21,7 +21,7 @@ Paper: Wielgosz et al. (2024), "SegmentAnyTree: A sensor and platform agnostic d
 
 ### Backend Status
 - **MinkowskiEngine (CUDA 11)**: Production-ready. Validated at 47/64 GT trees matched on FOR-instance RMIT benchmark. Use `segmentanytree:cuda11`.
-- **SpConv v2.x (CUDA 12)**: Experimental. Auto-converts ME weights at load time. Semantic segmentation biased (~100% tree). Instance clusters don't match ground truth. Needs retraining with SpConv for correct results.
+- **SpConv v2.x (CUDA 12)**: Experimental. Known issues: (1) coordinate ordering mismatch in `spconv.py` — SpConv expects `[batch, z, y, x]` but wrapper passes `[batch, x, y, z]`, (2) kernel reshape permutation inconsistency between `migrate_weights.py` and `model_checkpoint.py`, (3) `.C` property returns wrong coordinate order. Results: ~20x slower, fragmented segmentation (310k instances vs 111 for ALS). Needs coordinate fix or retraining.
 - Model weights (665 MB) stored via Git LFS — `git lfs pull` required before Docker builds. Dockerfiles fail-fast if weights are LFS pointers.
 - Local conda env: `/opt/tswetnam/miniforge/envs/sat` (CUDA 12.4 + SpConv)
 

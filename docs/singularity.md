@@ -2,24 +2,24 @@
 
 ## Convert Docker Image to SIF
 
-=== "CUDA 12.4 (recommended)"
-
-    ```bash
-    singularity pull segmentanytree-cuda12.sif \
-      docker://harbor.cyverse.org/vice/segmentanytree:cuda12
-    ```
-
-=== "CUDA 11.8 (legacy)"
+=== "CUDA 11.8 (recommended)"
 
     ```bash
     singularity pull segmentanytree-cuda11.sif \
       docker://harbor.cyverse.org/vice/segmentanytree:cuda11
     ```
 
+=== "CUDA 12.4 (experimental)"
+
+    ```bash
+    singularity pull segmentanytree-cuda12.sif \
+      docker://harbor.cyverse.org/vice/segmentanytree:cuda12
+    ```
+
 === "From Local Build"
 
     ```bash
-    singularity pull segmentanytree-cuda12.sif docker://segmentanytree:cuda12
+    singularity pull segmentanytree-cuda11.sif docker://segmentanytree:cuda11
     ```
 
 ## Basic Inference
@@ -28,7 +28,7 @@
 singularity exec --nv \
     --bind /path/to/input:/data/input \
     --bind /path/to/output:/data/output \
-    segmentanytree-cuda12.sif \
+    segmentanytree-cuda11.sif \
     bash /opt/segmentanytree/scripts/run_inference.sh /data/input /data/output true
 ```
 
@@ -45,7 +45,7 @@ singularity exec --nv \
 
 module load singularity  # or apptainer
 
-SIF="/path/to/segmentanytree-cuda12.sif"
+SIF="/path/to/segmentanytree-cuda11.sif"
 INPUT="/scratch/$USER/input"
 OUTPUT="/scratch/$USER/output"
 TEMP="/scratch/$USER/sat_temp"
@@ -73,7 +73,7 @@ For processing many files with potential job time limits, process one file at a 
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
 
-SIF="/path/to/segmentanytree-cuda12.sif"
+SIF="/path/to/segmentanytree-cuda11.sif"
 INPUT="/scratch/$USER/input"
 OUTPUT="/scratch/$USER/output"
 CHECKPOINT="/scratch/$USER/checkpoints"

@@ -1,12 +1,16 @@
 # ============================================================
 # SegmentAnyTree — Default Dockerfile (CUDA 12.4 + SpConv v2.x)
 #
+# WARNING: The CUDA 12 SpConv backend has known weight conversion issues
+# that produce fragmented segmentation. For production use:
+#   make build-cuda11    (recommended — validated MinkowskiEngine)
+#
 # This file mirrors docker/Dockerfile.cuda12. See docker/ for both variants.
 #
 # Build:
 #   docker build -t segmentanytree:latest .
-#   make build-cuda12    (recommended)
-#   make build-cuda11    (legacy CUDA 11.8 + MinkowskiEngine)
+#   make build-cuda11    (recommended for production)
+#   make build-cuda12    (experimental CUDA 12.4 + SpConv)
 # ============================================================
 
 # ---- Stage 1: Builder ----

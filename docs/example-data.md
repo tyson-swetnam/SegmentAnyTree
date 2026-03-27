@@ -179,11 +179,11 @@ Once you have data downloaded:
 === "Docker (Harbor)"
 
     ```bash
-    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda11
     docker run --gpus all \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      harbor.cyverse.org/vice/segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
     ```
 
@@ -193,7 +193,7 @@ Once you have data downloaded:
     docker run --gpus all \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      segmentanytree:cuda12 \
+      segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
     ```
 

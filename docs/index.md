@@ -36,11 +36,11 @@ Output files are in [COPC](https://copc.io/) (Cloud-Optimized Point Cloud) forma
     # Copy your .las/.laz/.ply files into input/
 
     # Pull and run
-    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda11
     docker run --gpus all \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      harbor.cyverse.org/vice/segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
 
     # Results in $HOME/segmentanytree/output/final_results/
@@ -57,11 +57,11 @@ Output files are in [COPC](https://copc.io/) (Cloud-Optimized Point Cloud) forma
     # Build and run
     git clone https://github.com/tyson-swetnam/SegmentAnyTree.git
     cd SegmentAnyTree
-    docker build -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
+    docker build -f docker/Dockerfile.cuda11 -t segmentanytree:cuda11 .
     docker run --gpus all \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      segmentanytree:cuda12 \
+      segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
 
     # Results in $HOME/segmentanytree/output/final_results/
@@ -87,16 +87,16 @@ See the [Quick Start guide](quickstart.md) for detailed setup instructions.
 
 ## Docker image variants
 
-| Component | CUDA 12.4 (recommended) | CUDA 11.8 (legacy) |
+| Component | CUDA 11.8 (recommended) | CUDA 12.4 (experimental) |
 |-----------|------------------------|---------------------|
-| **Registry** | `harbor.cyverse.org/vice/segmentanytree:cuda12` | `harbor.cyverse.org/vice/segmentanytree:cuda11` |
-| **Base** | `nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04` | `nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04` |
+| **Registry** | `harbor.cyverse.org/vice/segmentanytree:cuda11` | `harbor.cyverse.org/vice/segmentanytree:cuda12` |
+| **Base** | `nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04` | `nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04` |
 | **Python** | 3.10 | 3.10 |
-| **PyTorch** | 2.5.1 | 2.1.2 |
-| **Sparse backend** | SpConv v2.x | MinkowskiEngine |
+| **PyTorch** | 2.1.2 | 2.5.1 |
+| **Sparse backend** | MinkowskiEngine | SpConv v2.x |
 | **JupyterLab** | 4.x | 4.x |
-| **Build time** | ~15 min | ~40 min |
-| **GPU support** | Volta through Blackwell (sm_70 - sm_100) | Volta through Hopper (sm_70 - sm_90) |
+| **Build time** | ~40 min | ~15 min |
+| **GPU support** | Volta through Hopper (sm_70 - sm_90) | Volta through Blackwell (sm_70 - sm_100) |
 
 ## Citation
 

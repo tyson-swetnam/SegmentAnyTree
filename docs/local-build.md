@@ -13,9 +13,9 @@ This guide sets up SegmentAnyTree for development and inference directly on a Li
 - NVIDIA GPU with CUDA support (Compute Capability 7.0+)
 - NVIDIA driver installed (`nvidia-smi` works)
 
-## Option A: CUDA 12.4 with SpConv (Recommended)
+## Option A: CUDA 11.8 with MinkowskiEngine (Recommended)
 
-The fastest setup — no source compilation needed.
+Production-ready with validated inference accuracy. Requires source compilation of GPU libraries (~30 min).
 
 ### Using conda/mamba (easiest)
 
@@ -73,9 +73,9 @@ python -m ipykernel install --user --name sat --display-name "Python 3 (sat)"
 bash scripts/run_inference.sh $SAT_DATA/input $SAT_DATA/output true
 ```
 
-## Option B: CUDA 11.8 with MinkowskiEngine (Legacy)
+## Option B: CUDA 12.4 with SpConv (Experimental)
 
-Requires source compilation of GPU libraries (~30 min).
+Faster setup (no source compilation), but SpConv weight conversion has known issues producing fragmented segmentation. Use for development only.
 
 ### B.1. Install Miniforge (conda + mamba)
 

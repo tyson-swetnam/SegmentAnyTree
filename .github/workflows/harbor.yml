@@ -1,0 +1,92 @@
+name: Build and Push to Harbor
+
+on:
+  push:
+    branches: main
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Additional image tag (default: latest)'
+        required: false
+        default: 'latest'
+
+jobs:
+  build-cuda11:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Pull LFS weights
+        run: git lfs pull --include="model_file/PointGroup-PAPER.pt"
+
+      - name: Login to Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: harbor.cyverse.org
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v5
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-cuda11-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-cuda11-
+
+      - name: Build and push CUDA 11 (recommended)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.cuda11
+          push: true
+          tags: |
+            harbor.cyverse.org/vice/segmentanytree:cuda11
+            harbor.cyverse.org/vice/segmentanytree:${{ inputs.tag || 'latest' }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+  build-cuda12:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Pull LFS weights
+        run: git lfs pull --include="model_file/PointGroup-PAPER.pt"
+
+      - name: Login to Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: harbor.cyverse.org
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v5
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-cuda12-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-cuda12-
+
+      - name: Build and push CUDA 12 (experimental)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.cuda12
+          push: true
+          tags: harbor.cyverse.org/vice/segmentanytree:cuda12
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache

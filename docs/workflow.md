@@ -86,11 +86,11 @@ Any projected CRS works (UTM recommended). The pipeline automatically converts t
 === "Docker (Harbor)"
 
     ```bash
-    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda11
     docker run --gpus all \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      harbor.cyverse.org/vice/segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
     ```
 
@@ -100,7 +100,7 @@ Any projected CRS works (UTM recommended). The pipeline automatically converts t
     docker run --gpus all \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      segmentanytree:cuda12 \
+      segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
     ```
 

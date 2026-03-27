@@ -13,7 +13,7 @@ Pre-built images are available on the CyVerse Harbor registry:
 === "CUDA 12.4 (experimental)"
 
     ```bash
-    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda11
     ```
 
 ## Image Variants
@@ -48,15 +48,15 @@ git lfs pull --include="model_file/PointGroup-PAPER.pt"
 # Verify weights are real (should be ~665 MB, not 134 bytes)
 make verify-weights
 
-# CUDA 12.4 (recommended)
-make build-cuda12
-
-# CUDA 11.8 (legacy)
+# CUDA 11.8 (recommended — production-ready)
 make build-cuda11
 
+# CUDA 12.4 (experimental — SpConv weight conversion has known issues)
+make build-cuda12
+
 # Or directly:
-docker build -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
 docker build -f docker/Dockerfile.cuda11 -t segmentanytree:cuda11 .
+docker build -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
 ```
 
 !!! warning "Git LFS required"
@@ -77,7 +77,7 @@ docker build -f docker/Dockerfile.cuda11 -t segmentanytree:cuda11 .
 ### Build without cache
 
 ```bash
-docker build --no-cache -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
+docker build --no-cache -f docker/Dockerfile.cuda11 -t segmentanytree:cuda11 .
 ```
 
 ## Running
@@ -90,7 +90,7 @@ docker build --no-cache -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
     docker run --gpus all -p 8888:8888 \
       -v $HOME/data/input:/data/input \
       -v $HOME/data/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12
+      harbor.cyverse.org/vice/segmentanytree:cuda11
     ```
 
 === "Local Build"
@@ -99,7 +99,7 @@ docker build --no-cache -f docker/Dockerfile.cuda12 -t segmentanytree:cuda12 .
     docker run --gpus all -p 8888:8888 \
       -v $HOME/data/input:/data/input \
       -v $HOME/data/output:/data/output \
-      segmentanytree:cuda12
+      segmentanytree:cuda11
     ```
 
 Open http://localhost:8888 in your browser.
@@ -112,7 +112,7 @@ Open http://localhost:8888 in your browser.
     docker run --gpus all \
       -v $HOME/data/input:/data/input \
       -v $HOME/data/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      harbor.cyverse.org/vice/segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
     ```
 
@@ -122,7 +122,7 @@ Open http://localhost:8888 in your browser.
     docker run --gpus all \
       -v $HOME/data/input:/data/input \
       -v $HOME/data/output:/data/output \
-      segmentanytree:cuda12 \
+      segmentanytree:cuda11 \
       bash scripts/run_inference.sh /data/input /data/output true
     ```
 
@@ -134,7 +134,7 @@ Open http://localhost:8888 in your browser.
     docker run --gpus all -it \
       -v $HOME/data/input:/data/input \
       -v $HOME/data/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12 bash
+      harbor.cyverse.org/vice/segmentanytree:cuda11 bash
     ```
 
 === "Local Build"
@@ -143,7 +143,7 @@ Open http://localhost:8888 in your browser.
     docker run --gpus all -it \
       -v $HOME/data/input:/data/input \
       -v $HOME/data/output:/data/output \
-      segmentanytree:cuda12 bash
+      segmentanytree:cuda11 bash
     ```
 
 ## Volume Mounts

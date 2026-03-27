@@ -166,7 +166,7 @@ For Docker:
     docker run --gpus all \
       -v $HOME/data/input:/data/input \
       -v $HOME/data/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12 \
+      harbor.cyverse.org/vice/segmentanytree:cuda11 \
       bash scripts/run_inference_parallel.sh /data/input /data/output
     ```
 
@@ -176,7 +176,7 @@ For Docker:
     docker run --gpus all \
       -v $HOME/data/input:/data/input \
       -v $HOME/data/output:/data/output \
-      segmentanytree:cuda12 \
+      segmentanytree:cuda11 \
       bash scripts/run_inference_parallel.sh /data/input /data/output
     ```
 
@@ -263,7 +263,7 @@ Pass overrides through the inference script by running `eval.py` directly:
 docker run --gpus all \
   -v $HOME/data/input:/data/input \
   -v $HOME/data/output:/data/output \
-  harbor.cyverse.org/vice/segmentanytree:cuda12 \
+  harbor.cyverse.org/vice/segmentanytree:cuda11 \
   bash -c "cd /opt/segmentanytree && \
     python eval.py batch_size=2 tracker_options.min_score=0.5"
 ```
@@ -276,7 +276,7 @@ docker run --gpus all \
   -v $HOME/data/input:/data/input \
   -v $HOME/data/output:/data/output \
   -v $HOME/my_eval.yaml:/opt/segmentanytree/conf/eval.yaml \
-  harbor.cyverse.org/vice/segmentanytree:cuda12 \
+  harbor.cyverse.org/vice/segmentanytree:cuda11 \
   bash scripts/run_inference.sh /data/input /data/output true
 ```
 

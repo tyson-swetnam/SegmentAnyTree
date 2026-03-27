@@ -17,11 +17,11 @@ Interactive Jupyter notebooks for working with SegmentAnyTree. Available in the 
 === "Docker (Harbor)"
 
     ```bash
-    docker pull harbor.cyverse.org/vice/segmentanytree:cuda12
+    docker pull harbor.cyverse.org/vice/segmentanytree:cuda11
     docker run --gpus all -p 8888:8888 \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      harbor.cyverse.org/vice/segmentanytree:cuda12
+      harbor.cyverse.org/vice/segmentanytree:cuda11
     ```
 
     Open http://localhost:8888 and navigate to `notebooks/`.
@@ -32,7 +32,7 @@ Interactive Jupyter notebooks for working with SegmentAnyTree. Available in the 
     docker run --gpus all -p 8888:8888 \
       -v $HOME/segmentanytree/input:/data/input \
       -v $HOME/segmentanytree/output:/data/output \
-      segmentanytree:cuda12
+      segmentanytree:cuda11
     ```
 
     Open http://localhost:8888 and navigate to `notebooks/`.

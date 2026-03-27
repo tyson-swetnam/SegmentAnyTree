@@ -93,7 +93,7 @@ curl -L -o model_file/PointGroup-PAPER.pt \
   "https://github.com/SmartForest-no/SegmentAnyTree/raw/main/model_file/PointGroup-PAPER.pt"
 ```
 
-After fixing, rebuild Docker images (`make build-cuda12` / `make build-cuda11`). The Dockerfiles now include a build-time check that will fail fast if the weights are LFS pointers.
+After fixing, rebuild Docker images (`make build-cuda11`). The Dockerfiles now include a build-time check that will fail fast if the weights are LFS pointers.
 
 For CUDA 12 (SpConv), you must also regenerate the migrated weights:
 ```bash
