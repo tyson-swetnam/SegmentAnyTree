@@ -546,15 +546,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#option-a-cuda-124-with-spconv-recommended" class="md-nav__link">
+  <a href="#option-a-cuda-118-with-minkowskiengine-recommended" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option A: CUDA 12.4 with SpConv (Recommended)
+        Option A: CUDA 11.8 with MinkowskiEngine (Recommended)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Option A: CUDA 12.4 with SpConv (Recommended)">
+    <nav class="md-nav" aria-label="Option A: CUDA 11.8 with MinkowskiEngine (Recommended)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -585,15 +585,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#option-b-cuda-118-with-minkowskiengine-legacy" class="md-nav__link">
+  <a href="#option-b-cuda-124-with-spconv-experimental" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option B: CUDA 11.8 with MinkowskiEngine (Legacy)
+        Option B: CUDA 12.4 with SpConv (Experimental)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Option B: CUDA 11.8 with MinkowskiEngine (Legacy)">
+    <nav class="md-nav" aria-label="Option B: CUDA 12.4 with SpConv (Experimental)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1123,15 +1123,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#option-a-cuda-124-with-spconv-recommended" class="md-nav__link">
+  <a href="#option-a-cuda-118-with-minkowskiengine-recommended" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option A: CUDA 12.4 with SpConv (Recommended)
+        Option A: CUDA 11.8 with MinkowskiEngine (Recommended)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Option A: CUDA 12.4 with SpConv (Recommended)">
+    <nav class="md-nav" aria-label="Option A: CUDA 11.8 with MinkowskiEngine (Recommended)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1162,15 +1162,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#option-b-cuda-118-with-minkowskiengine-legacy" class="md-nav__link">
+  <a href="#option-b-cuda-124-with-spconv-experimental" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option B: CUDA 11.8 with MinkowskiEngine (Legacy)
+        Option B: CUDA 12.4 with SpConv (Experimental)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Option B: CUDA 11.8 with MinkowskiEngine (Legacy)">
+    <nav class="md-nav" aria-label="Option B: CUDA 12.4 with SpConv (Experimental)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1331,8 +1331,8 @@ WSL2 and Apple MPS are not supported.</p>
 <li>NVIDIA GPU with CUDA support (Compute Capability 7.0+)</li>
 <li>NVIDIA driver installed (<code>nvidia-smi</code> works)</li>
 </ul>
-<h2 id="option-a-cuda-124-with-spconv-recommended">Option A: CUDA 12.4 with SpConv (Recommended)<a class="headerlink" href="#option-a-cuda-124-with-spconv-recommended" title="Permanent link">&para;</a></h2>
-<p>The fastest setup — no source compilation needed.</p>
+<h2 id="option-a-cuda-118-with-minkowskiengine-recommended">Option A: CUDA 11.8 with MinkowskiEngine (Recommended)<a class="headerlink" href="#option-a-cuda-118-with-minkowskiengine-recommended" title="Permanent link">&para;</a></h2>
+<p>Production-ready with validated inference accuracy. Requires source compilation of GPU libraries (~30 min).</p>
 <h3 id="using-condamamba-easiest">Using conda/mamba (easiest)<a class="headerlink" href="#using-condamamba-easiest" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mamba<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yml
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>conda<span class="w"> </span>activate<span class="w"> </span>sat
@@ -1383,8 +1383,8 @@ WSL2 and Apple MPS are not supported.</p>
 <a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="c1"># Run inference</span>
 <a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>bash<span class="w"> </span>scripts/run_inference.sh<span class="w"> </span><span class="nv">$SAT_DATA</span>/input<span class="w"> </span><span class="nv">$SAT_DATA</span>/output<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
-<h2 id="option-b-cuda-118-with-minkowskiengine-legacy">Option B: CUDA 11.8 with MinkowskiEngine (Legacy)<a class="headerlink" href="#option-b-cuda-118-with-minkowskiengine-legacy" title="Permanent link">&para;</a></h2>
-<p>Requires source compilation of GPU libraries (~30 min).</p>
+<h2 id="option-b-cuda-124-with-spconv-experimental">Option B: CUDA 12.4 with SpConv (Experimental)<a class="headerlink" href="#option-b-cuda-124-with-spconv-experimental" title="Permanent link">&para;</a></h2>
+<p>Faster setup (no source compilation), but SpConv weight conversion has known issues producing fragmented segmentation. Use for development only.</p>
 <h3 id="b1-install-miniforge-conda-mamba">B.1. Install Miniforge (conda + mamba)<a class="headerlink" href="#b1-install-miniforge-conda-mamba" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span>/tmp/miniforge.sh<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh

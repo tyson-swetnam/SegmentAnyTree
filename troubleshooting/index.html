@@ -1179,7 +1179,7 @@
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>model_file/PointGroup-PAPER.pt<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="s2">&quot;https://github.com/SmartForest-no/SegmentAnyTree/raw/main/model_file/PointGroup-PAPER.pt&quot;</span>
 </code></pre></div></p>
-<p>After fixing, rebuild Docker images (<code>make build-cuda12</code> / <code>make build-cuda11</code>). The Dockerfiles now include a build-time check that will fail fast if the weights are LFS pointers.</p>
+<p>After fixing, rebuild Docker images (<code>make build-cuda11</code>). The Dockerfiles now include a build-time check that will fail fast if the weights are LFS pointers.</p>
 <p>For CUDA 12 (SpConv), you must also regenerate the migrated weights:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>scripts/migrate_weights.py<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>--input<span class="w"> </span>model_file/PointGroup-PAPER.pt<span class="w"> </span><span class="se">\</span>
