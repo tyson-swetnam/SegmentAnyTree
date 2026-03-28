@@ -68,6 +68,9 @@ exec jupyter lab \
   --ServerApp.token="" \
   --ServerApp.password="" \
   --ServerApp.allow_remote_access=true \
+  --ServerApp.allow_origin="*" \
+  --ServerApp.allow_unauthenticated_access=true \
+  --ServerApp.disable_check_xsrf=true \
   --ServerApp.terminado_settings='{"shell_command": ["/bin/bash"]}' \
   --ip="0.0.0.0" \
   --port=8888 \

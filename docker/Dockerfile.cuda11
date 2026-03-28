@@ -185,6 +185,7 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 RUN python3 -m pip install --no-cache-dir \
     "numpy<2" \
     jupyterlab>=4.0 \
+    jupyter-server-proxy \
     ipykernel \
     ipywidgets
 
@@ -218,6 +219,7 @@ ENV HOME=/home/sat
 
 COPY . ${SAT_ROOT}
 COPY scripts/entry.sh /bin/entry.sh
+COPY docker/jupyter_notebook_config.json /home/sat/.jupyter/jupyter_notebook_config.json
 
 # Verify model weights are real files (not Git LFS pointers)
 # If PointGroup-PAPER.pt is <1KB, it's an LFS pointer and the build should fail.

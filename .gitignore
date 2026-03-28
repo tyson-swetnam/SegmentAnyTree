@@ -136,6 +136,7 @@ venv.bak/
 .ropeproject
 
 *.json
+!docker/jupyter_notebook_config.json
 *.laz
 *.png
 
