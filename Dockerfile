@@ -184,6 +184,9 @@ RUN useradd -m -s /bin/bash -u 1000 sat && \
     mkdir -p /data/input /data/output /tmp/sat_cache && \
     chmod -R 777 /data /tmp/sat_cache /home/sat
 
+# ---- Register "sat" Jupyter kernel ----
+RUN python3 -m ipykernel install --name sat --display-name "SegmentAnyTree (Python 3.10)"
+
 # ---- Copy project code ----
 ENV SAT_ROOT=/opt/segmentanytree
 ENV SAT_DATA=/data
@@ -191,6 +194,7 @@ ENV SAT_MODEL=/opt/segmentanytree/model_file
 ENV SAT_CACHE=/tmp/sat_cache
 ENV SPARSE_BACKEND=spconv
 ENV PYTHONPATH="${SAT_ROOT}:${PYTHONPATH}"
+ENV HOME=/home/sat
 
 COPY . ${SAT_ROOT}
 COPY scripts/entry.sh /bin/entry.sh
@@ -212,14 +216,31 @@ RUN cd ${SAT_ROOT} && \
       --output model_file/PointGroup-PAPER-spconv.pt && \
     echo "SpConv weights generated successfully"
 
-RUN chmod -R 777 ${SAT_ROOT} && \
-    chmod +x /bin/entry.sh
-WORKDIR ${SAT_ROOT}
+# Make UID 1000 (sat) the owner of all writable dirs.
+# CyVerse VICE runs containers as UID 1000.
+# Pre-create all Jupyter runtime dirs at build time so they exist even if
+# entry.sh is bypassed (VICE may override ENTRYPOINT).
+RUN chown -R 1000:1000 ${SAT_ROOT} /home/sat /data /tmp/sat_cache && \
+    chmod +x /bin/entry.sh && \
+    mkdir -p /home/sat/data-store \
+             /home/sat/.jupyter \
+             /home/sat/.local/share/jupyter/runtime \
+             /home/sat/.local/share/jupyter/kernels \
+             /home/sat/.ipython && \
+    chown -R 1000:1000 /home/sat
+WORKDIR /home/sat
 
 # ---- Expose JupyterLab port ----
 EXPOSE 8888
 
-# Use entry.sh as entrypoint — it fixes permissions for whatever UID
-# CyVerse VICE runs the container as, then starts JupyterLab.
-# Override CMD with: docker run ... segmentanytree:cuda12 bash
+USER 1000
+
 ENTRYPOINT ["/bin/entry.sh"]
+CMD ["jupyter", "lab", \
+     "--ip=0.0.0.0", \
+     "--port=8888", \
+     "--no-browser", \
+     "--ServerApp.token=''", \
+     "--ServerApp.password=''", \
+     "--ServerApp.terminado_settings={\"shell_command\": [\"/bin/bash\"]}", \
+     "--notebook-dir=/home/sat"]

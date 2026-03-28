@@ -71,4 +71,4 @@ exec jupyter lab \
   --ServerApp.terminado_settings='{"shell_command": ["/bin/bash"]}' \
   --ip="0.0.0.0" \
   --port=8888 \
-  --notebook-dir=/opt/segmentanytree
+  --notebook-dir="${NOTEBOOK_DIR:-$HOME}"
