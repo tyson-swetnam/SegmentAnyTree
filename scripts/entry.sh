@@ -35,8 +35,19 @@ mkdir -p "$HOME/.jupyter" \
 if [ "$RUNTIME_UID" = "0" ]; then
   # Running as root — make things accessible to all users
   chmod -R a+rwX /opt/segmentanytree 2>/dev/null || true
+  chmod -R a+rwX /opt/miniforge 2>/dev/null || true
   chmod -R a+rwX /data 2>/dev/null || true
   chmod -R a+rwX /tmp/sat_cache 2>/dev/null || true
+fi
+
+# Ensure miniforge is writable by the runtime user so `mamba install` works
+if [ -d /opt/miniforge ] && [ ! -w /opt/miniforge/conda-meta ]; then
+  if [ "$RUNTIME_UID" = "0" ]; then
+    chown -R "$RUNTIME_UID:$RUNTIME_GID" /opt/miniforge 2>/dev/null || true
+  else
+    sudo -n chown -R "$RUNTIME_UID:$RUNTIME_GID" /opt/miniforge 2>/dev/null || \
+      sudo -n chmod -R a+rwX /opt/miniforge 2>/dev/null || true
+  fi
 fi
 
 # ---- Configure iRODS environment for CyVerse Data Store access ----
